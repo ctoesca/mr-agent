@@ -1,0 +1,47 @@
+language: node_js
+
+node_js:
+- '8'
+- '9'
+- '10'
+- '11'
+
+
+
+env:
+  global:
+    - CC_TEST_REPORTER_ID=bce26a22807b904566a9b161484d16d9fe8760739e2f54ac2a0310fd8e733af1
+
+before_script:
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+  - chmod +x ./cc-test-reporter
+  - ./cc-test-reporter before-build
+
+script:
+  - npm run test-with-coverage
+#script:
+#  - npm test
+
+after_success:
+
+after_script:  
+  #- ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
+  - ./cc-test-reporter format-coverage -t lcov -o coverage/codeclimate.json
+  - ./cc-test-reporter upload-coverage
+
+# Trigger a push build on master/release and greenkeeper branches + PRs build on every branches
+# Avoid double build on PRs (See https://github.com/travis-ci/travis-ci/issues/1147)
+branches:
+  only:
+    - master
+
+deploy:
+  # runs semantic-release on each
+  - provider: script
+    # script: npm ci && npx semantic-release
+    script: npm ci
+    skip_cleanup: true
+    on:
+      tags: false
+      all_branches: true
+      node: '8'

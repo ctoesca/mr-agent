@@ -1,0 +1,611 @@
+{
+  "stats": {
+    "suites": 17,
+    "tests": 13,
+    "passes": 13,
+    "pending": 0,
+    "failures": 0,
+    "start": "2019-02-10T21:46:15.666Z",
+    "end": "2019-02-10T21:46:27.713Z",
+    "duration": 12047,
+    "testsRegistered": 13,
+    "passPercent": 100,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false,
+    "passPercentClass": "success",
+    "pendingPercentClass": "danger"
+  },
+  "suites": {
+    "uuid": "21914aa4-4a43-4dba-a1c2-9a00e27ef90f",
+    "title": "",
+    "fullFile": "",
+    "file": "",
+    "beforeHooks": [],
+    "afterHooks": [],
+    "tests": [],
+    "suites": [
+      {
+        "uuid": "a34a0fe5-8f56-48eb-ab6a-e9fbac83de47",
+        "title": "GET /_plugin/ssh",
+        "fullFile": "G:\\dev\\nexilearn\\mr-agent\\test\\worker\\50-plugin-ssh.js",
+        "file": "G:\\dev\\nexilearn\\mr-agent\\test\\worker\\50-plugin-ssh.js",
+        "beforeHooks": [],
+        "afterHooks": [],
+        "tests": [
+          {
+            "title": "should return 404",
+            "fullTitle": "GET /_plugin/ssh should return 404",
+            "timedOut": false,
+            "duration": 36,
+            "state": "passed",
+            "speed": "fast",
+            "pass": true,
+            "fail": false,
+            "pending": false,
+            "code": "let opt = getHttpOptions('GET', '/_plugin/ssh')\nexecRequestExpectError(opt, done, 404)",
+            "err": {},
+            "isRoot": false,
+            "uuid": "ee9bd35e-4be6-4382-a6f6-7e4a12adc656",
+            "isHook": false,
+            "skipped": false
+          }
+        ],
+        "suites": [],
+        "passes": [
+          "ee9bd35e-4be6-4382-a6f6-7e4a12adc656"
+        ],
+        "failures": [],
+        "pending": [],
+        "skipped": [],
+        "duration": 36,
+        "root": false,
+        "rootEmpty": false,
+        "_timeout": 2000
+      },
+      {
+        "uuid": "208bde28-c0a9-4548-bf86-a4edce79b9b4",
+        "title": "/_plugin/ssh/upload",
+        "fullFile": "G:\\dev\\nexilearn\\mr-agent\\test\\worker\\50-plugin-ssh.js",
+        "file": "G:\\dev\\nexilearn\\mr-agent\\test\\worker\\50-plugin-ssh.js",
+        "beforeHooks": [],
+        "afterHooks": [],
+        "tests": [],
+        "suites": [
+          {
+            "uuid": "3efb07df-fb52-43f2-8217-1b544156cbbf",
+            "title": "upload file",
+            "fullFile": "G:\\dev\\nexilearn\\mr-agent\\test\\worker\\50-plugin-ssh.js",
+            "file": "G:\\dev\\nexilearn\\mr-agent\\test\\worker\\50-plugin-ssh.js",
+            "beforeHooks": [],
+            "afterHooks": [],
+            "tests": [
+              {
+                "title": "should return 200",
+                "fullTitle": "/_plugin/ssh/upload upload file should return 200",
+                "timedOut": false,
+                "duration": 964,
+                "state": "passed",
+                "speed": "slow",
+                "pass": true,
+                "fail": false,
+                "pending": false,
+                "code": "let path = '/tmp/upload.txt'\n\tlet opt = getHttpOptions('POST', '/_plugin/ssh/upload?path='+path+'&port='+SSH_HOST_PORT+'&host='+SSH_HOST+'&username='+SSH_HOST_USERNAME+'&password='+SSH_HOST_PASSWORD)\n\t\n\topt.formData = {\n        // Like <input type=\"text\" name=\"name\">\n        name: sourceFileName,\n        // Like <input type=\"file\" name=\"file\">\n        file1: {\n            value: fs.createReadStream(sourceFile),\n            options: {\n                filename: sourceFileName,\n                contentType: 'application/javascript'\n            }\n        },\n        file2: {\n            value: fs.createReadStream(sourceDir+'/Application.js'),\n            options: {\n                filename: 'Application.js',\n                contentType: 'application/javascript'\n            }\n        }\n    },\n\t\t\t\n\trequest( opt )\n\t.then( (res) => {\t\n\t\tcheckUploadResult( res, sourceFile, path  )\n\t\tdone();\t\t\t\t\n\t})\n\t.catch( err => {\n\t\tdone(err)\n\t})",
+                "err": {},
+                "isRoot": false,
+                "uuid": "916fffdd-584e-4084-abe1-e58ba199ce9b",
+                "isHook": false,
+                "skipped": false
+              }
+            ],
+            "suites": [],
+            "passes": [
+              "916fffdd-584e-4084-abe1-e58ba199ce9b"
+            ],
+            "failures": [],
+            "pending": [],
+            "skipped": [],
+            "duration": 964,
+            "root": false,
+            "rootEmpty": false,
+            "_timeout": 2000
+          },
+          {
+            "uuid": "197584af-c751-43d8-805c-c05835d97fef",
+            "title": "upload file in incorrect path",
+            "fullFile": "G:\\dev\\nexilearn\\mr-agent\\test\\worker\\50-plugin-ssh.js",
+            "file": "G:\\dev\\nexilearn\\mr-agent\\test\\worker\\50-plugin-ssh.js",
+            "beforeHooks": [],
+            "afterHooks": [],
+            "tests": [
+              {
+                "title": "should return 400",
+                "fullTitle": "/_plugin/ssh/upload upload file in incorrect path should return 400",
+                "timedOut": false,
+                "duration": 797,
+                "state": "passed",
+                "speed": "slow",
+                "pass": true,
+                "fail": false,
+                "pending": false,
+                "code": "let path = '/blablabla/upload.txt'\n\tlet opt = getHttpOptions('POST', '/_plugin/ssh/upload?path='+path+'&port='+SSH_HOST_PORT+'&host='+SSH_HOST+'&username='+SSH_HOST_USERNAME+'&password='+SSH_HOST_PASSWORD)\n\t\n\topt.formData = {\n        // Like <input type=\"text\" name=\"name\">\n        name: sourceFileName,\n        // Like <input type=\"file\" name=\"file\">\n        file1: {\n            value: fs.createReadStream(sourceFile),\n            options: {\n                filename: sourceFileName,\n                contentType: 'application/javascript'\n            }\n        }\n    }\n\t\t\t\n\texecRequestExpectError( opt, done, 400 )",
+                "err": {},
+                "isRoot": false,
+                "uuid": "233119cc-e5c5-4cb5-89b3-91f5a6d06fb4",
+                "isHook": false,
+                "skipped": false
+              }
+            ],
+            "suites": [],
+            "passes": [
+              "233119cc-e5c5-4cb5-89b3-91f5a6d06fb4"
+            ],
+            "failures": [],
+            "pending": [],
+            "skipped": [],
+            "duration": 797,
+            "root": false,
+            "rootEmpty": false,
+            "_timeout": 2000
+          }
+        ],
+        "passes": [],
+        "failures": [],
+        "pending": [],
+        "skipped": [],
+        "duration": 0,
+        "root": false,
+        "rootEmpty": false,
+        "_timeout": 2000
+      },
+      {
+        "uuid": "6de9dadd-511a-4e8c-aea3-0512b713e9c9",
+        "title": "/_plugin/ssh with password",
+        "fullFile": "G:\\dev\\nexilearn\\mr-agent\\test\\worker\\50-plugin-ssh.js",
+        "file": "G:\\dev\\nexilearn\\mr-agent\\test\\worker\\50-plugin-ssh.js",
+        "beforeHooks": [],
+        "afterHooks": [],
+        "tests": [],
+        "suites": [
+          {
+            "uuid": "206a5001-5471-4b18-a7fa-c680e294f02a",
+            "title": "exec script on unknown host",
+            "fullFile": "G:\\dev\\nexilearn\\mr-agent\\test\\worker\\50-plugin-ssh.js",
+            "file": "G:\\dev\\nexilearn\\mr-agent\\test\\worker\\50-plugin-ssh.js",
+            "beforeHooks": [],
+            "afterHooks": [],
+            "tests": [
+              {
+                "title": "should return 500",
+                "fullTitle": "/_plugin/ssh with password exec script on unknown host should return 500",
+                "timedOut": false,
+                "duration": 2687,
+                "state": "passed",
+                "speed": "slow",
+                "pass": true,
+                "fail": false,
+                "pending": false,
+                "code": "let opt = getHttpOptions('POST', '/_plugin/ssh/exec')\n\t\n\topt.body = {\n\t\tscript:  \"ls -l\",\n\t\thost: 'blablabla',\n\t\tport: SSH_HOST_PORT,\n\t\tusername: SSH_HOST_USERNAME,\n\t\tpassword: SSH_HOST_PASSWORD\n\t}\n    \n\texecRequestExpectError(opt, null, 500)\n\t.then( res => {\n\t\tcheckSshError(res, 'SshError', false, 'client-socket')\n\t\tdone()\n\t})\n\t.catch( err => {\n\t\tdone(err)\n\t})",
+                "err": {},
+                "isRoot": false,
+                "uuid": "591be921-7c6a-464c-8cfb-0b77d469a678",
+                "isHook": false,
+                "skipped": false
+              }
+            ],
+            "suites": [],
+            "passes": [
+              "591be921-7c6a-464c-8cfb-0b77d469a678"
+            ],
+            "failures": [],
+            "pending": [],
+            "skipped": [],
+            "duration": 2687,
+            "root": false,
+            "rootEmpty": false,
+            "_timeout": 25000
+          },
+          {
+            "uuid": "49a6283b-4cae-4e5a-84e1-2709e7689f7f",
+            "title": "exec script with incorrect password",
+            "fullFile": "G:\\dev\\nexilearn\\mr-agent\\test\\worker\\50-plugin-ssh.js",
+            "file": "G:\\dev\\nexilearn\\mr-agent\\test\\worker\\50-plugin-ssh.js",
+            "beforeHooks": [],
+            "afterHooks": [],
+            "tests": [
+              {
+                "title": "should return 500",
+                "fullTitle": "/_plugin/ssh with password exec script with incorrect password should return 500",
+                "timedOut": false,
+                "duration": 2397,
+                "state": "passed",
+                "speed": "slow",
+                "pass": true,
+                "fail": false,
+                "pending": false,
+                "code": "let opt = getHttpOptions('POST', '/_plugin/ssh/exec')\n\t\n\topt.body = {\n\t\tscript:  \"ls -l\",\n\t\thost: SSH_HOST,\n\t\tport: SSH_HOST_PORT,\n\t\tusername: SSH_HOST_USERNAME,\n\t\tpassword: 'blablabla'\n\t}\n    \n\texecRequestExpectError(opt, null, 500)\n\t.then( res => {\n\t\tcheckSshError(res, 'SshError', false, 'client-authentication')\n\t\tdone()\n\t})\n\t.catch( err => {\n\t\tdone(err)\n\t})",
+                "err": {},
+                "isRoot": false,
+                "uuid": "6fd9ad42-b21c-4031-a862-c13f7aa6f50c",
+                "isHook": false,
+                "skipped": false
+              }
+            ],
+            "suites": [],
+            "passes": [
+              "6fd9ad42-b21c-4031-a862-c13f7aa6f50c"
+            ],
+            "failures": [],
+            "pending": [],
+            "skipped": [],
+            "duration": 2397,
+            "root": false,
+            "rootEmpty": false,
+            "_timeout": 25000
+          },
+          {
+            "uuid": "a7393e85-5730-4dac-b3db-ea3d07a3557e",
+            "title": "exec script",
+            "fullFile": "G:\\dev\\nexilearn\\mr-agent\\test\\worker\\50-plugin-ssh.js",
+            "file": "G:\\dev\\nexilearn\\mr-agent\\test\\worker\\50-plugin-ssh.js",
+            "beforeHooks": [],
+            "afterHooks": [],
+            "tests": [
+              {
+                "title": "should return 200",
+                "fullTitle": "/_plugin/ssh with password exec script should return 200",
+                "timedOut": false,
+                "duration": 601,
+                "state": "passed",
+                "speed": "slow",
+                "pass": true,
+                "fail": false,
+                "pending": false,
+                "code": "let opt = getHttpOptions('POST', '/_plugin/ssh/exec')\n\t\n\topt.body = {\n\t\tscript:  \"echo $USER\",\n\t\thost: SSH_HOST,\n\t\tport: SSH_HOST_PORT,\n\t\tusername: SSH_HOST_USERNAME,\n\t\tpassword: SSH_HOST_PASSWORD\n\t}\n    \n    request( opt )\n\t.then( (res) => {\t\n\t\t\n\t\tassert.strictEqual(res.statusCode, 200, 'status is not 200');\n\t\tassert.strictEqual(res.body.stdout.trim(), SSH_HOST_USERNAME, 'stdout != '+SSH_HOST_USERNAME);\n\t\tassert.strictEqual(res.body.stderr, '', 'stderr is not empty');\n\t\tassert.strictEqual(res.body.exitCode, 0, 'exitCode != 0');\n\t\tdone();\t\t\t\t\n\t})\n\t.catch( err => {\n\t\tdone(err)\n\t})",
+                "err": {},
+                "isRoot": false,
+                "uuid": "f6c48e97-5059-4b9a-859c-b4b15f1930d5",
+                "isHook": false,
+                "skipped": false
+              }
+            ],
+            "suites": [],
+            "passes": [
+              "f6c48e97-5059-4b9a-859c-b4b15f1930d5"
+            ],
+            "failures": [],
+            "pending": [],
+            "skipped": [],
+            "duration": 601,
+            "root": false,
+            "rootEmpty": false,
+            "_timeout": 2000
+          },
+          {
+            "uuid": "b7ea2ec8-1c79-4595-b791-a79679ed5b05",
+            "title": "exec script with stderr and exitCode=1",
+            "fullFile": "G:\\dev\\nexilearn\\mr-agent\\test\\worker\\50-plugin-ssh.js",
+            "file": "G:\\dev\\nexilearn\\mr-agent\\test\\worker\\50-plugin-ssh.js",
+            "beforeHooks": [],
+            "afterHooks": [],
+            "tests": [
+              {
+                "title": "should return 200",
+                "fullTitle": "/_plugin/ssh with password exec script with stderr and exitCode=1 should return 200",
+                "timedOut": false,
+                "duration": 673,
+                "state": "passed",
+                "speed": "slow",
+                "pass": true,
+                "fail": false,
+                "pending": false,
+                "code": "let opt = getHttpOptions('POST', '/_plugin/ssh/exec')\n\t\n\topt.body = {\n\t\tscript:  \"cd /blablabla\",\n\t\thost: SSH_HOST,\n\t\tport: SSH_HOST_PORT,\n\t\tusername: SSH_HOST_USERNAME,\n\t\tpassword: SSH_HOST_PASSWORD\n\t}\n    \n    request( opt )\n\t.then( (res) => {\t\n\t\tassert.strictEqual(res.statusCode, 200, 'status is not 200');\n\t\tassert.strictEqual(res.body.stderr.trim() !== '', true, 'stderr is empty');\n\t\tassert.strictEqual(res.body.exitCode, 1, 'exitCode != 0');\n\t\tdone();\t\t\t\t\n\t})\n\t.catch( err => {\n\t\tdone(err)\n\t})",
+                "err": {},
+                "isRoot": false,
+                "uuid": "e2f50679-33dd-4e77-a2dd-9cf523ee3f72",
+                "isHook": false,
+                "skipped": false
+              }
+            ],
+            "suites": [],
+            "passes": [
+              "e2f50679-33dd-4e77-a2dd-9cf523ee3f72"
+            ],
+            "failures": [],
+            "pending": [],
+            "skipped": [],
+            "duration": 673,
+            "root": false,
+            "rootEmpty": false,
+            "_timeout": 2000
+          }
+        ],
+        "passes": [],
+        "failures": [],
+        "pending": [],
+        "skipped": [],
+        "duration": 0,
+        "root": false,
+        "rootEmpty": false,
+        "_timeout": 2000
+      },
+      {
+        "uuid": "6ab44362-7862-48a8-978d-960b1d3db976",
+        "title": "/_plugin/ssh with remote key",
+        "fullFile": "G:\\dev\\nexilearn\\mr-agent\\test\\worker\\50-plugin-ssh.js",
+        "file": "G:\\dev\\nexilearn\\mr-agent\\test\\worker\\50-plugin-ssh.js",
+        "beforeHooks": [],
+        "afterHooks": [],
+        "tests": [],
+        "suites": [
+          {
+            "uuid": "8b782166-82ae-4aaf-80d7-9ebbbfde81a7",
+            "title": "exec script with incorrect passphrase",
+            "fullFile": "G:\\dev\\nexilearn\\mr-agent\\test\\worker\\50-plugin-ssh.js",
+            "file": "G:\\dev\\nexilearn\\mr-agent\\test\\worker\\50-plugin-ssh.js",
+            "beforeHooks": [],
+            "afterHooks": [],
+            "tests": [
+              {
+                "title": "should return 500",
+                "fullTitle": "/_plugin/ssh with remote key exec script with incorrect passphrase should return 500",
+                "timedOut": false,
+                "duration": 25,
+                "state": "passed",
+                "speed": "fast",
+                "pass": true,
+                "fail": false,
+                "pending": false,
+                "code": "let opt = getHttpOptions('POST', '/_plugin/ssh/exec')\n\t\n\topt.body = {\n\t\tscript:  \"ls -l\",\n\t\thost: SSH_HOST,\n\t\tport: SSH_HOST_PORT,\n\t\tusername: SSH_HOST_USERNAME,\n\t\tpassphrase: 'blablabla'\n\t}\n    \n\texecRequestExpectError(opt, null, 500)\n\t.then( res => {\n\t\tcheckSshError(res, 'SshError', false, 'client-authentication')\n\t\tdone()\n\t})\n\t.catch( err => {\n\t\tdone(err)\n\t})",
+                "err": {},
+                "isRoot": false,
+                "uuid": "8cde431c-6b06-4312-afd0-1b7d65f15b16",
+                "isHook": false,
+                "skipped": false
+              }
+            ],
+            "suites": [],
+            "passes": [
+              "8cde431c-6b06-4312-afd0-1b7d65f15b16"
+            ],
+            "failures": [],
+            "pending": [],
+            "skipped": [],
+            "duration": 25,
+            "root": false,
+            "rootEmpty": false,
+            "_timeout": 25000
+          },
+          {
+            "uuid": "e348bdb4-fd61-4ddf-a264-0d84b2bed118",
+            "title": "exec script",
+            "fullFile": "G:\\dev\\nexilearn\\mr-agent\\test\\worker\\50-plugin-ssh.js",
+            "file": "G:\\dev\\nexilearn\\mr-agent\\test\\worker\\50-plugin-ssh.js",
+            "beforeHooks": [],
+            "afterHooks": [],
+            "tests": [
+              {
+                "title": "should return 200",
+                "fullTitle": "/_plugin/ssh with remote key exec script should return 200",
+                "timedOut": false,
+                "duration": 744,
+                "state": "passed",
+                "speed": "slow",
+                "pass": true,
+                "fail": false,
+                "pending": false,
+                "code": "let opt = getHttpOptions('POST', '/_plugin/ssh/exec')\n\t\n\topt.body = {\n\t\tscript:  \"echo $USER\",\n\t\thost: SSH_HOST,\n\t\tport: SSH_HOST_PORT,\n\t\tusername: SSH_HOST_USERNAME,\n\t\tpassphrase: SSH_HOST_PASSPHRASE\n\t}\n    \n    request( opt )\n\t.then( (res) => {\t\n\t\t\n\t\tassert.strictEqual(res.statusCode, 200, 'status is not 200');\n\t\tassert.strictEqual(res.body.stdout.trim(), SSH_HOST_USERNAME, 'stdout != '+SSH_HOST_USERNAME);\n\t\tassert.strictEqual(res.body.stderr, '', 'stderr is not empty');\n\t\tassert.strictEqual(res.body.exitCode, 0, 'exitCode != 0');\n\t\tdone();\t\t\t\t\n\t})\n\t.catch( err => {\n\t\tdone(err)\n\t})",
+                "err": {},
+                "isRoot": false,
+                "uuid": "bab5dcab-071a-44fe-9995-5d49a56f6d12",
+                "isHook": false,
+                "skipped": false
+              }
+            ],
+            "suites": [],
+            "passes": [
+              "bab5dcab-071a-44fe-9995-5d49a56f6d12"
+            ],
+            "failures": [],
+            "pending": [],
+            "skipped": [],
+            "duration": 744,
+            "root": false,
+            "rootEmpty": false,
+            "_timeout": 2000
+          },
+          {
+            "uuid": "3245b97c-c51b-4b76-86a6-4d9982548a9c",
+            "title": "exec script with stderr and exitCode=1",
+            "fullFile": "G:\\dev\\nexilearn\\mr-agent\\test\\worker\\50-plugin-ssh.js",
+            "file": "G:\\dev\\nexilearn\\mr-agent\\test\\worker\\50-plugin-ssh.js",
+            "beforeHooks": [],
+            "afterHooks": [],
+            "tests": [
+              {
+                "title": "should return 200",
+                "fullTitle": "/_plugin/ssh with remote key exec script with stderr and exitCode=1 should return 200",
+                "timedOut": false,
+                "duration": 691,
+                "state": "passed",
+                "speed": "slow",
+                "pass": true,
+                "fail": false,
+                "pending": false,
+                "code": "let opt = getHttpOptions('POST', '/_plugin/ssh/exec')\n\t\n\topt.body = {\n\t\tscript:  \"cd /blablabla\",\n\t\thost: SSH_HOST,\n\t\tport: SSH_HOST_PORT,\n\t\tusername: SSH_HOST_USERNAME,\n\t\tpassphrase: SSH_HOST_PASSPHRASE\n\t}\n    \n    request( opt )\n\t.then( (res) => {\t\n\t\n\t\tassert.strictEqual(res.statusCode, 200, 'status is not 200');\n\t\tassert.strictEqual(res.body.stderr.trim() !== '', true, 'stderr is empty');\n\t\tassert.strictEqual(res.body.exitCode, 1, 'exitCode != 0');\n\t\tdone();\t\t\t\t\n\t})\n\t.catch( err => {\n\t\tdone(err)\n\t})",
+                "err": {},
+                "isRoot": false,
+                "uuid": "36661bb5-0d6e-40a3-aeff-9f752de9723c",
+                "isHook": false,
+                "skipped": false
+              }
+            ],
+            "suites": [],
+            "passes": [
+              "36661bb5-0d6e-40a3-aeff-9f752de9723c"
+            ],
+            "failures": [],
+            "pending": [],
+            "skipped": [],
+            "duration": 691,
+            "root": false,
+            "rootEmpty": false,
+            "_timeout": 2000
+          }
+        ],
+        "passes": [],
+        "failures": [],
+        "pending": [],
+        "skipped": [],
+        "duration": 0,
+        "root": false,
+        "rootEmpty": false,
+        "_timeout": 2000
+      },
+      {
+        "uuid": "fda60384-02ed-42a0-b2ad-2e4490cbfb41",
+        "title": "/_plugin/ssh/download",
+        "fullFile": "G:\\dev\\nexilearn\\mr-agent\\test\\worker\\50-plugin-ssh.js",
+        "file": "G:\\dev\\nexilearn\\mr-agent\\test\\worker\\50-plugin-ssh.js",
+        "beforeHooks": [],
+        "afterHooks": [],
+        "tests": [],
+        "suites": [
+          {
+            "uuid": "8617f0e2-148d-41e5-a88d-4c9f997ae6d3",
+            "title": "download with password",
+            "fullFile": "G:\\dev\\nexilearn\\mr-agent\\test\\worker\\50-plugin-ssh.js",
+            "file": "G:\\dev\\nexilearn\\mr-agent\\test\\worker\\50-plugin-ssh.js",
+            "beforeHooks": [],
+            "afterHooks": [],
+            "tests": [
+              {
+                "title": "should return 200",
+                "fullTitle": "/_plugin/ssh/download download with password should return 200",
+                "timedOut": false,
+                "duration": 786,
+                "state": "passed",
+                "speed": "slow",
+                "pass": true,
+                "fail": false,
+                "pending": false,
+                "code": "let params = 'path=/tmp/upload.txt&host='+SSH_HOST+'&username='+SSH_HOST_USERNAME+'&password='+SSH_HOST_PASSWORD+'&port='+SSH_HOST_PORT\nlet opt = getHttpOptions('GET', '/_plugin/ssh/download?'+params)\n\nrequest( opt )\n.then( (res) => {\t\n\tassert.strictEqual(res.statusCode, 200, 'status is not 200');\n\tassert.strictEqual(res.headers['content-disposition'], 'attachment; filename=\"upload.txt\"', 'Content-Disposition is not attachment');\n\tdone();\t\t\t\t\n})\n.catch( err => {\n\tdone(err)\n})",
+                "err": {},
+                "isRoot": false,
+                "uuid": "94d5d29a-028f-41b9-89ed-be16c91d9237",
+                "isHook": false,
+                "skipped": false
+              }
+            ],
+            "suites": [],
+            "passes": [
+              "94d5d29a-028f-41b9-89ed-be16c91d9237"
+            ],
+            "failures": [],
+            "pending": [],
+            "skipped": [],
+            "duration": 786,
+            "root": false,
+            "rootEmpty": false,
+            "_timeout": 2000
+          },
+          {
+            "uuid": "433c893a-2ff6-420f-8f56-c4ce1d3161a5",
+            "title": "download not existing file",
+            "fullFile": "G:\\dev\\nexilearn\\mr-agent\\test\\worker\\50-plugin-ssh.js",
+            "file": "G:\\dev\\nexilearn\\mr-agent\\test\\worker\\50-plugin-ssh.js",
+            "beforeHooks": [],
+            "afterHooks": [],
+            "tests": [
+              {
+                "title": "should return 400",
+                "fullTitle": "/_plugin/ssh/download download not existing file should return 400",
+                "timedOut": false,
+                "duration": 724,
+                "state": "passed",
+                "speed": "slow",
+                "pass": true,
+                "fail": false,
+                "pending": false,
+                "code": "let params = 'path=/tmp/blablablaff.txt&host='+SSH_HOST+'&username='+SSH_HOST_USERNAME+'&password='+SSH_HOST_PASSWORD+'&port='+SSH_HOST_PORT\nlet opt = getHttpOptions('GET', '/_plugin/ssh/download?'+params)\n\nexecRequestExpectError(opt, done, 400)",
+                "err": {},
+                "isRoot": false,
+                "uuid": "22c03bfa-1483-470b-9a7b-b4d1d44221e0",
+                "isHook": false,
+                "skipped": false
+              }
+            ],
+            "suites": [],
+            "passes": [
+              "22c03bfa-1483-470b-9a7b-b4d1d44221e0"
+            ],
+            "failures": [],
+            "pending": [],
+            "skipped": [],
+            "duration": 724,
+            "root": false,
+            "rootEmpty": false,
+            "_timeout": 2000
+          },
+          {
+            "uuid": "cc0b3903-470a-4b79-9416-27173567c952",
+            "title": "download directory",
+            "fullFile": "G:\\dev\\nexilearn\\mr-agent\\test\\worker\\50-plugin-ssh.js",
+            "file": "G:\\dev\\nexilearn\\mr-agent\\test\\worker\\50-plugin-ssh.js",
+            "beforeHooks": [],
+            "afterHooks": [],
+            "tests": [
+              {
+                "title": "should return 500",
+                "fullTitle": "/_plugin/ssh/download download directory should return 500",
+                "timedOut": false,
+                "duration": 895,
+                "state": "passed",
+                "speed": "slow",
+                "pass": true,
+                "fail": false,
+                "pending": false,
+                "code": "let params = 'path=/tmp&host='+SSH_HOST+'&username='+SSH_HOST_USERNAME+'&password='+SSH_HOST_PASSWORD+'&port='+SSH_HOST_PORT\nlet opt = getHttpOptions('GET', '/_plugin/ssh/download?'+params)\n\nexecRequestExpectError(opt, done, 500)",
+                "err": {},
+                "isRoot": false,
+                "uuid": "7b11c34d-af62-45ef-a3f3-31233e02cf1b",
+                "isHook": false,
+                "skipped": false
+              }
+            ],
+            "suites": [],
+            "passes": [
+              "7b11c34d-af62-45ef-a3f3-31233e02cf1b"
+            ],
+            "failures": [],
+            "pending": [],
+            "skipped": [],
+            "duration": 895,
+            "root": false,
+            "rootEmpty": false,
+            "_timeout": 2000
+          }
+        ],
+        "passes": [],
+        "failures": [],
+        "pending": [],
+        "skipped": [],
+        "duration": 0,
+        "root": false,
+        "rootEmpty": false,
+        "_timeout": 2000
+      }
+    ],
+    "passes": [],
+    "failures": [],
+    "pending": [],
+    "skipped": [],
+    "duration": 0,
+    "root": true,
+    "rootEmpty": true,
+    "_timeout": 2000
+  },
+  "copyrightYear": 2019
+}

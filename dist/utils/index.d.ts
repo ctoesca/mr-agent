@@ -1,0 +1,15 @@
+import express = require('express');
+import Timer from './Timer';
+import './StringTools';
+declare function randomBetween(min: number, max: number): number;
+declare function isWin(): boolean;
+declare function isInt(value: any): boolean;
+declare function isFloat(n: any): boolean;
+declare function getIpClient(req: express.Request): string;
+declare function decodeBase64(str: string): string;
+declare function replaceEnvVars(v: string): string;
+declare function array_replace_recursive(arr1: any, arr2: any): any;
+declare function getDateFromTimestamp(d: Date): string;
+declare function parseParams(params: any, fields: any, isBodyParams?: boolean): any;
+declare function round(v: number, digits?: number): number;
+export { round, getDateFromTimestamp, isInt, isFloat, Timer, randomBetween, getIpClient, decodeBase64, replaceEnvVars, array_replace_recursive, isWin, parseParams };

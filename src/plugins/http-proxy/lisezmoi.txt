@@ -1,0 +1,3 @@
+pour les accès https:
+- ajouter root-ca.crt.pem dans les autorités de confiance (firefox => chercher 'cert').
+- Sur chrome, il peut être nécessaire de modifier une clef de registre: exécutez regedit_chrome.reg

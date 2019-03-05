@@ -1,0 +1,31 @@
+import { ThttpPlugin } from '../ThttpPlugin.js';
+import Timer from '../../utils/Timer';
+import { WorkerApplication as Application } from '../../WorkerApplication';
+import { TbaseProcessor } from './TbaseProcessor';
+import elasticsearch = require('elasticsearch');
+import express = require('express');
+export declare class Tplugin extends ThttpPlugin {
+    statTimerIterval: number;
+    canProcessLocal: boolean;
+    currentRemoteAgent: number;
+    loadbalance: string[];
+    protected statTimer: Timer;
+    protected processors: any;
+    protected elasticClient: elasticsearch.Client;
+    protected totalCreated: number;
+    protected createRate: number;
+    protected totalInput: number;
+    protected tauxRejet: number;
+    protected lastStat: Date;
+    constructor(application: Application, config: any);
+    install(): void;
+    onStatTimer(): void;
+    getTemplate(req: express.Request, res: express.Response): void;
+    getRoot(req: express.Request, res: express.Response): void;
+    ingestData(req: express.Request, res: express.Response): void;
+    remoteIngestData(url: string, req: express.Request, res: express.Response): Promise<{}>;
+    localIngestData(req: express.Request, res: express.Response): void;
+    processMessage(processor: TbaseProcessor, data: any): Promise<any>;
+    bulk(body: any): Promise<{}>;
+    head(req: express.Request, res: express.Response): void;
+}

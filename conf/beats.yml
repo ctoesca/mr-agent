@@ -1,0 +1,53 @@
+
+
+fields_under_root: false
+fields:
+  app: ics
+  env: preprod
+
+
+metricbeat.config.modules:
+
+#==========================  Modules configuration ============================
+metricbeat.modules:
+
+#------------------------------- System Module -------------------------------
+- module: system
+  metricsets:
+    - cpu             # CPU usage
+    - load            # CPU load averages
+    - memory          # Memory usage
+  enabled: false
+  period: 10s
+
+
+#------------------------------- Jolokia Module ------------------------------
+- module: jolokia
+  metricsets: ["jmx"]
+  enabled: false
+  period: 10s
+  hosts: ["localhost:8091"]
+  path: "/jolokia?ignoreErrors=false"
+  namespace: "metrics"
+  jmx.mappings:
+    - mbean: 'java.lang:type=Runtime'
+      attributes:
+        - attr: Uptime
+          field: uptime
+    - mbean: 'java.lang:type=Memory'
+      attributes:
+        - attr: HeapMemoryUsage
+          field: memory.heap_usage
+        - attr: NonHeapMemoryUsage
+          field: memory.non_heap_usage
+    #GC Metrics - this depends on what is available on your JVM
+    - mbean: 'java.lang:name=PS Scavenge,type=GarbageCollector'
+      attributes:
+        - attr: CollectionTime
+          field: gc.cms_collection_time
+        - attr: CollectionCount
+          field: gc.cms_collection_count
+        - attr: LastGcInfo
+          field: LastGcInfo
+
+
