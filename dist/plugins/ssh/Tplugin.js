@@ -182,7 +182,7 @@ class Tplugin extends ThttpPlugin_1.ThttpPlugin {
         let filename = Files_1.Files.getFileName(params.path);
         let localdir = this.tmpDir + '/' + Math.random();
         let localPath = localdir + '/' + filename;
-        fs.mkdirSync(localdir);
+        fs.ensureDirSync(localdir);
         this.scpGet(params.host, params.username, params.password, params.key, params.passphrase, localPath, params.path, params.port)
             .then(() => {
             if (params.compress) {

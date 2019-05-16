@@ -2,24 +2,24 @@
   "stats": {
     "suites": 5,
     "tests": 4,
-    "passes": 3,
+    "passes": 4,
     "pending": 0,
-    "failures": 1,
-    "start": "2019-02-10T21:46:27.984Z",
-    "end": "2019-02-10T21:46:29.027Z",
-    "duration": 1043,
+    "failures": 0,
+    "start": "2019-05-16T17:47:11.513Z",
+    "end": "2019-05-16T17:47:12.563Z",
+    "duration": 1050,
     "testsRegistered": 4,
-    "passPercent": 75,
+    "passPercent": 100,
     "pendingPercent": 0,
     "other": 0,
     "hasOther": false,
     "skipped": 0,
     "hasSkipped": false,
-    "passPercentClass": "warning",
+    "passPercentClass": "success",
     "pendingPercentClass": "danger"
   },
   "suites": {
-    "uuid": "3ddbc7a9-b50e-4613-873d-4e7f6fcbf490",
+    "uuid": "ffec8769-7f1a-47a3-81fd-a988a30c52a6",
     "title": "",
     "fullFile": "",
     "file": "",
@@ -28,19 +28,19 @@
     "tests": [],
     "suites": [
       {
-        "uuid": "8ddbd63e-c105-498a-b061-b254fc592da9",
+        "uuid": "539f71d0-cf61-4ae9-b4cf-5d32fe67cab0",
         "title": "MASTER",
-        "fullFile": "G:\\dev\\nexilearn\\mr-agent\\test\\master\\10-master.js",
-        "file": "G:\\dev\\nexilearn\\mr-agent\\test\\master\\10-master.js",
+        "fullFile": "D:\\projets\\mr-agent\\test\\master\\10-master.js",
+        "file": "D:\\projets\\mr-agent\\test\\master\\10-master.js",
         "beforeHooks": [],
         "afterHooks": [],
         "tests": [],
         "suites": [
           {
-            "uuid": "e3615c09-30a0-4903-858c-637a4d05e784",
+            "uuid": "a9fda52e-771f-47ab-b1b3-b3b89b23618e",
             "title": "execScript",
-            "fullFile": "G:\\dev\\nexilearn\\mr-agent\\test\\master\\10-master.js",
-            "file": "G:\\dev\\nexilearn\\mr-agent\\test\\master\\10-master.js",
+            "fullFile": "D:\\projets\\mr-agent\\test\\master\\10-master.js",
+            "file": "D:\\projets\\mr-agent\\test\\master\\10-master.js",
             "beforeHooks": [],
             "afterHooks": [],
             "tests": [
@@ -48,7 +48,7 @@
                 "title": "should return exitCode 0",
                 "fullTitle": "MASTER execScript should return exitCode 0",
                 "timedOut": false,
-                "duration": 14,
+                "duration": 0,
                 "state": "passed",
                 "speed": "fast",
                 "pass": true,
@@ -57,28 +57,28 @@
                 "code": "app.execScript('dir')\n\t\t\t.then( (result) => {\t\t\t\n\t\t\t\tif (result.exitCode != 0) {\n\t\t\t\t\tdone('Failed to execute script')\n\t\t\t\t}else{\n\t\t\t\t\tdone();\t\t\t\t\t\n\t\t\t\t}\n\t\t\t})\n\t\t\t.catch( err => {\n\t\t\t\tdone(err)\n\t\t\t})",
                 "err": {},
                 "isRoot": false,
-                "uuid": "69087e6e-a3c4-4279-a385-17b370948d1d",
+                "uuid": "193d4232-6c29-43a1-acc4-a54d9638f046",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "69087e6e-a3c4-4279-a385-17b370948d1d"
+              "193d4232-6c29-43a1-acc4-a54d9638f046"
             ],
             "failures": [],
             "pending": [],
             "skipped": [],
-            "duration": 14,
+            "duration": 0,
             "root": false,
             "rootEmpty": false,
             "_timeout": 2000
           },
           {
-            "uuid": "df9e1069-2212-40cd-815c-ffdf6d88da33",
+            "uuid": "09c035d5-9d8e-4a39-87f3-0e1064f0df96",
             "title": "execScript",
-            "fullFile": "G:\\dev\\nexilearn\\mr-agent\\test\\master\\10-master.js",
-            "file": "G:\\dev\\nexilearn\\mr-agent\\test\\master\\10-master.js",
+            "fullFile": "D:\\projets\\mr-agent\\test\\master\\10-master.js",
+            "file": "D:\\projets\\mr-agent\\test\\master\\10-master.js",
             "beforeHooks": [],
             "afterHooks": [],
             "tests": [
@@ -86,39 +86,37 @@
                 "title": "should return exitCode 1",
                 "fullTitle": "MASTER execScript should return exitCode 1",
                 "timedOut": false,
-                "duration": 19,
-                "state": "failed",
-                "pass": false,
-                "fail": true,
+                "duration": 16,
+                "state": "passed",
+                "speed": "fast",
+                "pass": true,
+                "fail": false,
                 "pending": false,
                 "code": "app.execScript('dir blablabla')\n\t\t\t.then( (result) => {\t\t\t\n\t\t\t\tif (result.exitCode !== 1) {\n\t\t\t\t\tdone('Failed to execute script')\n\t\t\t\t}else{\n\t\t\t\t\tdone();\t\t\t\t\t\n\t\t\t\t}\n\t\t\t})\n\t\t\t.catch( err => {\n\t\t\t\tdone(err)\n\t\t\t})",
-                "err": {
-                  "message": "Error: EBUSY: resource busy or locked, open 'G:\\dev\\nexilearn\\mr-agent\\dist/../tmp/startScript.bat'",
-                  "estack": "Error: EBUSY: resource busy or locked, open 'G:\\dev\\nexilearn\\mr-agent\\dist/../tmp/startScript.bat'\n    at Object.openSync (fs.js:439:3)\n    at Object.writeFileSync (fs.js:1190:35)\n    at Promise (G:\\dev\\nexilearn\\mr-agent\\dist\\MasterApplication.js:47:20)\n    at new Promise (<anonymous>)\n    at MasterApplication.execScript (G:\\dev\\nexilearn\\mr-agent\\dist\\MasterApplication.js:42:16)\n    at Context.<anonymous> (G:\\dev\\nexilearn\\mr-agent\\test\\master\\10-master.js:33:8)"
-                },
+                "err": {},
                 "isRoot": false,
-                "uuid": "f9186a76-c79c-4e75-a5b9-880fecb7fa97",
+                "uuid": "1f4ac553-e9e7-48b3-8a30-e2a593d34533",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
-            "passes": [],
-            "failures": [
-              "f9186a76-c79c-4e75-a5b9-880fecb7fa97"
+            "passes": [
+              "1f4ac553-e9e7-48b3-8a30-e2a593d34533"
             ],
+            "failures": [],
             "pending": [],
             "skipped": [],
-            "duration": 19,
+            "duration": 16,
             "root": false,
             "rootEmpty": false,
             "_timeout": 2000
           },
           {
-            "uuid": "df963336-1142-4785-9deb-d20f5b9fa404",
+            "uuid": "d644f35f-468f-42ff-84a5-12df71a69fb8",
             "title": "send logIngestStats",
-            "fullFile": "G:\\dev\\nexilearn\\mr-agent\\test\\master\\10-master.js",
-            "file": "G:\\dev\\nexilearn\\mr-agent\\test\\master\\10-master.js",
+            "fullFile": "D:\\projets\\mr-agent\\test\\master\\10-master.js",
+            "file": "D:\\projets\\mr-agent\\test\\master\\10-master.js",
             "beforeHooks": [],
             "afterHooks": [],
             "tests": [
@@ -135,14 +133,14 @@
                 "code": "app.onWorkerMessage({\n\t\t\t\tlogIngestStats: {\n\t\t\t\t\ttotalCreated: 5,\n\t\t\t\t\ttotalInput: 5,\n\t\t\t\t}\n\t\t\t})\n\t\t\tapp.onWorkerMessage({\n\t\t\t\tlogIngestStats: {\n\t\t\t\t\ttotalCreated: 5,\n\t\t\t\t\ttotalInput: 6,\n\t\t\t\t}\n\t\t\t})\n\t\t\tdone()",
                 "err": {},
                 "isRoot": false,
-                "uuid": "b1e5d09a-9d75-49ca-a47a-8f3f1d68f961",
+                "uuid": "7a8813f1-a006-49bd-b8c4-5d9b329e1156",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "b1e5d09a-9d75-49ca-a47a-8f3f1d68f961"
+              "7a8813f1-a006-49bd-b8c4-5d9b329e1156"
             ],
             "failures": [],
             "pending": [],
@@ -153,10 +151,10 @@
             "_timeout": 2000
           },
           {
-            "uuid": "432ba8e3-02c9-49b7-a9ad-334844bfca47",
+            "uuid": "dd8617d5-43ac-4366-ab9e-9d06eebf499e",
             "title": "get logIngestStats",
-            "fullFile": "G:\\dev\\nexilearn\\mr-agent\\test\\master\\10-master.js",
-            "file": "G:\\dev\\nexilearn\\mr-agent\\test\\master\\10-master.js",
+            "fullFile": "D:\\projets\\mr-agent\\test\\master\\10-master.js",
+            "file": "D:\\projets\\mr-agent\\test\\master\\10-master.js",
             "beforeHooks": [],
             "afterHooks": [],
             "tests": [
@@ -164,7 +162,7 @@
                 "title": "should return ok",
                 "fullTitle": "MASTER get logIngestStats should return ok",
                 "timedOut": false,
-                "duration": 1003,
+                "duration": 1019,
                 "state": "passed",
                 "speed": "slow",
                 "pass": true,
@@ -173,19 +171,19 @@
                 "code": "console.log(app.workersStats)\napp.onStatTimer()\nsetTimeout( () => {\n\tapp.onStatTimer()\n\tdone()\n}, 1000)",
                 "err": {},
                 "isRoot": false,
-                "uuid": "3b293e8d-c187-45f0-b291-ebd25723701d",
+                "uuid": "f80d4755-662e-48b2-915b-b3833b16b67e",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "3b293e8d-c187-45f0-b291-ebd25723701d"
+              "f80d4755-662e-48b2-915b-b3833b16b67e"
             ],
             "failures": [],
             "pending": [],
             "skipped": [],
-            "duration": 1003,
+            "duration": 1019,
             "root": false,
             "rootEmpty": false,
             "_timeout": 2000

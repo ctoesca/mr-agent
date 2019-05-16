@@ -1,9 +1,9 @@
 
 module.exports.getConfig = function () {
 	
-	var cmdb_api_username = "mr-agent"
+	var cmdb_api_username = "ctop-agent"
 	var cmdb_api_password = "s3#cr3ts"
-	var url_ctop = "http://127.0.0.1:82"
+	var url_cmdb = "http://127.0.0.1:82"
  
 	var conf = {
 		"update": {
@@ -18,7 +18,7 @@ module.exports.getConfig = function () {
 		/*"startScript": `
 			echo ok
 			`,*/
-
+ 
 		//!!Attention: si allowedIp=null et auth=null, l'API ne sera pas accessible.
 		//Adresses IP autorisées à se connecter au format "RegExp" ou null pour ne pas verifier les IP
 		//null: la vérification ne se fait pas sur l'IP: C'EST DIFFERENT de '.*' !! 
@@ -111,7 +111,7 @@ module.exports.getConfig = function () {
 				"enabled": true
 			},
 			"beats":{
-				"enabled": true,
+				"enabled": false,
 				"index": "metricbeat",
 				"elasticsearch": {
 					"hosts": ["localhost:9500"],
@@ -129,7 +129,7 @@ module.exports.getConfig = function () {
 				],
 			},
 			"log_ingest": {
-				"enabled": false,
+				"enabled": true,
 
 				/*"loadbalance": [
 					"local",
@@ -147,7 +147,7 @@ module.exports.getConfig = function () {
 						"http-access": 
 						{
 							"remoteConfig":{
-								"url": url_ctop+"/apis/cmdb/1.0/configurations/getConfig?key=ctop.agent.plugin.log_ingest.processors.http-access&categorie=ctop.agent&singleResult=true",
+								"url": url_cmdb+"/apis/cmdb/1.0/configurations/getConfig?key=ctop.agent.plugin.log_ingest.processors.http-access&categorie=ctop.agent&singleResult=true",
 								"auth":{
 									"user" : cmdb_api_username,
 									"pass" : cmdb_api_password

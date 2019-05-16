@@ -221,7 +221,7 @@ export class Tplugin extends ThttpPlugin {
 		let localdir = this.tmpDir + '/' + Math.random();
 		let localPath = localdir + '/' + filename;
 
-		fs.mkdirSync(localdir);
+		fs.ensureDirSync(localdir);
 
 		this.scpGet(params.host, params.username, params.password, params.key, params.passphrase, localPath, params.path, params.port)
 		.then( () => {
