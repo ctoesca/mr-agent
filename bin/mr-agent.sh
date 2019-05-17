@@ -42,11 +42,11 @@ start() {
               stop
               exit 1
             else
-              echo "MR-agent started"
+              echo "Agent started"
             fi
             
         else
-            echo "MR-agent already started"
+            echo "Agent already started"
             exit 0
         fi
 }
@@ -59,9 +59,9 @@ stop() {
     status=$(status)
     if [ $status != "Stopped" ]
     then
-      echo "MR-agent n'a pas pu être stoppé!"
+      echo "Agent n'a pas pu être stoppé!"
     else
-      echo "MR-agent stopped"
+      echo "Agent stopped"
     fi
 }
 ### main logic ###

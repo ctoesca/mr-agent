@@ -101,7 +101,7 @@ export class Tplugin extends TbasePlugin {
 
 		metricData.beat = {
 			'version': this.beatsVersion,
-			'name': 'ctop-agent',
+			'name': 'mr-agent',
 			'hostname': this.hostname
 		}
 

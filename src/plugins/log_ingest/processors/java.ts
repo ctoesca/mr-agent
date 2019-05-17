@@ -35,7 +35,7 @@ export class Tprocessor extends TbaseProcessor {
 		"count":1,
 		"fields":{
 			"env":"dev",
-			"origin":"ctop.agent"
+			"origin":"mr.agent"
 		},
 		"input_type":"log",
 		"message":"2017-08-10 12:13:25 INFO BLA BLA BLA",
