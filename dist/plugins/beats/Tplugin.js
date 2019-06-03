@@ -80,7 +80,7 @@ class Tplugin extends TbasePlugin_1.TbasePlugin {
         };
         metricData.beat = {
             'version': this.beatsVersion,
-            'name': 'ctop-agent',
+            'name': 'mr-agent',
             'hostname': this.hostname
         };
         metricData.host = {

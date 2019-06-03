@@ -8,7 +8,7 @@ export declare class MasterApplication extends Application {
     protected lastStat: Date;
     protected numProcesses: number;
     constructor(configPath: string, opt?: any);
-    execScript(script: string): Promise<{}>;
+    execScript(script: string): Promise<unknown>;
     onStatTimer(): void;
     protected onExitWorker(worker: any, code: number, signal: string): void;
     protected onWorkerMessage(msg: any): void;

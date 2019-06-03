@@ -7,6 +7,6 @@ export declare class Tmetric extends TbaseMetric implements IbaseMetric {
     getInfos(): any;
     get(args?: any): Promise<any>;
     format(format: string, params: any, result: any): any;
-    getWinDisksInfos(bypassUnkownMediaType?: boolean): Promise<{}>;
-    getLinuxDisksInfos(): Promise<{}>;
+    getWinDisksInfos(bypassUnkownMediaType?: boolean): Promise<unknown>;
+    getLinuxDisksInfos(): Promise<unknown>;
 }

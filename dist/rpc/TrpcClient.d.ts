@@ -10,7 +10,7 @@ export declare class TrpcClient extends EventEmitter {
     protected opt: any;
     protected logger: bunyan;
     constructor(opt: any);
-    connect(): Promise<{}>;
+    connect(): Promise<unknown>;
     auth(): void;
     init(args: any): void;
     send(msg: any): void;

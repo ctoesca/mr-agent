@@ -35,24 +35,25 @@ class Tprocessor extends TbaseProcessor_1.TbaseProcessor {
         return message;
     }
     dnsReverse(ip) {
-        if (this.ipHash.has(ip)) {
-            this.ipHash.set(ip, {
+        if (!this.ipHash.has(ip)) {
+            var ipData = {
                 ip: ip,
                 hostname: null
-            });
+            };
             return new Promise((resolve) => {
                 dns.reverse(ip, (err, hostnames) => {
                     if (!err) {
                         if (hostnames.length > 0) {
-                            this.ipHash[ip].hostname = hostnames[0];
+                            ipData.hostname = hostnames[0];
                         }
                     }
-                    resolve(this.ipHash[ip]);
+                    this.ipHash.set(ip, ipData);
+                    resolve(ipData);
                 });
             });
         }
         else {
-            return Promise.resolve(this.ipHash[ip]);
+            return Promise.resolve(this.ipHash.get(ip));
         }
     }
     getMessage(data) {

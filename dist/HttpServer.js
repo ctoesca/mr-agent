@@ -154,7 +154,7 @@ class HttpServer extends EventEmitter {
         }
         else {
             if (this.auth) {
-                res.setHeader('WWW-Authenticate', 'Basic realm="ctop-agent-realm"');
+                res.setHeader('WWW-Authenticate', 'Basic realm="mr-agent-realm"');
             }
             this.logger.warn('401 - Unauthorized ip=' + ip + ', user=' + auth(req));
             throw new Errors.HttpError('Unauthorized', 401);

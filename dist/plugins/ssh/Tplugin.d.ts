@@ -16,7 +16,7 @@ export declare class Tplugin extends ThttpPlugin {
     checkLogin(req: express.Request, res: express.Response, next: express.NextFunction): void;
     checkLogins(req: express.Request, res: express.Response, next: express.NextFunction): void;
     execMulti(req: express.Request, res: express.Response, next: express.NextFunction): void;
-    _execMulti(destinations: any[], script: string): Promise<{}>;
+    _execMulti(destinations: any[], script: string): Promise<unknown>;
     protected _exec(opt: any, sshConnection?: SshConnection): Promise<any>;
     checkConnection(params: any): Promise<{
         result: boolean;
@@ -26,6 +26,6 @@ export declare class Tplugin extends ThttpPlugin {
     getConnection(params: any, options?: any): Promise<SshConnection>;
     protected removeTempFileSync(path: string): void;
     protected removeTempDir(dir: string): void;
-    protected scpSend(host: string, username: string, password: string, key: string, passphrase: string, localPath: string, remotePath: string, port: number): Promise<{}>;
-    protected scpGet(host: string, username: string, password: string, key: string, passphrase: string, localPath: string, remotePath: string, port: number): Promise<{}>;
+    protected scpSend(host: string, username: string, password: string, key: string, passphrase: string, localPath: string, remotePath: string, port: number): Promise<unknown>;
+    protected scpGet(host: string, username: string, password: string, key: string, passphrase: string, localPath: string, remotePath: string, port: number): Promise<unknown>;
 }
