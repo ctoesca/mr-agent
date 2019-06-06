@@ -3,7 +3,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const AdmZip = require("adm-zip");
 const fs = require("fs-extra");
 const p = require("path");
-const request = require("request-promise");
 const parseArgs = require("minimist");
 const Bluebird = require("bluebird");
 const child_process = require("child_process");
@@ -12,6 +11,7 @@ const EventEmitter = require("events");
 const HttpTools_1 = require("../utils/HttpTools");
 const Application_1 = require("../Application");
 const Errors = require("../Errors");
+const ChildProcess_1 = require("../utils/ChildProcess");
 class Updater extends EventEmitter {
     constructor(application) {
         super();
@@ -78,11 +78,15 @@ class Updater extends EventEmitter {
         child.unref();
     }
     execUpdateStep2(appDir, updateDir, appUrl) {
-        return this.stopApp(appUrl)
+        return this.stopApp(appDir, appUrl)
             .then(() => {
-            this.remove(appDir);
-            this.copy(updateDir, appDir);
-            this.startApp(appDir);
+            return this.remove(appDir);
+        })
+            .then(result => {
+            return this.copy(updateDir, appDir);
+        })
+            .then(result => {
+            return this.startApp(appDir);
         })
             .then(() => {
             this.logger.info('Update complete');
@@ -152,69 +156,44 @@ class Updater extends EventEmitter {
             throw err;
         }
     }
-    stopApp(appUrl) {
+    stopApp(appDir, appUrl) {
         this.logger.info('Stopping... ');
-        if (!utils.isWin()) {
-            let url = appUrl + '/api/admin/stop';
-            let opt = {
-                url: url,
-                method: 'GET',
-                json: true,
-                strictSSL: false
-            };
-            return request(opt)
-                .then(() => {
-                this.logger.info('Stop command sent...');
-                return new Promise(resolve => {
-                    setTimeout(() => {
-                        resolve();
-                    }, 5000);
-                });
-            })
-                .catch((err) => {
-                this.logger.error('STOP failed : ' + err.toString());
-                throw err;
-            });
+        if (utils.isWin()) {
+            return ChildProcess_1.ChildProcess.spawnCmd(appDir + '/bin/agent.exe', ['stop', this.application.serviceName])
+                .delay(5000);
         }
         else {
-            return new Bluebird((resolve, reject) => {
-                try {
-                    var cmd = 'sc';
-                    var args = ['stop', 'ctop-agent'];
-                    let child = child_process.spawn(cmd, args, {
-                        detached: true,
-                        windowsVerbatimArguments: true,
-                        stdio: 'ignore'
-                    });
-                    child.unref();
-                    setTimeout(() => {
-                        resolve();
-                    }, 5000);
-                }
-                catch (err) {
-                    reject(err);
-                }
+            let cmd = appDir + '/bin/agent.sh';
+            let args = ['stop'];
+            let child = child_process.spawn(cmd, args, {
+                detached: true,
+                windowsVerbatimArguments: true,
+                stdio: 'ignore'
             });
+            child.unref();
+            return Bluebird.resolve();
         }
     }
     startApp(appDir) {
-        let cmd;
-        let args;
-        this.logger.info("Starting agent ...");
-        if (utils.isWin()) {
-            cmd = 'sc';
-            args = ['start', 'ctop-agent'];
-        }
-        else {
-            cmd = appDir + '/bin/agent.sh';
-            args = ['start'];
-        }
-        let child = child_process.spawn(cmd, args, {
-            detached: true,
-            windowsVerbatimArguments: true,
-            stdio: 'ignore'
+        return new Bluebird((resolve, reject) => {
+            let cmd;
+            let args;
+            this.logger.info("Starting agent ...");
+            if (utils.isWin()) {
+                return ChildProcess_1.ChildProcess.spawnCmd(appDir + '/bin/agent.exe', ['start', this.application.serviceName]);
+            }
+            else {
+                cmd = appDir + '/bin/agent.sh';
+                args = ['start'];
+                let child = child_process.spawn(cmd, args, {
+                    detached: true,
+                    windowsVerbatimArguments: true,
+                    stdio: 'ignore'
+                });
+                child.unref();
+                return Promise.resolve();
+            }
         });
-        child.unref();
     }
     remove(appDir) {
         try {
@@ -264,6 +243,11 @@ class Updater extends EventEmitter {
                     }.bind(this)
                 });
             });
+            try {
+                fs.copySync(updateDir + '/new-version/bin/agent.exe', appDir + "/bin/agent.exe");
+            }
+            catch (err) {
+            }
             if (!utils.isWin()) {
                 child_process.execSync('chmod 755 ' + appDir + '/bin/*');
                 child_process.execSync('chmod 755 ' + appDir + '/node/*');

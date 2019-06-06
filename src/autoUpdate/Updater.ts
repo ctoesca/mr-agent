@@ -3,7 +3,6 @@ import AdmZip = require('adm-zip');
 import fs = require('fs-extra');
 import p = require('path');
 import express = require('express')
-import request = require('request-promise')
 import parseArgs = require('minimist')
 import bunyan = require('bunyan')
 import Bluebird = require('bluebird')
@@ -15,6 +14,7 @@ import {HttpTools} from '../utils/HttpTools'
 import {Application}  from '../Application'
 import {WorkerApplication}  from '../WorkerApplication'
 import * as Errors from '../Errors'
+import {ChildProcess} from '../utils/ChildProcess'
 
 export class Updater extends EventEmitter {
 
@@ -106,11 +106,18 @@ export class Updater extends EventEmitter {
 
 	public execUpdateStep2(appDir: string, updateDir: string, appUrl: string) {
 
-		return this.stopApp(appUrl)
+		return this.stopApp(appDir, appUrl)
+
 		.then( () => {
-			this.remove(appDir)
-			this.copy(updateDir, appDir)
-			this.startApp(appDir)
+			return this.remove(appDir)		
+		})
+
+		.then( result => {
+			return this.copy(updateDir, appDir)
+		})
+
+		.then( result => {
+			return this.startApp(appDir)
 		})
 
 		.then( () => {
@@ -199,84 +206,56 @@ export class Updater extends EventEmitter {
 
 	}
 
-	protected stopApp(appUrl: string): Bluebird<any> {
+	protected stopApp(appDir: string, appUrl: string): Bluebird<any> {
 		
 
 		this.logger.info('Stopping... ')
 
-		if (!utils.isWin()) {
-			let url = appUrl + '/api/admin/stop'
-			let opt = {
-				url: url,
-				method: 'GET',
-				json: true,
-				strictSSL: false
-			}
-
-			return request(opt)
-			.then( () => {
-				this.logger.info('Stop command sent...')
-				return new Promise( resolve => {
-					setTimeout( () => {
-						resolve()
-					}, 5000)
-				})
-			})
-			.catch( (err: any) => {
-				this.logger.error('STOP failed : ' + err.toString())
-				throw err;
-			})
+		if (utils.isWin()) {
+			return ChildProcess.spawnCmd(appDir+'/bin/agent.exe', ['stop',this.application.serviceName])
+			.delay( 5000 )			
 		}else
 		{
-			return new Bluebird( (resolve, reject) => {
+			let cmd = appDir + '/bin/agent.sh';
+	        let args = ['stop'];
+			let child = child_process.spawn(cmd, args, {
+				detached: true,
+				windowsVerbatimArguments : true,
+				stdio: 'ignore'
+			});
 
-                try{
-                    var cmd: string = 'sc';
-                    var args = ['stop', 'ctop-agent'];
-                    let child = child_process.spawn(cmd, args, {
-                        detached: true,
-                        windowsVerbatimArguments: true,
-                        stdio: 'ignore'
-                    });
-                    child.unref();
-                    
-                    setTimeout(() => {
-                        resolve();
-                    }, 5000);
-                    
-                }catch(err){
-                    reject(err)
-                }
-                
-            })
+			child.unref()
+			return Bluebird.resolve()
 		}
 
 	}
-	protected startApp(appDir: string) {
+	protected startApp(appDir: string): Bluebird<any> {
 
-		let cmd: string
-		let args: string[]
-		
-		this.logger.info("Starting agent ...")
+		return new Bluebird( (resolve: Function, reject: Function) => {
 
-		if (utils.isWin()) {
-            //cmd = appDir + '/bin/agent.bat';
-            cmd = 'sc';
-            args = ['start','ctop-agent'];
-        }
-        else {
-            cmd = appDir + '/bin/agent.sh';
-            args = ['start'];
-        }
+			let cmd: string
+			let args: string[]
+			
+			this.logger.info("Starting agent ...")
 
+			if (utils.isWin()) {
+	            return ChildProcess.spawnCmd(appDir+'/bin/agent.exe', ['start',this.application.serviceName])
+	        }
+	        else {
+	            cmd = appDir + '/bin/agent.sh';
+	            args = ['start'];
+				let child = child_process.spawn(cmd, args, {
+					detached: true,
+					windowsVerbatimArguments : true,
+					stdio: 'ignore'
+				});
 
-		let child = child_process.spawn(cmd, args, {
-			detached: true,
-			windowsVerbatimArguments : true,
-			stdio: 'ignore'
-		});
+				child.unref()
+				return Promise.resolve()
+	        }
+			
 
-		child.unref()
+		})
 	}
 
 
@@ -339,7 +318,7 @@ export class Updater extends EventEmitter {
             }catch(err){
 
             }
-            
+
 			if (!utils.isWin()) {
 				child_process.execSync('chmod 755 ' + appDir + '/bin/*')
 				child_process.execSync('chmod 755 ' + appDir + '/node/*')

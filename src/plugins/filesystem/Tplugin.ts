@@ -200,14 +200,13 @@ export class Tplugin extends ThttpPlugin {
 		.then( () => {
 			return HttpTools.saveUploadedFile(req, res, next)
 		})
+		.delay(500)
 		.then( (result: any) => {
 
 			if (result.files.length === 0) {
 				throw new Errors.HttpError('No file uploaded', 400)
 			} else {
-				return fs.move(result.files[0].path, params.path, {overwrite: params.overwrite})
-				//return Files.shellMoveFile(result.files[0].path, params.path, {overwrite : params.overwrite}) 
-				
+				return fs.move(result.files[0].path, params.path, {overwrite: params.overwrite})				
 			}
 		})
 

@@ -13,6 +13,8 @@ const p = require("path");
 const HttpTools_1 = require("./utils/HttpTools");
 const Errors = require("./Errors");
 const Updater_1 = require("./autoUpdate/Updater");
+const ChildProcess_1 = require("./utils/ChildProcess");
+const utils = require("./utils");
 class WorkerApplication extends Application_1.Application {
     constructor(configPath, opt = {}) {
         super(configPath, opt);
@@ -70,7 +72,10 @@ class WorkerApplication extends Application_1.Application {
         return r;
     }
     stop() {
-        process.exit(99);
+        if (utils.isWin())
+            ChildProcess_1.ChildProcess.execCmd(__dirname + '/../bin/agent.exe', ['stop', this.serviceName]);
+        else
+            process.exit(99);
     }
     restart() {
         process.exit(98);

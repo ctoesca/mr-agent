@@ -13,7 +13,8 @@ import {HttpTools} from './utils/HttpTools'
 import * as Errors from './Errors'
 import {Updater} from './autoUpdate/Updater'
 import {TbasePlugin} from './plugins/TbasePlugin'
-
+import {ChildProcess} from './utils/ChildProcess'
+import * as utils from './utils'
 
 export class WorkerApplication extends Application {
 
@@ -92,7 +93,10 @@ export class WorkerApplication extends Application {
 	}
 
 	public stop() {
-		process.exit(99);
+		if (utils.isWin())
+			ChildProcess.execCmd(__dirname+'/../bin/agent.exe', ['stop',this.serviceName] ) 
+		else 
+			process.exit(99);
 	}
 
 	public restart() {

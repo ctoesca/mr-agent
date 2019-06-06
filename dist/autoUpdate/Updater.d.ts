@@ -17,8 +17,8 @@ export declare class Updater extends EventEmitter {
     protected getAppDir(): string;
     protected backup(backupDir: string): void;
     protected uncompressPackage(zipPath: string, newVersionCopyDir: string): void;
-    protected stopApp(appUrl: string): Bluebird<any>;
-    protected startApp(appDir: string): void;
+    protected stopApp(appDir: string, appUrl: string): Bluebird<any>;
+    protected startApp(appDir: string): Bluebird<any>;
     protected remove(appDir: string): void;
     protected copy(updateDir: string, appDir: string): void;
 }

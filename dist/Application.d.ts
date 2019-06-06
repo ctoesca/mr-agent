@@ -13,6 +13,7 @@ export declare class Application extends EventEmitter {
     protected _loggers: Map<string, bunyan>;
     protected logger: bunyan;
     protected configPath: string;
+    serviceName: string;
     constructor(configPath: string, opt?: any);
     static create(clazz: ApplicationConstructor, configPath: string, opt?: any): Application;
     static getInstance(): Application;

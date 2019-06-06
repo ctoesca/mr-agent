@@ -13,6 +13,7 @@ class Application extends EventEmitter {
         this._loggers = new Map();
         this.logger = null;
         this.configPath = __dirname + '/../conf/config.js';
+        this.serviceName = 'ctop-agent';
         if (arguments.length > 0) {
             if (typeof configPath === 'object') {
                 opt = configPath;
@@ -176,7 +177,7 @@ class Application extends EventEmitter {
         return this.logsConfig;
     }
 }
-Application.version = '2.3.0';
+Application.version = '2.3.3';
 Application.applicationDirPath = __dirname;
 Application._instance = null;
 exports.Application = Application;
