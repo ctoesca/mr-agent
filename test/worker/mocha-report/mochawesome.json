@@ -1,14 +1,14 @@
 {
   "stats": {
-    "suites": 114,
-    "tests": 96,
-    "passes": 96,
+    "suites": 115,
+    "tests": 97,
+    "passes": 97,
     "pending": 0,
     "failures": 0,
-    "start": "2019-06-05T23:55:10.116Z",
-    "end": "2019-06-05T23:55:29.350Z",
-    "duration": 19234,
-    "testsRegistered": 96,
+    "start": "2019-06-06T23:10:24.370Z",
+    "end": "2019-06-06T23:10:43.653Z",
+    "duration": 19283,
+    "testsRegistered": 97,
     "passPercent": 100,
     "pendingPercent": 0,
     "other": 0,
@@ -19,7 +19,7 @@
     "pendingPercentClass": "danger"
   },
   "suites": {
-    "uuid": "4a9b76c9-b4e2-42ce-b6e8-7a28e41416bd",
+    "uuid": "980c9b4e-5f46-4a3d-bf37-fd83d5de3cec",
     "title": "",
     "fullFile": "",
     "file": "",
@@ -28,7 +28,7 @@
     "tests": [],
     "suites": [
       {
-        "uuid": "bf48cc13-8b47-4f66-b0df-c5b3c5c19f80",
+        "uuid": "f7c01ba5-71c3-4e1e-b945-c3ce66ec2276",
         "title": "main-api",
         "fullFile": "D:\\projets\\mr-agent\\test\\worker\\10-main-api.js",
         "file": "D:\\projets\\mr-agent\\test\\worker\\10-main-api.js",
@@ -37,7 +37,7 @@
         "tests": [],
         "suites": [
           {
-            "uuid": "551d37df-ff57-49fb-8167-7ad483ecf92f",
+            "uuid": "6e32e627-90d4-420f-a772-bde3a874a066",
             "title": "GET /api/checkAgent",
             "fullFile": "D:\\projets\\mr-agent\\test\\worker\\10-main-api.js",
             "file": "D:\\projets\\mr-agent\\test\\worker\\10-main-api.js",
@@ -48,7 +48,7 @@
                 "title": "should return 200",
                 "fullTitle": "main-api GET /api/checkAgent should return 200",
                 "timedOut": false,
-                "duration": 13,
+                "duration": 18,
                 "state": "passed",
                 "speed": "fast",
                 "pass": true,
@@ -57,25 +57,25 @@
                 "code": "request( getHttpOptions('GET', '/api/checkAgent') )\n\t\t\t.then( (res) => {\t\t\t\n\t\t\t\texpect(res.statusCode).to.equal(200);\n\t\t\t\tassert.strictEqual(typeof res.body, 'object');\n\t\t\t\tassert.strictEqual(res.body.status, 0);\n\t\t\t\tassert.strictEqual(typeof res.body.version, 'string');\n\t\t\t\tdone();\t\t\t\t\n\t\t\t})\n\t\t\t.catch( err => {\n\t\t\t\tdone(err)\n\t\t\t})",
                 "err": {},
                 "isRoot": false,
-                "uuid": "0799d93c-3355-4d01-8e55-1f85f4e2f921",
+                "uuid": "1a8f705a-4ac1-4eb0-a1c4-faadd793e86e",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "0799d93c-3355-4d01-8e55-1f85f4e2f921"
+              "1a8f705a-4ac1-4eb0-a1c4-faadd793e86e"
             ],
             "failures": [],
             "pending": [],
             "skipped": [],
-            "duration": 13,
+            "duration": 18,
             "root": false,
             "rootEmpty": false,
             "_timeout": 2000
           },
           {
-            "uuid": "5a51c6f7-6766-40be-84ac-eb5e9ef271c8",
+            "uuid": "4583ce65-f410-4e76-b0bd-6503566a5b73",
             "title": "GET /api/checkPort",
             "fullFile": "D:\\projets\\mr-agent\\test\\worker\\10-main-api.js",
             "file": "D:\\projets\\mr-agent\\test\\worker\\10-main-api.js",
@@ -86,7 +86,7 @@
                 "title": "should return 200",
                 "fullTitle": "main-api GET /api/checkPort should return 200",
                 "timedOut": false,
-                "duration": 4,
+                "duration": 5,
                 "state": "passed",
                 "speed": "fast",
                 "pass": true,
@@ -95,25 +95,25 @@
                 "code": "request( getHttpOptions('GET', '/api/checkPort?port='+PORT+'&host='+HOST) )\n\t\t\t.then( (res) => {\t\t\n\t\t\t\texpect(res.statusCode).to.equal(200);\n\t\t\t\tassert.strictEqual(typeof res.body, 'object');\n\t\t\t\tassert.strictEqual(res.body.result, true);\n\t\t\t\n\t\t\t\tdone();\t\t\t\t\n\t\t\t})\n\t\t\t.catch( err => {\n\t\t\t\tdone(err)\n\t\t\t})",
                 "err": {},
                 "isRoot": false,
-                "uuid": "69734ae3-3a99-458e-b783-52d0d97f8263",
+                "uuid": "64e2b5c3-626c-4546-9e3e-eb32d8999142",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "69734ae3-3a99-458e-b783-52d0d97f8263"
+              "64e2b5c3-626c-4546-9e3e-eb32d8999142"
             ],
             "failures": [],
             "pending": [],
             "skipped": [],
-            "duration": 4,
+            "duration": 5,
             "root": false,
             "rootEmpty": false,
             "_timeout": 2000
           },
           {
-            "uuid": "6ade49b2-dcd4-4398-8599-19f6efa59de2",
+            "uuid": "14ef993c-1986-43e0-b446-92940e3fef52",
             "title": "GET /api/admin/os/cpus",
             "fullFile": "D:\\projets\\mr-agent\\test\\worker\\10-main-api.js",
             "file": "D:\\projets\\mr-agent\\test\\worker\\10-main-api.js",
@@ -124,7 +124,7 @@
                 "title": "should return 200",
                 "fullTitle": "main-api GET /api/admin/os/cpus should return 200",
                 "timedOut": false,
-                "duration": 3,
+                "duration": 2,
                 "state": "passed",
                 "speed": "fast",
                 "pass": true,
@@ -133,25 +133,25 @@
                 "code": "request( getHttpOptions('GET', '/api/admin/os/cpus') )\n\t\t\t.then( (res) => {\t\t\n\t\t\t\texpect(res.statusCode).to.equal(200);\n\t\t\t\tassert.strictEqual(typeof res.body, 'object')\t\n\t\t\t\tassert.strictEqual(_.isArray(res.body), true, 'body is array')\t\t\n\t\t\t\tassert.strictEqual(res.body.length > 0, true, 'result is empty')\n\t\t\t\tdone();\t\t\t\t\n\t\t\t})\n\t\t\t.catch( err => {\n\t\t\t\tdone(err)\n\t\t\t})",
                 "err": {},
                 "isRoot": false,
-                "uuid": "ef7bec54-80f8-4724-9c3f-e5858bb1a99f",
+                "uuid": "b24db4f5-19d0-42b5-bcb6-c539ec4fa465",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "ef7bec54-80f8-4724-9c3f-e5858bb1a99f"
+              "b24db4f5-19d0-42b5-bcb6-c539ec4fa465"
             ],
             "failures": [],
             "pending": [],
             "skipped": [],
-            "duration": 3,
+            "duration": 2,
             "root": false,
             "rootEmpty": false,
             "_timeout": 2000
           },
           {
-            "uuid": "d43c7851-e741-4828-97e3-320224c8a8c8",
+            "uuid": "3edaab08-8b05-451f-9177-31ab8d46e0a5",
             "title": "POST /api/getConfig",
             "fullFile": "D:\\projets\\mr-agent\\test\\worker\\10-main-api.js",
             "file": "D:\\projets\\mr-agent\\test\\worker\\10-main-api.js",
@@ -162,7 +162,7 @@
                 "title": "should return 200",
                 "fullTitle": "main-api POST /api/getConfig should return 200",
                 "timedOut": false,
-                "duration": 3,
+                "duration": 2,
                 "state": "passed",
                 "speed": "fast",
                 "pass": true,
@@ -171,25 +171,25 @@
                 "code": "request( getHttpOptions('POST', '/api/getConfig') )\n.then( (res) => {\t\t\n\texpect(res.statusCode).to.equal(200);\n\tassert.strictEqual(typeof res.body, 'object');\n\tassert.strictEqual(typeof res.body.data, 'string');\n\tconfData = res.body.data\n\tdone()\n})\n.catch( err => {\n\tdone(err)\n})",
                 "err": {},
                 "isRoot": false,
-                "uuid": "060a6770-7bdb-4538-8d89-62396ac41dd5",
+                "uuid": "1934d3ef-9398-404d-9e07-a46019ed7394",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "060a6770-7bdb-4538-8d89-62396ac41dd5"
+              "1934d3ef-9398-404d-9e07-a46019ed7394"
             ],
             "failures": [],
             "pending": [],
             "skipped": [],
-            "duration": 3,
+            "duration": 2,
             "root": false,
             "rootEmpty": false,
             "_timeout": 2000
           },
           {
-            "uuid": "e0df8f3e-9a3a-4f30-bf75-b4b24250c168",
+            "uuid": "1d23aa32-a55a-4879-b87c-00a7e45d2de9",
             "title": "POST /api/setConfig without data",
             "fullFile": "D:\\projets\\mr-agent\\test\\worker\\10-main-api.js",
             "file": "D:\\projets\\mr-agent\\test\\worker\\10-main-api.js",
@@ -200,7 +200,7 @@
                 "title": "should return 400",
                 "fullTitle": "main-api POST /api/setConfig without data should return 400",
                 "timedOut": false,
-                "duration": 10,
+                "duration": 33,
                 "state": "passed",
                 "speed": "fast",
                 "pass": true,
@@ -209,25 +209,25 @@
                 "code": "let updateOpt = getHttpOptions('POST', '/api/setConfig')\t\t\t\t\nupdateOpt.body = {}\nexecRequestExpectError(updateOpt, done, 400)",
                 "err": {},
                 "isRoot": false,
-                "uuid": "7e0367fc-765a-47d3-b4a1-84971f03f3c7",
+                "uuid": "40e868a0-f2d8-4c2c-8d88-b770db83f767",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "7e0367fc-765a-47d3-b4a1-84971f03f3c7"
+              "40e868a0-f2d8-4c2c-8d88-b770db83f767"
             ],
             "failures": [],
             "pending": [],
             "skipped": [],
-            "duration": 10,
+            "duration": 33,
             "root": false,
             "rootEmpty": false,
             "_timeout": 2000
           },
           {
-            "uuid": "77e27afa-1787-495a-85b3-8ccfbdeb16b5",
+            "uuid": "db1d3708-34cb-4f9b-bfa5-acd1952619af",
             "title": "POST /api/setConfig without data.getConfig()",
             "fullFile": "D:\\projets\\mr-agent\\test\\worker\\10-main-api.js",
             "file": "D:\\projets\\mr-agent\\test\\worker\\10-main-api.js",
@@ -238,7 +238,7 @@
                 "title": "should return 400",
                 "fullTitle": "main-api POST /api/setConfig without data.getConfig() should return 400",
                 "timedOut": false,
-                "duration": 3,
+                "duration": 4,
                 "state": "passed",
                 "speed": "fast",
                 "pass": true,
@@ -247,25 +247,25 @@
                 "code": "let updateOpt = getHttpOptions('POST', '/api/setConfig')\t\t\t\t\nupdateOpt.body = {\n\tdata: '{}'\n}\n\nexecRequestExpectError(updateOpt, done, 400)",
                 "err": {},
                 "isRoot": false,
-                "uuid": "2da8f69c-d79e-46b2-bee9-881edd385548",
+                "uuid": "7b4f426b-4394-46af-9142-bf5c97382c10",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "2da8f69c-d79e-46b2-bee9-881edd385548"
+              "7b4f426b-4394-46af-9142-bf5c97382c10"
             ],
             "failures": [],
             "pending": [],
             "skipped": [],
-            "duration": 3,
+            "duration": 4,
             "root": false,
             "rootEmpty": false,
             "_timeout": 2000
           },
           {
-            "uuid": "ab8608d8-7baf-480d-9f74-23a2c7ca4f93",
+            "uuid": "82ede433-b6e6-4292-8a33-9cd542b41222",
             "title": "POST /api/setConfig",
             "fullFile": "D:\\projets\\mr-agent\\test\\worker\\10-main-api.js",
             "file": "D:\\projets\\mr-agent\\test\\worker\\10-main-api.js",
@@ -276,7 +276,7 @@
                 "title": "should return 200",
                 "fullTitle": "main-api POST /api/setConfig should return 200",
                 "timedOut": false,
-                "duration": 11,
+                "duration": 5,
                 "state": "passed",
                 "speed": "fast",
                 "pass": true,
@@ -285,19 +285,19 @@
                 "code": "let updateOpt = getHttpOptions('POST', '/api/setConfig')\t\t\t\t\nupdateOpt.body = {\n\tdata: confData\n}\n\nrequest( updateOpt )\n.then( (res) => {\t\n\t\n\texpect(res.statusCode).to.equal(200);\n\tassert.strictEqual(typeof res.body, 'object');\n\tassert.strictEqual(typeof res.body.data, 'string');\n\tdone()\t\t\t\t\n})\n.catch( err => {\n\tdone(err)\n})",
                 "err": {},
                 "isRoot": false,
-                "uuid": "aa9c45be-dba1-4e8f-96be-9bdefea8e4b2",
+                "uuid": "003b9cd5-bf40-4160-805a-cbb5bdbdc243",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "aa9c45be-dba1-4e8f-96be-9bdefea8e4b2"
+              "003b9cd5-bf40-4160-805a-cbb5bdbdc243"
             ],
             "failures": [],
             "pending": [],
             "skipped": [],
-            "duration": 11,
+            "duration": 5,
             "root": false,
             "rootEmpty": false,
             "_timeout": 2000
@@ -313,7 +313,7 @@
         "_timeout": 2000
       },
       {
-        "uuid": "9ac63dc6-2143-46f3-a3ed-8a561dadabe5",
+        "uuid": "8e140db2-7e5e-4874-970c-9ae637da9949",
         "title": "plugin-dns",
         "fullFile": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-dns.js",
         "file": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-dns.js",
@@ -322,7 +322,7 @@
         "tests": [],
         "suites": [
           {
-            "uuid": "cb993abd-cb72-494b-b25f-cfea93557f93",
+            "uuid": "6af29523-7367-4f60-91bf-593b5a652248",
             "title": "GET /_plugin/dns/dnsReverse",
             "fullFile": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-dns.js",
             "file": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-dns.js",
@@ -333,7 +333,7 @@
                 "title": "should return 200",
                 "fullTitle": "plugin-dns GET /_plugin/dns/dnsReverse should return 200",
                 "timedOut": false,
-                "duration": 50,
+                "duration": 60,
                 "state": "passed",
                 "speed": "medium",
                 "pass": true,
@@ -342,26 +342,26 @@
                 "code": "request( getHttpOptions('GET', '/_plugin/dns/dnsReverse?ip=1.1.1.1') )\n\t\t\t.then( (res) => {\t\t\n\t\t\t\tconsole.log(res.body)\n\t\t\t\texpect(res.statusCode).to.equal(200);\n\t\t\t\tassert.strictEqual(typeof res.body, 'object')\t\n\t\t\t\tassert.strictEqual(res.body.ip, '1.1.1.1')\t\t\t\t\t\n\t\t\t\tassert.strictEqual(_.isArray(res.body.hostnames), true, 'hostnames is not array')\t\t\t\t\t\t\n\t\t\t\tassert.deepEqual(res.body.hostnames, ['one.one.one.one'] )\t\n\t\t\t\tdone();\t\t\t\t\n\t\t\t})\n\t\t\t.catch( err => {\n\t\t\t\tdone(err)\n\t\t\t})",
                 "err": {},
                 "isRoot": false,
-                "uuid": "aa044636-336c-4ff8-a3ea-67e9cc8057ff",
+                "uuid": "b8837fb8-5733-4839-843a-3d4a8fb53e41",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "aa044636-336c-4ff8-a3ea-67e9cc8057ff"
+              "b8837fb8-5733-4839-843a-3d4a8fb53e41"
             ],
             "failures": [],
             "pending": [],
             "skipped": [],
-            "duration": 50,
+            "duration": 60,
             "root": false,
             "rootEmpty": false,
             "_timeout": 2000
           },
           {
-            "uuid": "95523450-7db9-4ca1-9507-41dedce896b9",
-            "title": "GET /_plugin/dns/dnsReverse (user cache)",
+            "uuid": "55bae622-fbf7-47e2-a424-a6093e3734b8",
+            "title": "GET /_plugin/dns/dnsReverse",
             "fullFile": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-dns.js",
             "file": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-dns.js",
             "beforeHooks": [],
@@ -369,9 +369,9 @@
             "tests": [
               {
                 "title": "should return 200",
-                "fullTitle": "plugin-dns GET /_plugin/dns/dnsReverse (user cache) should return 200",
+                "fullTitle": "plugin-dns GET /_plugin/dns/dnsReverse should return 200",
                 "timedOut": false,
-                "duration": 1,
+                "duration": 2,
                 "state": "passed",
                 "speed": "fast",
                 "pass": true,
@@ -380,19 +380,57 @@
                 "code": "request( getHttpOptions('GET', '/_plugin/dns/dnsReverse?ip=1.1.1.1') )\n\t\t\t.then( (res) => {\t\t\n\t\t\t\tconsole.log(res.body)\n\t\t\t\texpect(res.statusCode).to.equal(200);\n\t\t\t\tassert.strictEqual(typeof res.body, 'object')\t\n\t\t\t\tassert.strictEqual(res.body.ip, '1.1.1.1')\t\t\t\t\t\n\t\t\t\tassert.strictEqual(_.isArray(res.body.hostnames), true, 'hostnames is not array')\t\t\t\t\t\t\n\t\t\t\tassert.deepEqual(res.body.hostnames, ['one.one.one.one'] )\t\n\t\t\t\tdone();\t\t\t\t\n\t\t\t})\n\t\t\t.catch( err => {\n\t\t\t\tdone(err)\n\t\t\t})",
                 "err": {},
                 "isRoot": false,
-                "uuid": "6508f098-cd65-4ded-8ea5-67ab490a4650",
+                "uuid": "41ebdb71-74eb-4245-882e-67942c15c24b",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "6508f098-cd65-4ded-8ea5-67ab490a4650"
+              "41ebdb71-74eb-4245-882e-67942c15c24b"
             ],
             "failures": [],
             "pending": [],
             "skipped": [],
-            "duration": 1,
+            "duration": 2,
+            "root": false,
+            "rootEmpty": false,
+            "_timeout": 2000
+          },
+          {
+            "uuid": "2b2b221e-79d3-41a7-a5de-9c267d1b51c6",
+            "title": "GET /_plugin/dns/dnsReverse (no result)",
+            "fullFile": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-dns.js",
+            "file": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-dns.js",
+            "beforeHooks": [],
+            "afterHooks": [],
+            "tests": [
+              {
+                "title": "should return 200",
+                "fullTitle": "plugin-dns GET /_plugin/dns/dnsReverse (no result) should return 200",
+                "timedOut": false,
+                "duration": 15,
+                "state": "passed",
+                "speed": "fast",
+                "pass": true,
+                "fail": false,
+                "pending": false,
+                "code": "request( getHttpOptions('GET', '/_plugin/dns/dnsReverse?ip=0.0.0.0') )\n\t\t\t.then( (res) => {\t\t\n\t\t\t\tconsole.log(res.body)\n\t\t\t\texpect(res.statusCode).to.equal(200);\n\t\t\t\tassert.strictEqual(typeof res.body, 'object')\t\n\t\t\t\tassert.strictEqual(res.body.ip, '0.0.0.0')\t\t\t\t\t\n\t\t\t\tassert.strictEqual(_.isArray(res.body.hostnames), true, 'hostnames is not array')\t\t\t\t\t\t\n\t\t\t\tassert.deepEqual(res.body.hostnames, [] )\t\n\t\t\t\tdone();\t\t\t\t\n\t\t\t})\n\t\t\t.catch( err => {\n\t\t\t\tdone(err)\n\t\t\t})",
+                "err": {},
+                "isRoot": false,
+                "uuid": "68995202-c59e-46fb-af98-553410b0dcb7",
+                "isHook": false,
+                "skipped": false
+              }
+            ],
+            "suites": [],
+            "passes": [
+              "68995202-c59e-46fb-af98-553410b0dcb7"
+            ],
+            "failures": [],
+            "pending": [],
+            "skipped": [],
+            "duration": 15,
             "root": false,
             "rootEmpty": false,
             "_timeout": 2000
@@ -408,7 +446,7 @@
         "_timeout": 2000
       },
       {
-        "uuid": "4d34b21d-7a9c-4731-89c1-7c82ac1c4044",
+        "uuid": "56ff21b0-7a64-4170-b623-5fec6efb208f",
         "title": "GET /_plugin/filesystem",
         "fullFile": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
         "file": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
@@ -419,7 +457,7 @@
             "title": "should return 404",
             "fullTitle": "GET /_plugin/filesystem should return 404",
             "timedOut": false,
-            "duration": 2,
+            "duration": 4,
             "state": "passed",
             "speed": "fast",
             "pass": true,
@@ -428,25 +466,25 @@
             "code": "let opt = getHttpOptions('GET', '/_plugin/filesystem')\nexecRequestExpectError(opt, done, 404)",
             "err": {},
             "isRoot": false,
-            "uuid": "8f40175b-764b-4992-83fa-b86748e5f626",
+            "uuid": "ee59ab87-02b6-449d-9fe2-b573f8bbc8fa",
             "isHook": false,
             "skipped": false
           }
         ],
         "suites": [],
         "passes": [
-          "8f40175b-764b-4992-83fa-b86748e5f626"
+          "ee59ab87-02b6-449d-9fe2-b573f8bbc8fa"
         ],
         "failures": [],
         "pending": [],
         "skipped": [],
-        "duration": 2,
+        "duration": 4,
         "root": false,
         "rootEmpty": false,
         "_timeout": 2000
       },
       {
-        "uuid": "59bdeaff-2b75-4cae-ae66-0a9af28048ef",
+        "uuid": "c7fe35aa-7996-48ba-b33e-60fae544b663",
         "title": "/_plugin/filesystem/moveFile",
         "fullFile": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
         "file": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
@@ -455,7 +493,7 @@
         "tests": [],
         "suites": [
           {
-            "uuid": "1f4e4ccf-7a6b-4eb2-bf78-955d2908d568",
+            "uuid": "e6eecdaf-232a-437d-abcf-5695c33e85b0",
             "title": "POST /moveFile no path",
             "fullFile": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
             "file": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
@@ -466,7 +504,7 @@
                 "title": "should return 400",
                 "fullTitle": "/_plugin/filesystem/moveFile POST /moveFile no path should return 400",
                 "timedOut": false,
-                "duration": 1,
+                "duration": 2,
                 "state": "passed",
                 "speed": "fast",
                 "pass": true,
@@ -475,52 +513,14 @@
                 "code": "let dest = tmpDir\nlet opt = getHttpOptions('POST', '/_plugin/filesystem/moveFile')\nopt.body = {\n\tdest: dest\n}\nexecRequestExpectError(opt, done, 400)",
                 "err": {},
                 "isRoot": false,
-                "uuid": "d8f28909-e57e-48a8-8a93-6a02701725e4",
+                "uuid": "343713e6-9db3-437e-a9d5-71bf31c7544a",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "d8f28909-e57e-48a8-8a93-6a02701725e4"
-            ],
-            "failures": [],
-            "pending": [],
-            "skipped": [],
-            "duration": 1,
-            "root": false,
-            "rootEmpty": false,
-            "_timeout": 2000
-          },
-          {
-            "uuid": "8ba4942a-c047-43ef-ae18-9f9bf63ee53d",
-            "title": "POST /moveFile no dest",
-            "fullFile": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
-            "file": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
-            "beforeHooks": [],
-            "afterHooks": [],
-            "tests": [
-              {
-                "title": "should return 400",
-                "fullTitle": "/_plugin/filesystem/moveFile POST /moveFile no dest should return 400",
-                "timedOut": false,
-                "duration": 2,
-                "state": "passed",
-                "speed": "fast",
-                "pass": true,
-                "fail": false,
-                "pending": false,
-                "code": "let path = tmpDir+'/testmove1.txt'\nlet opt = getHttpOptions('POST', '/_plugin/filesystem/moveFile')\nopt.body = {\n\tpath: path\n}\nexecRequestExpectError(opt, done, 400)",
-                "err": {},
-                "isRoot": false,
-                "uuid": "1a2a560e-fb94-45f4-bcf3-d38b00c9b4cb",
-                "isHook": false,
-                "skipped": false
-              }
-            ],
-            "suites": [],
-            "passes": [
-              "1a2a560e-fb94-45f4-bcf3-d38b00c9b4cb"
+              "343713e6-9db3-437e-a9d5-71bf31c7544a"
             ],
             "failures": [],
             "pending": [],
@@ -531,7 +531,45 @@
             "_timeout": 2000
           },
           {
-            "uuid": "4b30b3ae-9d83-4441-882f-9877cefab396",
+            "uuid": "b6303405-604e-40e1-8c9a-4110ec1122cb",
+            "title": "POST /moveFile no dest",
+            "fullFile": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
+            "file": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
+            "beforeHooks": [],
+            "afterHooks": [],
+            "tests": [
+              {
+                "title": "should return 400",
+                "fullTitle": "/_plugin/filesystem/moveFile POST /moveFile no dest should return 400",
+                "timedOut": false,
+                "duration": 1,
+                "state": "passed",
+                "speed": "fast",
+                "pass": true,
+                "fail": false,
+                "pending": false,
+                "code": "let path = tmpDir+'/testmove1.txt'\nlet opt = getHttpOptions('POST', '/_plugin/filesystem/moveFile')\nopt.body = {\n\tpath: path\n}\nexecRequestExpectError(opt, done, 400)",
+                "err": {},
+                "isRoot": false,
+                "uuid": "ac6cbb64-6562-4f7d-b8b7-ff0abfa3af4e",
+                "isHook": false,
+                "skipped": false
+              }
+            ],
+            "suites": [],
+            "passes": [
+              "ac6cbb64-6562-4f7d-b8b7-ff0abfa3af4e"
+            ],
+            "failures": [],
+            "pending": [],
+            "skipped": [],
+            "duration": 1,
+            "root": false,
+            "rootEmpty": false,
+            "_timeout": 2000
+          },
+          {
+            "uuid": "bd4762ea-5873-4651-a74c-0fc8a36abd34",
             "title": "POST /moveFile to directory",
             "fullFile": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
             "file": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
@@ -542,7 +580,7 @@
                 "title": "should return 400 - dest is directory",
                 "fullTitle": "/_plugin/filesystem/moveFile POST /moveFile to directory should return 400 - dest is directory",
                 "timedOut": false,
-                "duration": 7,
+                "duration": 16,
                 "state": "passed",
                 "speed": "fast",
                 "pass": true,
@@ -551,25 +589,25 @@
                 "code": "let source = tmpDir+'/test-move1.txt'\nlet dest = tmpDir\nfs.writeFileSync(source, 'test')\nlet opt = getHttpOptions('POST', '/_plugin/filesystem/moveFile')\nopt.body = {\n\tpath: source,\n\tdest: dest\n}\nexecRequestExpectError(opt, done, 400)",
                 "err": {},
                 "isRoot": false,
-                "uuid": "ceae3af1-d9db-4789-abb5-43d3407c59b3",
+                "uuid": "b07816aa-50ca-45be-9cfa-5bf5593475d1",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "ceae3af1-d9db-4789-abb5-43d3407c59b3"
+              "b07816aa-50ca-45be-9cfa-5bf5593475d1"
             ],
             "failures": [],
             "pending": [],
             "skipped": [],
-            "duration": 7,
+            "duration": 16,
             "root": false,
             "rootEmpty": false,
             "_timeout": 2000
           },
           {
-            "uuid": "f18bd18e-464e-40bc-928b-846b557f5281",
+            "uuid": "e9f9cf38-4172-45fb-8f5a-6edbb753c2ef",
             "title": "POST /moveFile dest directory does not exists",
             "fullFile": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
             "file": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
@@ -580,7 +618,7 @@
                 "title": "should return error",
                 "fullTitle": "/_plugin/filesystem/moveFile POST /moveFile dest directory does not exists should return error",
                 "timedOut": false,
-                "duration": 3,
+                "duration": 2,
                 "state": "passed",
                 "speed": "fast",
                 "pass": true,
@@ -589,25 +627,25 @@
                 "code": "let source = tmpDir+'/test-move1.txt'\nlet dest = tmpDir+'/blablabla/index.txt'\nif (fs.pathExistsSync(tmpDir+'/blablabla'))\n\tfs.unlinkSync(tmpDir+'/blablabla')\n\nlet opt = getHttpOptions('POST', '/_plugin/filesystem/moveFile')\nopt.body = {\n\tpath: source,\n\tdest: dest\n}\nexecRequestExpectError(opt, done, 400)",
                 "err": {},
                 "isRoot": false,
-                "uuid": "b57fc784-6647-47bb-981b-41f107511385",
+                "uuid": "c33df85f-a326-41b0-ae39-d80b3ffe7eac",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "b57fc784-6647-47bb-981b-41f107511385"
+              "c33df85f-a326-41b0-ae39-d80b3ffe7eac"
             ],
             "failures": [],
             "pending": [],
             "skipped": [],
-            "duration": 3,
+            "duration": 2,
             "root": false,
             "rootEmpty": false,
             "_timeout": 2000
           },
           {
-            "uuid": "a31cffd6-37db-480e-b43e-4f83f37ab094",
+            "uuid": "e90ce48b-3aba-45fe-823e-6168fc75c0be",
             "title": "POST /moveFile path=\\\\localhost\\d$\\tmp/test.txt",
             "fullFile": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
             "file": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
@@ -627,14 +665,14 @@
                 "code": "let source = tmpDir+'/test.txt'\nlet dest = tmpDir+'/testMoved.txt'\nfs.writeFileSync(source, 'test')\nif (fs.pathExistsSync(dest))\n\tfs.unlinkSync(dest)\nlet opt = getHttpOptions('POST', '/_plugin/filesystem/moveFile')\nopt.body = {\n\tpath: source,\n\tdest: dest\n}\nrequest( opt )\n.then( (res) => {\t\n\tassert.strictEqual(res.statusCode, 200);\n\tassert.strictEqual(typeof res.body, 'object');\n\tassert.strictEqual(res.body.result, true);\n\tdone();\t\t\t\t\n})\n.catch( err => {\n\tdone(err)\n})",
                 "err": {},
                 "isRoot": false,
-                "uuid": "0423126c-70f8-4920-871a-0c1aa8b19577",
+                "uuid": "942f6e36-ecdf-467b-bb77-2e3705d0b016",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "0423126c-70f8-4920-871a-0c1aa8b19577"
+              "942f6e36-ecdf-467b-bb77-2e3705d0b016"
             ],
             "failures": [],
             "pending": [],
@@ -645,7 +683,7 @@
             "_timeout": 2000
           },
           {
-            "uuid": "b10f056e-cfb5-4618-bac1-23abaebe3f29",
+            "uuid": "85382b8c-6c40-441b-81d2-d0770770f72e",
             "title": "POST /moveFile - dest already exists",
             "fullFile": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
             "file": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
@@ -656,7 +694,7 @@
                 "title": "should return 400",
                 "fullTitle": "/_plugin/filesystem/moveFile POST /moveFile - dest already exists should return 400",
                 "timedOut": false,
-                "duration": 4,
+                "duration": 3,
                 "state": "passed",
                 "speed": "fast",
                 "pass": true,
@@ -665,25 +703,25 @@
                 "code": "let source = tmpDir+'/test.txt'\nlet dest = tmpDir+'/testMoved.txt'\nfs.writeFileSync(source, 'test')\nlet opt = getHttpOptions('POST', '/_plugin/filesystem/moveFile')\nopt.body = {\n\tpath: source,\n\tdest: dest\n}\nexecRequestExpectError(opt, done, 400)",
                 "err": {},
                 "isRoot": false,
-                "uuid": "05de3f42-b4cc-41f7-b81c-37d62eff9e1f",
+                "uuid": "6eb5a96f-7f37-436f-8b2a-a566291c6b1d",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "05de3f42-b4cc-41f7-b81c-37d62eff9e1f"
+              "6eb5a96f-7f37-436f-8b2a-a566291c6b1d"
             ],
             "failures": [],
             "pending": [],
             "skipped": [],
-            "duration": 4,
+            "duration": 3,
             "root": false,
             "rootEmpty": false,
             "_timeout": 2000
           },
           {
-            "uuid": "72600fcc-4671-45ef-997b-36b188c41cc0",
+            "uuid": "ceb230a6-0a23-4a96-bc44-7938c1baef93",
             "title": "POST /moveFile - dest already exists - overwrite=true",
             "fullFile": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
             "file": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
@@ -694,7 +732,7 @@
                 "title": "should return 200",
                 "fullTitle": "/_plugin/filesystem/moveFile POST /moveFile - dest already exists - overwrite=true should return 200",
                 "timedOut": false,
-                "duration": 9,
+                "duration": 8,
                 "state": "passed",
                 "speed": "fast",
                 "pass": true,
@@ -703,25 +741,25 @@
                 "code": "let source = tmpDir+'/test.txt'\nlet dest = tmpDir+'/testMoved.txt'\nfs.writeFileSync(source, 'test')\nlet opt = getHttpOptions('POST', '/_plugin/filesystem/moveFile')\nopt.body = {\n\tpath: source,\n\tdest: dest,\n\toverwrite: true\n}\nrequest( opt )\n.then( (res) => {\t\n\tassert.strictEqual(res.statusCode, 200);\n\tassert.strictEqual(typeof res.body, 'object');\n\tassert.strictEqual(res.body.result, true);\n\tdone();\t\t\t\t\n})\n.catch( err => {\n\tdone(err)\n})",
                 "err": {},
                 "isRoot": false,
-                "uuid": "027d701b-404d-4570-9efa-465ae079b18e",
+                "uuid": "838d4051-cc06-461a-a5d8-4a97c9e5b100",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "027d701b-404d-4570-9efa-465ae079b18e"
+              "838d4051-cc06-461a-a5d8-4a97c9e5b100"
             ],
             "failures": [],
             "pending": [],
             "skipped": [],
-            "duration": 9,
+            "duration": 8,
             "root": false,
             "rootEmpty": false,
             "_timeout": 2000
           },
           {
-            "uuid": "cca2ca09-11c3-4c03-8075-5970d33d6772",
+            "uuid": "0799bfef-9afc-45bd-b82f-c7d2b01ed35c",
             "title": "POST /moveFile source is directory",
             "fullFile": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
             "file": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
@@ -741,14 +779,14 @@
                 "code": "let source = tmpDir\nlet dest = tmpDir+'/testMoved.txt'\nif (fs.pathExistsSync(dest))\n\tfs.unlinkSync(dest)\nlet opt = getHttpOptions('POST', '/_plugin/filesystem/moveFile')\nopt.body = {\n\tpath: source,\n\tdest: dest\n}\nexecRequestExpectError(opt, done, 400)",
                 "err": {},
                 "isRoot": false,
-                "uuid": "14681ab6-de24-4b67-8b2f-b8cd17961716",
+                "uuid": "0f28b4eb-657d-42cc-91a0-98b2dcd2dbc1",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "14681ab6-de24-4b67-8b2f-b8cd17961716"
+              "0f28b4eb-657d-42cc-91a0-98b2dcd2dbc1"
             ],
             "failures": [],
             "pending": [],
@@ -769,7 +807,7 @@
         "_timeout": 2000
       },
       {
-        "uuid": "277128df-f57d-49b6-81b0-495cbe57710e",
+        "uuid": "4838fab9-ea79-4301-8205-460a5e37637e",
         "title": "/_plugin/filesystem/copyFile",
         "fullFile": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
         "file": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
@@ -778,7 +816,7 @@
         "tests": [],
         "suites": [
           {
-            "uuid": "8a7b3b6f-d8ae-43b9-80df-224502a2d1af",
+            "uuid": "6015a5bb-4454-4b6f-8b39-03797a049d2d",
             "title": "POST /copyFile dest is directory",
             "fullFile": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
             "file": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
@@ -789,7 +827,7 @@
                 "title": "should return 400",
                 "fullTitle": "/_plugin/filesystem/copyFile POST /copyFile dest is directory should return 400",
                 "timedOut": false,
-                "duration": 3,
+                "duration": 2,
                 "state": "passed",
                 "speed": "fast",
                 "pass": true,
@@ -798,25 +836,25 @@
                 "code": "let source = sourceFile\nlet dest = tmpDir\nlet opt = getHttpOptions('POST', '/_plugin/filesystem/copyFile')\nopt.body = {\n\tpath: source,\n\tdest: dest\n}\nexecRequestExpectError(opt, done, 400)",
                 "err": {},
                 "isRoot": false,
-                "uuid": "97141139-a132-4dda-a598-674f4e58f5ab",
+                "uuid": "fd1b13a5-abef-47ee-9e1d-88ffcbd8d44d",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "97141139-a132-4dda-a598-674f4e58f5ab"
+              "fd1b13a5-abef-47ee-9e1d-88ffcbd8d44d"
             ],
             "failures": [],
             "pending": [],
             "skipped": [],
-            "duration": 3,
+            "duration": 2,
             "root": false,
             "rootEmpty": false,
             "_timeout": 2000
           },
           {
-            "uuid": "31bec431-5b6e-458e-b2ff-9bd5939871f9",
+            "uuid": "0b7528a9-3264-43f9-98e8-be59c5bd2566",
             "title": "POST /copyFile dest already exists",
             "fullFile": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
             "file": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
@@ -827,7 +865,7 @@
                 "title": "should return 200",
                 "fullTitle": "/_plugin/filesystem/copyFile POST /copyFile dest already exists should return 200",
                 "timedOut": false,
-                "duration": 9,
+                "duration": 12,
                 "state": "passed",
                 "speed": "fast",
                 "pass": true,
@@ -836,25 +874,25 @@
                 "code": "let source = sourceFile\nlet dest = tmpDir+'/index.txt'\nif (!fs.pathExistsSync(dest))\n\tfs.writeFileSync(dest, 'test')\nlet opt = getHttpOptions('POST', '/_plugin/filesystem/copyFile')\nopt.body = {\n\tpath: source,\n\tdest: dest\n}\nrequest( opt )\n.then( (res) => {\t\n\tassert.strictEqual(res.statusCode, 200);\t\t\t\n\tdone();\t\t\t\t\n})\n.catch( err => {\n\tdone(err)\n})",
                 "err": {},
                 "isRoot": false,
-                "uuid": "fbd3a3bc-ed2a-4371-bf46-6a4dfb510fe6",
+                "uuid": "43530bc8-8fcf-4206-9bbf-c5d3bd65df54",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "fbd3a3bc-ed2a-4371-bf46-6a4dfb510fe6"
+              "43530bc8-8fcf-4206-9bbf-c5d3bd65df54"
             ],
             "failures": [],
             "pending": [],
             "skipped": [],
-            "duration": 9,
+            "duration": 12,
             "root": false,
             "rootEmpty": false,
             "_timeout": 2000
           },
           {
-            "uuid": "3f8c5405-5271-4377-8976-343d6b121b37",
+            "uuid": "d80b3015-a042-4f2f-a9b9-bf2e70ca31c6",
             "title": "POST /copyFile path does not exists",
             "fullFile": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
             "file": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
@@ -874,14 +912,14 @@
                 "code": "let source = sourceDir+'/blablabla'\nlet dest = tmpDir+'/blablabla'\nlet opt = getHttpOptions('POST', '/_plugin/filesystem/copyFile')\nopt.body = {\n\tpath: source,\n\tdest: dest\n}\nexecRequestExpectError(opt, done, 400)",
                 "err": {},
                 "isRoot": false,
-                "uuid": "99416703-c1e2-4124-bc22-3b42213eac1e",
+                "uuid": "6d0fc60d-64b3-41a4-964b-da5d758cef9e",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "99416703-c1e2-4124-bc22-3b42213eac1e"
+              "6d0fc60d-64b3-41a4-964b-da5d758cef9e"
             ],
             "failures": [],
             "pending": [],
@@ -892,7 +930,7 @@
             "_timeout": 2000
           },
           {
-            "uuid": "f9770fe4-2af8-4279-9702-0650d4ace5ec",
+            "uuid": "4009a2e1-d6ad-460a-b06f-1999fb2d6342",
             "title": "POST /copyFile dest directory does not exists",
             "fullFile": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
             "file": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
@@ -912,14 +950,14 @@
                 "code": "let source = sourceFile\nlet dest = tmpDir+'/blablabla/index.txt'\nif (fs.pathExistsSync(tmpDir+'/blablabla'))\n\tfs.removeSync(tmpDir+'/blablabla')\nlet opt = getHttpOptions('POST', '/_plugin/filesystem/copyFile')\nopt.body = {\n\tpath: source,\n\tdest: dest\n}\nexecRequestExpectError(opt, done, 400)",
                 "err": {},
                 "isRoot": false,
-                "uuid": "ed971570-260a-4db9-81c8-5496bc055b9e",
+                "uuid": "45518270-641e-4675-89f6-a6cc6dbc796c",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "ed971570-260a-4db9-81c8-5496bc055b9e"
+              "45518270-641e-4675-89f6-a6cc6dbc796c"
             ],
             "failures": [],
             "pending": [],
@@ -930,7 +968,7 @@
             "_timeout": 2000
           },
           {
-            "uuid": "892d8259-8487-44b0-acc4-54fdecff831b",
+            "uuid": "a02f8c95-35c1-4e4e-8684-212331b9c19a",
             "title": "POST /copyFile path=D:\\projets\\mr-agent\\test\\worker/../../dist/index.js",
             "fullFile": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
             "file": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
@@ -941,7 +979,7 @@
                 "title": "should return 200",
                 "fullTitle": "/_plugin/filesystem/copyFile POST /copyFile path=D:\\projets\\mr-agent\\test\\worker/../../dist/index.js should return 200",
                 "timedOut": false,
-                "duration": 9,
+                "duration": 8,
                 "state": "passed",
                 "speed": "fast",
                 "pass": true,
@@ -950,25 +988,25 @@
                 "code": "let source = sourceFile\nlet dest = tmpDir+'/index.txt'\nlet opt = getHttpOptions('POST', '/_plugin/filesystem/copyFile')\nopt.body = {\n\tpath: source,\n\tdest: dest\n}\nrequest( opt )\n.then( (res) => {\t\n\tassert.strictEqual(res.statusCode, 200);\n\tassert.strictEqual(typeof res.body, 'object');\n\tassert.strictEqual(res.body.result, true);\n\tdone();\t\t\t\t\n})\n.catch( err => {\n\tdone(err)\n})",
                 "err": {},
                 "isRoot": false,
-                "uuid": "6deda242-ce14-48c8-a65d-65c3189015ba",
+                "uuid": "f3cc8ba9-50fb-4e05-9c88-ed8fcb917369",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "6deda242-ce14-48c8-a65d-65c3189015ba"
+              "f3cc8ba9-50fb-4e05-9c88-ed8fcb917369"
             ],
             "failures": [],
             "pending": [],
             "skipped": [],
-            "duration": 9,
+            "duration": 8,
             "root": false,
             "rootEmpty": false,
             "_timeout": 2000
           },
           {
-            "uuid": "1f5eb374-17c6-4c22-882b-60e5c23d8b28",
+            "uuid": "e9431d93-eaee-4b41-ac47-a2b14635fe4e",
             "title": "POST /copyFile source is directory",
             "fullFile": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
             "file": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
@@ -979,7 +1017,7 @@
                 "title": "should return error - source is directory",
                 "fullTitle": "/_plugin/filesystem/copyFile POST /copyFile source is directory should return error - source is directory",
                 "timedOut": false,
-                "duration": 2,
+                "duration": 5,
                 "state": "passed",
                 "speed": "fast",
                 "pass": true,
@@ -988,19 +1026,19 @@
                 "code": "let source = tmpDir\nlet dest = tmpDir+'/testMoved.txt'\n\t\t\nlet opt = getHttpOptions('POST', '/_plugin/filesystem/copyFile')\nopt.body = {\n\tpath: source,\n\tdest: dest\n}\nexecRequestExpectError(opt, done, 400)",
                 "err": {},
                 "isRoot": false,
-                "uuid": "e600fc1b-3a8c-49af-9664-1b2f8876a2dd",
+                "uuid": "6188ab2a-c201-48f0-bcec-3ba9886b4456",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "e600fc1b-3a8c-49af-9664-1b2f8876a2dd"
+              "6188ab2a-c201-48f0-bcec-3ba9886b4456"
             ],
             "failures": [],
             "pending": [],
             "skipped": [],
-            "duration": 2,
+            "duration": 5,
             "root": false,
             "rootEmpty": false,
             "_timeout": 2000
@@ -1016,7 +1054,7 @@
         "_timeout": 2000
       },
       {
-        "uuid": "b5f5eba2-56d2-48ef-84b7-50ce8a43515a",
+        "uuid": "d881725c-c43b-4e15-99f8-e414fa84910f",
         "title": "/_plugin/filesystem/fileinfo",
         "fullFile": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
         "file": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
@@ -1025,7 +1063,7 @@
         "tests": [],
         "suites": [
           {
-            "uuid": "4c970a90-19ba-410a-b5b1-e03834c1220c",
+            "uuid": "0298ec10-4b05-456c-92e5-c3fe41bcc996",
             "title": "GET /fileinfo path=D:\\projets\\mr-agent\\test\\worker/../../dist/index.js",
             "fullFile": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
             "file": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
@@ -1045,14 +1083,14 @@
                 "code": "let opt = getHttpOptions('GET', '/_plugin/filesystem/fileinfo?path='+sourceFile)\n\nrequest( opt )\n.then( (res) => {\t\n\tassert.strictEqual(res.statusCode, 200);\n\tassert.strictEqual(typeof res.body, 'object');\n\tassert.strictEqual(res.body.name, 'index.js');\n\tassert.strictEqual(res.body.contentType.contains('application/javascript'), true);\n\tdone();\t\t\t\t\n})\n.catch( err => {\n\tdone(err)\n})",
                 "err": {},
                 "isRoot": false,
-                "uuid": "accfa4fe-4ead-44fe-a22a-0328a4debe60",
+                "uuid": "92639e52-8c42-485e-8920-4c05648f7945",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "accfa4fe-4ead-44fe-a22a-0328a4debe60"
+              "92639e52-8c42-485e-8920-4c05648f7945"
             ],
             "failures": [],
             "pending": [],
@@ -1063,7 +1101,7 @@
             "_timeout": 2000
           },
           {
-            "uuid": "b320be90-0366-4d25-8373-3cf149f5bd2c",
+            "uuid": "04bd3291-f2c5-4e92-908b-e77d3d9172cf",
             "title": "GET /fileinfo path=blablabla",
             "fullFile": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
             "file": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
@@ -1083,14 +1121,14 @@
                 "code": "let opt = getHttpOptions('GET', '/_plugin/filesystem/fileinfo?path=blablabla')\n\nexecRequestExpectError(opt, done, 500)",
                 "err": {},
                 "isRoot": false,
-                "uuid": "548f4ebf-9f13-4fd8-a8f5-27be1ca809b4",
+                "uuid": "1ee23c17-f186-4a8c-9270-1822b105ce9d",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "548f4ebf-9f13-4fd8-a8f5-27be1ca809b4"
+              "1ee23c17-f186-4a8c-9270-1822b105ce9d"
             ],
             "failures": [],
             "pending": [],
@@ -1101,7 +1139,7 @@
             "_timeout": 2000
           },
           {
-            "uuid": "fc9436d8-8aa5-42fc-be1a-a279e42fddaf",
+            "uuid": "e2902625-927c-44ae-9d85-7c57035a7d52",
             "title": "GET /fileinfo",
             "fullFile": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
             "file": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
@@ -1121,14 +1159,14 @@
                 "code": "let opt = getHttpOptions('GET', '/_plugin/filesystem/fileinfo')\n\nexecRequestExpectError(opt, done, 400)",
                 "err": {},
                 "isRoot": false,
-                "uuid": "fd54441f-e367-4eac-8123-70fb140ed30c",
+                "uuid": "538774a3-24b6-43ae-8c4f-863af147f966",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "fd54441f-e367-4eac-8123-70fb140ed30c"
+              "538774a3-24b6-43ae-8c4f-863af147f966"
             ],
             "failures": [],
             "pending": [],
@@ -1149,7 +1187,7 @@
         "_timeout": 2000
       },
       {
-        "uuid": "b411619b-4002-42f3-9bc7-ebe2ecfb855e",
+        "uuid": "c9a12b08-685d-4e00-8d39-eb7852c6c8c6",
         "title": "/_plugin/filesystem/fileExists",
         "fullFile": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
         "file": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
@@ -1158,7 +1196,7 @@
         "tests": [],
         "suites": [
           {
-            "uuid": "57e73eb3-e3be-4d21-a464-5e8b02746407",
+            "uuid": "9532b968-685c-4258-8fc1-ec9842479367",
             "title": "GET /fileExists path=D:\\projets\\mr-agent\\test\\worker/../../dist/index.js",
             "fullFile": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
             "file": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
@@ -1178,14 +1216,14 @@
                 "code": "let opt = getHttpOptions('GET', '/_plugin/filesystem/fileExists?path='+sourceFile)\n\nrequest( opt )\n.then( (res) => {\t\n\tassert.strictEqual(res.statusCode, 200);\n\tassert.strictEqual(typeof res.body, 'object');\n\tassert.strictEqual(res.body.result, true);\n\tdone();\t\t\t\t\n})\n.catch( err => {\n\tdone(err)\n})",
                 "err": {},
                 "isRoot": false,
-                "uuid": "4088fad5-84dc-49b9-bc85-f36f20ee5cf0",
+                "uuid": "79e9cc6a-fdf4-459d-8ed6-a0daabae5be3",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "4088fad5-84dc-49b9-bc85-f36f20ee5cf0"
+              "79e9cc6a-fdf4-459d-8ed6-a0daabae5be3"
             ],
             "failures": [],
             "pending": [],
@@ -1196,7 +1234,7 @@
             "_timeout": 2000
           },
           {
-            "uuid": "a1768405-b6c9-4f5a-ad85-28a18985cbad",
+            "uuid": "f4129271-42c8-43c2-9c5b-ff60415c93a2",
             "title": "GET /fileExists path=blablabla",
             "fullFile": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
             "file": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
@@ -1216,14 +1254,14 @@
                 "code": "let opt = getHttpOptions('GET', '/_plugin/filesystem/fileExists?path=blablabla')\n\nrequest( opt )\n.then( (res) => {\t\n\tassert.strictEqual(res.statusCode, 200);\n\tassert.strictEqual(typeof res.body, 'object');\n\tassert.strictEqual(res.body.result, false);\n\tdone();\t\t\t\t\n})\n.catch( err => {\n\tdone(err)\n})",
                 "err": {},
                 "isRoot": false,
-                "uuid": "07b5903e-a2ad-4bca-938e-16add4d70a81",
+                "uuid": "04cb48a9-9536-4f51-bcc3-a8b8a0be3b08",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "07b5903e-a2ad-4bca-938e-16add4d70a81"
+              "04cb48a9-9536-4f51-bcc3-a8b8a0be3b08"
             ],
             "failures": [],
             "pending": [],
@@ -1234,7 +1272,7 @@
             "_timeout": 2000
           },
           {
-            "uuid": "81301325-be5d-4e48-bd6d-3ee4570f7aad",
+            "uuid": "f362fab8-25b8-4325-8951-8ef8afa4de87",
             "title": "GET /fileExists",
             "fullFile": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
             "file": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
@@ -1254,14 +1292,14 @@
                 "code": "let opt = getHttpOptions('GET', '/_plugin/filesystem/fileExists')\n\nexecRequestExpectError(opt, done, 400)",
                 "err": {},
                 "isRoot": false,
-                "uuid": "0adceb87-027f-410f-bdb2-14c719bd7f57",
+                "uuid": "19dbe12d-2776-4a4b-82b3-605e49fbeee1",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "0adceb87-027f-410f-bdb2-14c719bd7f57"
+              "19dbe12d-2776-4a4b-82b3-605e49fbeee1"
             ],
             "failures": [],
             "pending": [],
@@ -1282,7 +1320,7 @@
         "_timeout": 2000
       },
       {
-        "uuid": "a48ae9be-3a47-4281-b92f-653cfdb99024",
+        "uuid": "380f47be-68da-4de8-a811-4ef0aad2f0ca",
         "title": "/_plugin/filesystem/execScript",
         "fullFile": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
         "file": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
@@ -1291,7 +1329,7 @@
         "tests": [],
         "suites": [
           {
-            "uuid": "7f0dedb1-5d22-495f-a585-d00514f8beb3",
+            "uuid": "f1412026-ed22-4b87-b711-3a49cc87f027",
             "title": "POST execScript type=shell",
             "fullFile": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
             "file": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
@@ -1302,7 +1340,7 @@
                 "title": "should return 200",
                 "fullTitle": "/_plugin/filesystem/execScript POST execScript type=shell should return 200",
                 "timedOut": false,
-                "duration": 22,
+                "duration": 24,
                 "state": "passed",
                 "speed": "fast",
                 "pass": true,
@@ -1311,25 +1349,25 @@
                 "code": "let opt = getHttpOptions('POST', '/_plugin/filesystem/execScript')\nopt.body = {\n\tscript: \"dir\"\n}\nrequest( opt )\n.then( (res) => {\t\n\tassert.strictEqual(res.statusCode, 200);\n\tassert.strictEqual(typeof res.body, 'object');\n\tassert.strictEqual(res.body.exitCode, 0);\n\tdone();\t\t\t\t\n})\n.catch( err => {\n\tdone(err)\n})",
                 "err": {},
                 "isRoot": false,
-                "uuid": "bd4c3c6d-b4bf-4764-8cde-055ee6ee7b4b",
+                "uuid": "bcbc89c0-667c-4c49-9a9e-998d294c65d0",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "bd4c3c6d-b4bf-4764-8cde-055ee6ee7b4b"
+              "bcbc89c0-667c-4c49-9a9e-998d294c65d0"
             ],
             "failures": [],
             "pending": [],
             "skipped": [],
-            "duration": 22,
+            "duration": 24,
             "root": false,
             "rootEmpty": false,
             "_timeout": 2000
           },
           {
-            "uuid": "f33591d2-540e-4050-8d4f-8c01b9d6a9d6",
+            "uuid": "a41a26ff-4341-4467-b85e-bef8c0c07767",
             "title": "POST execScript type=blabla",
             "fullFile": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
             "file": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
@@ -1349,14 +1387,14 @@
                 "code": "let opt = getHttpOptions('POST', '/_plugin/filesystem/execScript')\nopt.body = {\n\tscript: \"dir\",\n\ttype: 'blabla'\n}\nexecRequestExpectError(opt, done, 412)",
                 "err": {},
                 "isRoot": false,
-                "uuid": "18e8c596-7484-4c87-a23e-96ec224f1379",
+                "uuid": "350c4b88-781b-4e73-99ff-6add0334e643",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "18e8c596-7484-4c87-a23e-96ec224f1379"
+              "350c4b88-781b-4e73-99ff-6add0334e643"
             ],
             "failures": [],
             "pending": [],
@@ -1367,7 +1405,7 @@
             "_timeout": 2000
           },
           {
-            "uuid": "a89eb40c-4578-41f1-a859-7ca9e42f203b",
+            "uuid": "58a1b7ff-97ef-4b08-8b2d-bac10d259c1c",
             "title": "POST execScript type=javascript with result",
             "fullFile": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
             "file": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
@@ -1387,14 +1425,14 @@
                 "code": "let opt = getHttpOptions('POST', '/_plugin/filesystem/execScript')\nopt.body = {\n\tscript: \"result = 2*2\",\n\ttype: 'javascript'\n}\nrequest( opt )\n.then( (res) => {\t\n\tassert.strictEqual(res.statusCode, 200);\n\tassert.strictEqual(typeof res.body, 'object');\n\tassert.strictEqual(res.body.stdout, 4);\n\tassert.strictEqual(res.body.exitCode, 0);\n\tdone();\t\t\t\t\n})\n.catch( err => {\n\tdone(err)\n})",
                 "err": {},
                 "isRoot": false,
-                "uuid": "798cd97e-0eae-4bc6-9e35-c9b39fdd8def",
+                "uuid": "89d95258-c763-4ec3-b962-dfb5cfb9d2c1",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "798cd97e-0eae-4bc6-9e35-c9b39fdd8def"
+              "89d95258-c763-4ec3-b962-dfb5cfb9d2c1"
             ],
             "failures": [],
             "pending": [],
@@ -1405,7 +1443,7 @@
             "_timeout": 2000
           },
           {
-            "uuid": "1c88c7b3-b60f-49ac-8dfb-34c36967e52c",
+            "uuid": "de6747c4-66b3-48a0-8770-10b48beb479f",
             "title": "POST execScript type=javascript with result && exitCode",
             "fullFile": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
             "file": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
@@ -1416,7 +1454,7 @@
                 "title": "should return 200",
                 "fullTitle": "/_plugin/filesystem/execScript POST execScript type=javascript with result && exitCode should return 200",
                 "timedOut": false,
-                "duration": 2,
+                "duration": 1,
                 "state": "passed",
                 "speed": "fast",
                 "pass": true,
@@ -1425,25 +1463,25 @@
                 "code": "let opt = getHttpOptions('POST', '/_plugin/filesystem/execScript')\nopt.body = {\n\tscript: \"result = 2*2\\nexitCode=2\",\n\ttype: 'javascript'\n}\nrequest( opt )\n.then( (res) => {\t\n\t\n\tassert.strictEqual(res.statusCode, 200);\n\tassert.strictEqual(typeof res.body, 'object');\n\tassert.strictEqual(res.body.stdout, 4);\n\tassert.strictEqual(res.body.exitCode, 2);\n\tdone();\t\t\t\t\n})\n.catch( err => {\n\tdone(err)\n})",
                 "err": {},
                 "isRoot": false,
-                "uuid": "497abb50-5335-41d2-8040-4858188d4f1f",
+                "uuid": "993dc900-2622-40ac-b4ac-8b11973628f7",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "497abb50-5335-41d2-8040-4858188d4f1f"
+              "993dc900-2622-40ac-b4ac-8b11973628f7"
             ],
             "failures": [],
             "pending": [],
             "skipped": [],
-            "duration": 2,
+            "duration": 1,
             "root": false,
             "rootEmpty": false,
             "_timeout": 2000
           },
           {
-            "uuid": "f5a0f096-3e9e-4faa-9c8e-af307900c0d7",
+            "uuid": "c91c835d-5c98-4133-bdde-714029053960",
             "title": "POST execScript type=javascript with syntax error",
             "fullFile": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
             "file": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
@@ -1463,14 +1501,14 @@
                 "code": "let opt = getHttpOptions('POST', '/_plugin/filesystem/execScript')\nopt.body = {\n\tscript: \"blabla\",\n\ttype: 'javascript'\n}\nexecRequestExpectError(opt, done, 500)",
                 "err": {},
                 "isRoot": false,
-                "uuid": "fdfb3073-4073-4938-ae15-2a3b7c56dee3",
+                "uuid": "2aad974c-5878-4ec7-997d-d994e6d72139",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "fdfb3073-4073-4938-ae15-2a3b7c56dee3"
+              "2aad974c-5878-4ec7-997d-d994e6d72139"
             ],
             "failures": [],
             "pending": [],
@@ -1491,7 +1529,7 @@
         "_timeout": 2000
       },
       {
-        "uuid": "eb95b7a2-46dd-4928-8607-b11b634007a6",
+        "uuid": "3a0aaf9f-0134-4bc2-88c3-f28b627db148",
         "title": "/_plugin/filesystem/writeTextFile",
         "fullFile": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
         "file": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
@@ -1500,7 +1538,7 @@
         "tests": [],
         "suites": [
           {
-            "uuid": "74ccbe1b-5dc9-40a0-951d-c3450215e6ce",
+            "uuid": "395280c4-9494-448c-9186-6234c68b87ee",
             "title": "POST /_plugin/filesystem/writeTextFile",
             "fullFile": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
             "file": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
@@ -1511,7 +1549,7 @@
                 "title": "should return 200",
                 "fullTitle": "/_plugin/filesystem/writeTextFile POST /_plugin/filesystem/writeTextFile should return 200",
                 "timedOut": false,
-                "duration": 3,
+                "duration": 5,
                 "state": "passed",
                 "speed": "fast",
                 "pass": true,
@@ -1520,25 +1558,25 @@
                 "code": "let opt = getHttpOptions('POST', '/_plugin/filesystem/writeTextFile')\n\t\t\topt.body = {\npath: tmpDir+\"/writeTextFile.txt\",\ncontent: 'test'\n\t\t\t}\n\n\t\t\trequest( opt )\n\t\t\t.then( (res) => {\t\n\t\t\nassert.strictEqual(res.statusCode, 200);\nassert.strictEqual(typeof res.body, 'object');\nassert.strictEqual(typeof res.body.path, 'string');\nassert.strictEqual(res.body.result, true);\ndone();\t\t\t\t\n\t\t\t})\n\t\t\t.catch( err => {\ndone(err)\n\t\t\t})",
                 "err": {},
                 "isRoot": false,
-                "uuid": "1117b35b-696a-4ecb-92e1-3d38cbf7c68f",
+                "uuid": "f5f92494-e127-4740-beb4-ec3ff3f59509",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "1117b35b-696a-4ecb-92e1-3d38cbf7c68f"
+              "f5f92494-e127-4740-beb4-ec3ff3f59509"
             ],
             "failures": [],
             "pending": [],
             "skipped": [],
-            "duration": 3,
+            "duration": 5,
             "root": false,
             "rootEmpty": false,
             "_timeout": 2000
           },
           {
-            "uuid": "15ab78b9-2bd0-4df5-8397-108377bc1890",
+            "uuid": "6ee5f039-26c2-47be-91c3-0bc9aede8b5c",
             "title": "POST writeTextFile, path does not exist",
             "fullFile": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
             "file": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
@@ -1558,14 +1596,14 @@
                 "code": "let opt = getHttpOptions('POST', '/_plugin/filesystem/writeTextFile')\n\t\t\topt.body = {\npath: tmpDir+\"/blabla/writeTextFile.txt\",\ncontent: 'test'\n\t\t\t}\n\n\t\t\texecRequestExpectError(opt, done, 500)",
                 "err": {},
                 "isRoot": false,
-                "uuid": "b30ea6f6-30df-4496-bfe1-f56a6822131e",
+                "uuid": "527508a3-af55-4bff-992c-80efc9a4a523",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "b30ea6f6-30df-4496-bfe1-f56a6822131e"
+              "527508a3-af55-4bff-992c-80efc9a4a523"
             ],
             "failures": [],
             "pending": [],
@@ -1586,7 +1624,7 @@
         "_timeout": 2000
       },
       {
-        "uuid": "1a1f67e0-11c6-4e1f-b76e-42e580f75c2e",
+        "uuid": "4255c791-df90-4add-b419-3fce5f551c8a",
         "title": "/_plugin/filesystem/list",
         "fullFile": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
         "file": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
@@ -1595,7 +1633,7 @@
         "tests": [],
         "suites": [
           {
-            "uuid": "937ee313-6f80-43ad-847b-6f0011807065",
+            "uuid": "30256499-459c-4170-9352-2f8344998ece",
             "title": "GET path=D:\\projets\\mr-agent\\test\\worker/../../dist",
             "fullFile": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
             "file": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
@@ -1615,14 +1653,14 @@
                 "code": "var query = 'path='+sourceDir\nrequest( getHttpOptions('GET', '/_plugin/filesystem/list?'+query) )\n.then( (res) => {\t\n\tassert.strictEqual(res.statusCode, 200);\n\tassert.strictEqual(typeof res.body, 'object');\n\tassert.strictEqual(typeof res.body.files, 'object');\n\tassert.strictEqual(typeof res.body.files.push, 'function');\n\tassert.strictEqual(res.body.total, 23);\n\tassert.strictEqual(res.body.files.length, 23);\n\tdone();\t\t\t\t\n})\n.catch( err => {\n\tdone(err)\n})",
                 "err": {},
                 "isRoot": false,
-                "uuid": "8558b137-0e6a-4f38-9243-a3984d0d4d16",
+                "uuid": "31e959bb-e43e-49e3-8167-99c5add5f281",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "8558b137-0e6a-4f38-9243-a3984d0d4d16"
+              "31e959bb-e43e-49e3-8167-99c5add5f281"
             ],
             "failures": [],
             "pending": [],
@@ -1633,7 +1671,7 @@
             "_timeout": 2000
           },
           {
-            "uuid": "458539af-d046-4f63-a163-c4f44e01a181",
+            "uuid": "5a162625-2773-4235-b2f3-a8a7efc4a593",
             "title": "GET recursive=true&path=D:\\projets\\mr-agent\\test\\worker/../../dist",
             "fullFile": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
             "file": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
@@ -1644,7 +1682,7 @@
                 "title": "should return file list",
                 "fullTitle": "/_plugin/filesystem/list GET recursive=true&path=D:\\projets\\mr-agent\\test\\worker/../../dist should return file list",
                 "timedOut": false,
-                "duration": 34,
+                "duration": 29,
                 "state": "passed",
                 "speed": "fast",
                 "pass": true,
@@ -1653,25 +1691,25 @@
                 "code": "var query = 'recursive=true&path='+sourceDir\nrequest( getHttpOptions('GET', '/_plugin/filesystem/list?'+query) )\n.then( (res) => {\t\n\tassert.strictEqual(res.statusCode, 200);\n\tassert.strictEqual(typeof res.body, 'object');\n\tassert.strictEqual(typeof res.body.files, 'object');\n\tassert.strictEqual(typeof res.body.files.push, 'function');\n\tassert.strictEqual(res.body.total, 221);\n\tassert.strictEqual(res.body.files.length, 221);\n\tdone();\t\t\t\t\n})\n.catch( err => {\n\tdone(err)\n})",
                 "err": {},
                 "isRoot": false,
-                "uuid": "b00c324a-1a6b-48aa-b1b4-4944960845b3",
+                "uuid": "1bef28b0-aa30-4773-b7e0-9287b84df5db",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "b00c324a-1a6b-48aa-b1b4-4944960845b3"
+              "1bef28b0-aa30-4773-b7e0-9287b84df5db"
             ],
             "failures": [],
             "pending": [],
             "skipped": [],
-            "duration": 34,
+            "duration": 29,
             "root": false,
             "rootEmpty": false,
             "_timeout": 2000
           },
           {
-            "uuid": "811da8d7-e722-4f09-9acd-6bf1271b7609",
+            "uuid": "cd9c83cb-8286-4941-ac20-ded1a5805096",
             "title": "GET recursive=true&filter=*.js&path=D:\\projets\\mr-agent\\test\\worker/../../dist",
             "fullFile": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
             "file": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
@@ -1691,14 +1729,14 @@
                 "code": "var query = 'recursive=true&filter=*.js&path='+sourceDir\nrequest( getHttpOptions('GET', '/_plugin/filesystem/list?'+query) )\n.then( (res) => {\t\n\tassert.strictEqual(res.statusCode, 200);\n\tassert.strictEqual(typeof res.body, 'object');\n\tassert.strictEqual(typeof res.body.files, 'object');\n\tassert.strictEqual(typeof res.body.files.push, 'function');\n\tassert.strictEqual(res.body.total, 65);\n\tassert.strictEqual(res.body.files.length, 65);\n\tdone();\t\t\t\t\n})\n.catch( err => {\n\tdone(err)\n})",
                 "err": {},
                 "isRoot": false,
-                "uuid": "fc987c3c-dd97-4eef-9c92-5b6bf527786c",
+                "uuid": "c702e4e7-8ad1-42af-a575-dec0d728881e",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "fc987c3c-dd97-4eef-9c92-5b6bf527786c"
+              "c702e4e7-8ad1-42af-a575-dec0d728881e"
             ],
             "failures": [],
             "pending": [],
@@ -1709,7 +1747,7 @@
             "_timeout": 2000
           },
           {
-            "uuid": "e369118a-ec5b-42e1-bdf7-3f678bc58642",
+            "uuid": "2cfe6e6d-94b0-4a88-8c46-16d2d74d6cc8",
             "title": "GET recursive=true&maxResults=10&filter=*.ts&path=D:\\projets\\mr-agent\\test\\worker/../../dist",
             "fullFile": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
             "file": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
@@ -1729,14 +1767,14 @@
                 "code": "var query = 'recursive=true&maxResults=10&filter=*.ts&path='+sourceDir\n\trequest( getHttpOptions('GET', '/_plugin/filesystem/list?'+query) )\n\t.then( (res) => {\t\n\t\tassert.strictEqual(res.statusCode, 200);\n\t\tassert.strictEqual(typeof res.body, 'object');\n\t\tassert.strictEqual(typeof res.body.files, 'object');\n\t\tassert.strictEqual(typeof res.body.files.push, 'function');\n\t\tassert.strictEqual(res.body.total, 65);\n\t\tassert.strictEqual(res.body.files.length, 10);\n\t\tdone();\t\t\t\t\n\t})\n\t.catch( err => {\n\t\tdone(err)\n\t})",
                 "err": {},
                 "isRoot": false,
-                "uuid": "aaab3757-e312-4947-bfd0-f8838b53997d",
+                "uuid": "a2ff6952-a66f-419f-b221-5649c02c339a",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "aaab3757-e312-4947-bfd0-f8838b53997d"
+              "a2ff6952-a66f-419f-b221-5649c02c339a"
             ],
             "failures": [],
             "pending": [],
@@ -1747,7 +1785,7 @@
             "_timeout": 2000
           },
           {
-            "uuid": "19346d16-547c-4052-96af-dce11f002d85",
+            "uuid": "af0b8a18-7b5c-4451-885a-99b4f20b8b36",
             "title": "GET recursive=true&path=/blablabla",
             "fullFile": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
             "file": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
@@ -1758,7 +1796,7 @@
                 "title": "should return error",
                 "fullTitle": "/_plugin/filesystem/list GET recursive=true&path=/blablabla should return error",
                 "timedOut": false,
-                "duration": 2,
+                "duration": 1,
                 "state": "passed",
                 "speed": "fast",
                 "pass": true,
@@ -1767,19 +1805,19 @@
                 "code": "var query = 'recursive=true&path=/blablabla'\nlet opt = getHttpOptions('GET', '/_plugin/filesystem/list?'+query)\nexecRequestExpectError(opt, done, 500)",
                 "err": {},
                 "isRoot": false,
-                "uuid": "7c2b2f31-1d67-4078-9221-04191cf0d301",
+                "uuid": "25243d24-cd27-46b6-b3f9-164074eae41a",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "7c2b2f31-1d67-4078-9221-04191cf0d301"
+              "25243d24-cd27-46b6-b3f9-164074eae41a"
             ],
             "failures": [],
             "pending": [],
             "skipped": [],
-            "duration": 2,
+            "duration": 1,
             "root": false,
             "rootEmpty": false,
             "_timeout": 2000
@@ -1795,7 +1833,7 @@
         "_timeout": 2000
       },
       {
-        "uuid": "e82ef430-f1fe-47ee-9cbb-708eeb14e51b",
+        "uuid": "3c33eaa0-ceae-4aec-a89f-73d90e310dd7",
         "title": "/_plugin/filesystem/upload",
         "fullFile": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
         "file": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
@@ -1804,7 +1842,7 @@
         "tests": [],
         "suites": [
           {
-            "uuid": "2d6cc349-77c6-45d4-a1c9-31757570fb64",
+            "uuid": "731a1f5e-89a8-4ad7-8f27-337be37f4ae3",
             "title": "upload file",
             "fullFile": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
             "file": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
@@ -1815,7 +1853,7 @@
                 "title": "should return 200",
                 "fullTitle": "/_plugin/filesystem/upload upload file should return 200",
                 "timedOut": false,
-                "duration": 508,
+                "duration": 1041,
                 "state": "passed",
                 "speed": "slow",
                 "pass": true,
@@ -1824,25 +1862,25 @@
                 "code": "let path = tmpDir+'/upload.txt'\n\tif (fs.pathExistsSync(path))\n\t\tfs.unlinkSync(path)\n\tlet opt = getHttpOptions('POST', '/_plugin/filesystem/upload?path='+path)\n\t\n\topt.formData = {\n        // Like <input type=\"text\" name=\"name\">\n        name: sourceFileName,\n        // Like <input type=\"file\" name=\"file\">\n        file1: {\n            value: fs.createReadStream(sourceFile),\n            options: {\n                filename: sourceFileName,\n                contentType: 'application/javascript'\n            }\n        },\n        file2: {\n            value: fs.createReadStream(sourceDir+'/Application.js'),\n            options: {\n                filename: 'Application.js',\n                contentType: 'application/javascript'\n            }\n        }\n    },\n\t\t\t\n\trequest( opt )\n\t.then( (res) => {\t\n\t\t//console.log( res.body)\n\t\tassert.strictEqual(res.statusCode, 200);\n\t\tassert.strictEqual(typeof res.body, 'object', 'body is not object');\n\t\tassert.strictEqual(typeof res.body.file, 'object', 'body.file is not object');\t\t\t\t\n\t\tassert.strictEqual(res.body.path, path, 'body.path != '+path);\n\t\tassert.strictEqual(fs.pathExistsSync(path), true, 'uploaded file does not exists');\n\t\tassert.strictEqual(fs.statSync(path).size != 0, true, 'uploaded file size != 0');\n\t\t\n\t\tdone();\t\t\t\t\n\t})\n\t.catch( err => {\n\t\tdone(err)\n\t})",
                 "err": {},
                 "isRoot": false,
-                "uuid": "71619ee4-b9db-4e36-8144-656d58151ab8",
+                "uuid": "c01af35e-78b2-495d-bd63-7b6da74abc8b",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "71619ee4-b9db-4e36-8144-656d58151ab8"
+              "c01af35e-78b2-495d-bd63-7b6da74abc8b"
             ],
             "failures": [],
             "pending": [],
             "skipped": [],
-            "duration": 508,
+            "duration": 1041,
             "root": false,
             "rootEmpty": false,
             "_timeout": 2000
           },
           {
-            "uuid": "28b8697b-bcf4-4f1f-a97d-6cb070bd9cff",
+            "uuid": "a5a9ef74-b5ec-4859-bb35-dc3b568844a7",
             "title": "upload no file",
             "fullFile": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
             "file": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
@@ -1853,7 +1891,7 @@
                 "title": "should return error",
                 "fullTitle": "/_plugin/filesystem/upload upload no file should return error",
                 "timedOut": false,
-                "duration": 472,
+                "duration": 955,
                 "state": "passed",
                 "speed": "slow",
                 "pass": true,
@@ -1862,25 +1900,25 @@
                 "code": "let path = tmpDir+'/upload2.txt'\n\tif (fs.pathExistsSync(path))\n\t\tfs.unlinkSync(path)\n\tlet opt = getHttpOptions('POST', '/_plugin/filesystem/upload?path='+path)\n\t\n\topt.formData = {\n        name: sourceFileName,\n    },\n\t\t\t\n\texecRequestExpectError(opt, done, 400)",
                 "err": {},
                 "isRoot": false,
-                "uuid": "6595fb0c-22af-4ed8-93db-fbe72a61b39b",
+                "uuid": "440f261e-bd33-4f38-8f09-c0a4661f081d",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "6595fb0c-22af-4ed8-93db-fbe72a61b39b"
+              "440f261e-bd33-4f38-8f09-c0a4661f081d"
             ],
             "failures": [],
             "pending": [],
             "skipped": [],
-            "duration": 472,
+            "duration": 955,
             "root": false,
             "rootEmpty": false,
             "_timeout": 2000
           },
           {
-            "uuid": "df653fb2-84de-47be-b65c-35276b440eca",
+            "uuid": "4be09628-732e-4a6e-be94-fce84a95c3db",
             "title": "upload file - dest is directory",
             "fullFile": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
             "file": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
@@ -1891,34 +1929,34 @@
                 "title": "should return 400 (dest is a directory)",
                 "fullTitle": "/_plugin/filesystem/upload upload file - dest is directory should return 400 (dest is a directory)",
                 "timedOut": false,
-                "duration": 63,
+                "duration": 4,
                 "state": "passed",
-                "speed": "medium",
+                "speed": "fast",
                 "pass": true,
                 "fail": false,
                 "pending": false,
                 "code": "let path = tmpDir\n\tlet opt = getHttpOptions('POST', '/_plugin/filesystem/upload?path='+path)\n\t\n\topt.formData = {\n        // Like <input type=\"text\" name=\"name\">\n        name: sourceFileName,\n        // Like <input type=\"file\" name=\"file\">\n        file: {\n            value: fs.createReadStream(sourceFile),\n            options: {\n                filename: sourceFileName,\n                contentType: 'application/javascript'\n            }\n        }\n    },\n\t\t\t\n\texecRequestExpectError(opt, done, 400)",
                 "err": {},
                 "isRoot": false,
-                "uuid": "5ea3361f-72cd-4fb8-a193-1e64d632a34e",
+                "uuid": "d1a90562-a2f8-4014-b31e-da93c5fdb76e",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "5ea3361f-72cd-4fb8-a193-1e64d632a34e"
+              "d1a90562-a2f8-4014-b31e-da93c5fdb76e"
             ],
             "failures": [],
             "pending": [],
             "skipped": [],
-            "duration": 63,
+            "duration": 4,
             "root": false,
             "rootEmpty": false,
             "_timeout": 2000
           },
           {
-            "uuid": "5f6ebce3-3b48-4419-a8b3-fcae7e8c9c0c",
+            "uuid": "eb65ecb0-70b9-4d6c-8280-3db6bdcb67b3",
             "title": "upload file - dest directory does not exist",
             "fullFile": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
             "file": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
@@ -1929,7 +1967,7 @@
                 "title": "should return 400 (dest a directory does not exist)",
                 "fullTitle": "/_plugin/filesystem/upload upload file - dest directory does not exist should return 400 (dest a directory does not exist)",
                 "timedOut": false,
-                "duration": 9,
+                "duration": 3,
                 "state": "passed",
                 "speed": "fast",
                 "pass": true,
@@ -1938,25 +1976,25 @@
                 "code": "let path = tmpDir+'/uploadblablabla/upload.txt'\n\tlet opt = getHttpOptions('POST', '/_plugin/filesystem/upload?path='+path)\n\t\n\topt.formData = {\n        // Like <input type=\"text\" name=\"name\">\n        name: sourceFileName,\n        // Like <input type=\"file\" name=\"file\">\n        file: {\n            value: fs.createReadStream(sourceFile),\n            options: {\n                filename: sourceFileName,\n                contentType: 'application/javascript'\n            }\n        }\n    },\n\t\t\t\n\texecRequestExpectError(opt, done, 400)",
                 "err": {},
                 "isRoot": false,
-                "uuid": "e83adb0f-287e-4fa1-a68b-6b4e6d1ba6df",
+                "uuid": "cd91b31e-fc1e-4497-84f5-227573224557",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "e83adb0f-287e-4fa1-a68b-6b4e6d1ba6df"
+              "cd91b31e-fc1e-4497-84f5-227573224557"
             ],
             "failures": [],
             "pending": [],
             "skipped": [],
-            "duration": 9,
+            "duration": 3,
             "root": false,
             "rootEmpty": false,
             "_timeout": 2000
           },
           {
-            "uuid": "0586cd9b-67ad-4b45-9dbc-f2eb99db0f4f",
+            "uuid": "e9a1ddcd-9d1f-4642-a8fc-7eafd527439c",
             "title": "upload existing file - overwrite=false",
             "fullFile": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
             "file": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
@@ -1967,7 +2005,7 @@
                 "title": "should return error",
                 "fullTitle": "/_plugin/filesystem/upload upload existing file - overwrite=false should return error",
                 "timedOut": false,
-                "duration": 6,
+                "duration": 3,
                 "state": "passed",
                 "speed": "fast",
                 "pass": true,
@@ -1976,109 +2014,14 @@
                 "code": "let path = tmpDir+'/upload.txt'\n\tlet opt = getHttpOptions('POST', '/_plugin/filesystem/upload?path='+path+'&overwrite=false')\n\t\n\topt.formData = {\n        // Like <input type=\"text\" name=\"name\">\n        name: sourceFileName,\n        // Like <input type=\"file\" name=\"file\">\n        file: {\n            value: fs.createReadStream(sourceFile),\n            options: {\n                filename: sourceFileName,\n                contentType: 'application/javascript'\n            }\n        }\n    },\n\t\t\t\n\texecRequestExpectError(opt, done, 400)",
                 "err": {},
                 "isRoot": false,
-                "uuid": "2101c967-fbce-4893-a313-98d24588b0a1",
+                "uuid": "533df8d4-3e6d-4463-9cee-bb82ec8ce9c2",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "2101c967-fbce-4893-a313-98d24588b0a1"
-            ],
-            "failures": [],
-            "pending": [],
-            "skipped": [],
-            "duration": 6,
-            "root": false,
-            "rootEmpty": false,
-            "_timeout": 2000
-          }
-        ],
-        "passes": [],
-        "failures": [],
-        "pending": [],
-        "skipped": [],
-        "duration": 0,
-        "root": false,
-        "rootEmpty": false,
-        "_timeout": 2000
-      },
-      {
-        "uuid": "cf22832b-a1f4-49e5-ba29-87172b7cd408",
-        "title": "/_plugin/filesystem/deleteFiles",
-        "fullFile": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
-        "file": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
-        "beforeHooks": [],
-        "afterHooks": [],
-        "tests": [],
-        "suites": [
-          {
-            "uuid": "e0a3cd50-33a0-404e-be0f-56d7cc7693c7",
-            "title": "delete existing file",
-            "fullFile": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
-            "file": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
-            "beforeHooks": [],
-            "afterHooks": [],
-            "tests": [
-              {
-                "title": "should return 200",
-                "fullTitle": "/_plugin/filesystem/deleteFiles delete existing file should return 200",
-                "timedOut": false,
-                "duration": 75,
-                "state": "passed",
-                "speed": "medium",
-                "pass": true,
-                "fail": false,
-                "pending": false,
-                "code": "let path = tmpDir+'/fileToDelete.txt'\n\nlet opt = getHttpOptions('POST', '/_plugin/filesystem/deleteFiles')\nopt.body = {\n\tpath: path\n}\nfs.writeFileSync(path, 'test')\n\t\t\nrequest( opt )\n.then( (res) => {\t\n\n\tassert.strictEqual(res.statusCode, 200);\n\tassert.strictEqual(typeof res.body, 'object');\n\tassert.strictEqual(fs.pathExistsSync(path), false);\n\tassert.strictEqual(res.body.result, true);\n\tassert.strictEqual(typeof res.body.filename, 'string');\n\tassert.strictEqual(res.body.path, path);\n\tdone();\t\t\t\t\n})\n.catch( err => {\n\tdone(err)\n})",
-                "err": {},
-                "isRoot": false,
-                "uuid": "9c6e7438-e09d-4b5e-ab3a-cb2c9193bc58",
-                "isHook": false,
-                "skipped": false
-              }
-            ],
-            "suites": [],
-            "passes": [
-              "9c6e7438-e09d-4b5e-ab3a-cb2c9193bc58"
-            ],
-            "failures": [],
-            "pending": [],
-            "skipped": [],
-            "duration": 75,
-            "root": false,
-            "rootEmpty": false,
-            "_timeout": 2000
-          },
-          {
-            "uuid": "2fbbe0a8-f90a-4acc-9e7a-62f73a3acc72",
-            "title": "delete not existing file",
-            "fullFile": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
-            "file": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
-            "beforeHooks": [],
-            "afterHooks": [],
-            "tests": [
-              {
-                "title": "should return 404",
-                "fullTitle": "/_plugin/filesystem/deleteFiles delete not existing file should return 404",
-                "timedOut": false,
-                "duration": 3,
-                "state": "passed",
-                "speed": "fast",
-                "pass": true,
-                "fail": false,
-                "pending": false,
-                "code": "let path = tmpDir+'/fileToDelete.txt'\n\nlet opt = getHttpOptions('POST', '/_plugin/filesystem/deleteFiles')\nopt.body = {\n\tpath: path\n}\nif (fs.pathExistsSync(path))\n\tfs.unlinkSync(path)\n\t\t\nexecRequestExpectError(opt, done, 404)",
-                "err": {},
-                "isRoot": false,
-                "uuid": "056140ae-25f3-4f0c-8abe-d602d7bc28e1",
-                "isHook": false,
-                "skipped": false
-              }
-            ],
-            "suites": [],
-            "passes": [
-              "056140ae-25f3-4f0c-8abe-d602d7bc28e1"
+              "533df8d4-3e6d-4463-9cee-bb82ec8ce9c2"
             ],
             "failures": [],
             "pending": [],
@@ -2099,8 +2042,8 @@
         "_timeout": 2000
       },
       {
-        "uuid": "635c3f62-cfad-44c2-89e7-e9fc791b852c",
-        "title": "/_plugin/filesystem/download",
+        "uuid": "f44e4982-1f15-4436-9ca2-a77bd78de965",
+        "title": "/_plugin/filesystem/deleteFiles",
         "fullFile": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
         "file": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
         "beforeHooks": [],
@@ -2108,8 +2051,8 @@
         "tests": [],
         "suites": [
           {
-            "uuid": "7097813f-ce19-4541-b596-7590fc96de73",
-            "title": "Download existing file",
+            "uuid": "1c3f6265-fe6e-4b43-9785-eb3712af7761",
+            "title": "delete existing file",
             "fullFile": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
             "file": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
             "beforeHooks": [],
@@ -2117,75 +2060,37 @@
             "tests": [
               {
                 "title": "should return 200",
-                "fullTitle": "/_plugin/filesystem/download Download existing file should return 200",
+                "fullTitle": "/_plugin/filesystem/deleteFiles delete existing file should return 200",
                 "timedOut": false,
-                "duration": 9,
+                "duration": 4,
                 "state": "passed",
                 "speed": "fast",
                 "pass": true,
                 "fail": false,
                 "pending": false,
-                "code": "let query = 'path='+sourceFile\nlet opt = getHttpOptions('GET', '/_plugin/filesystem/download?'+query)\nopt.json = false\nrequest( opt )\n.then( (res) => {\t\n\tassert.strictEqual(res.statusCode, 200);\n\tassert.strictEqual(typeof res.body, 'string');\n\tassert.strictEqual(res.headers['content-type'], 'application/javascript; charset=UTF-8');\n\tassert.strictEqual(res.headers['content-disposition'], 'attachment; filename=\"index.js\"');\n\tassert.strictEqual(res.headers['content-length'] > 0 , true, 'content-type > 0');\n\tdone();\t\t\t\t\n})\n.catch( err => {\n\tdone(err)\n})",
+                "code": "let path = tmpDir+'/fileToDelete.txt'\n\nlet opt = getHttpOptions('POST', '/_plugin/filesystem/deleteFiles')\nopt.body = {\n\tpath: path\n}\nfs.writeFileSync(path, 'test')\n\t\t\nrequest( opt )\n.then( (res) => {\t\n\n\tassert.strictEqual(res.statusCode, 200);\n\tassert.strictEqual(typeof res.body, 'object');\n\tassert.strictEqual(fs.pathExistsSync(path), false);\n\tassert.strictEqual(res.body.result, true);\n\tassert.strictEqual(typeof res.body.filename, 'string');\n\tassert.strictEqual(res.body.path, path);\n\tdone();\t\t\t\t\n})\n.catch( err => {\n\tdone(err)\n})",
                 "err": {},
                 "isRoot": false,
-                "uuid": "a8819e5d-5449-4d7a-b466-230bbceca3ce",
+                "uuid": "bdaa3f6c-eb75-41bf-b927-d4908350bce3",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "a8819e5d-5449-4d7a-b466-230bbceca3ce"
+              "bdaa3f6c-eb75-41bf-b927-d4908350bce3"
             ],
             "failures": [],
             "pending": [],
             "skipped": [],
-            "duration": 9,
+            "duration": 4,
             "root": false,
             "rootEmpty": false,
             "_timeout": 2000
           },
           {
-            "uuid": "34ae64bb-2453-4446-92d6-4a3a3511aab9",
-            "title": "Download existing file - compress=false",
-            "fullFile": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
-            "file": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
-            "beforeHooks": [],
-            "afterHooks": [],
-            "tests": [
-              {
-                "title": "should return 200",
-                "fullTitle": "/_plugin/filesystem/download Download existing file - compress=false should return 200",
-                "timedOut": false,
-                "duration": 14,
-                "state": "passed",
-                "speed": "fast",
-                "pass": true,
-                "fail": false,
-                "pending": false,
-                "code": "let query = 'path='+sourceFile+'&compress=false'\nlet opt = getHttpOptions('GET', '/_plugin/filesystem/download?'+query)\nopt.json = false\nrequest( opt )\n.then( (res) => {\t\n\tassert.strictEqual(res.statusCode, 200);\n\tassert.strictEqual(typeof res.body, 'string');\n\t/*assert.strictEqual(res.headers['content-type'], 'application/javascript');\n\tassert.strictEqual(res.headers['content-disposition'], 'attachment; filename=\"index.js\"');*/\n\tdone();\t\t\t\t\n})\n.catch( err => {\n\tdone(err)\n})",
-                "err": {},
-                "isRoot": false,
-                "uuid": "476b690e-8e5d-4bb2-999a-c1571abace0e",
-                "isHook": false,
-                "skipped": false
-              }
-            ],
-            "suites": [],
-            "passes": [
-              "476b690e-8e5d-4bb2-999a-c1571abace0e"
-            ],
-            "failures": [],
-            "pending": [],
-            "skipped": [],
-            "duration": 14,
-            "root": false,
-            "rootEmpty": false,
-            "_timeout": 2000
-          },
-          {
-            "uuid": "428fc292-891c-43d0-994d-4f8c1ae4a8c6",
-            "title": "Download file - file does not exists",
+            "uuid": "ac7e3ba5-c9b3-4c83-a24d-81493029f19b",
+            "title": "delete not existing file",
             "fullFile": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
             "file": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
             "beforeHooks": [],
@@ -2193,68 +2098,30 @@
             "tests": [
               {
                 "title": "should return 404",
-                "fullTitle": "/_plugin/filesystem/download Download file - file does not exists should return 404",
+                "fullTitle": "/_plugin/filesystem/deleteFiles delete not existing file should return 404",
                 "timedOut": false,
-                "duration": 84,
+                "duration": 2,
                 "state": "passed",
-                "speed": "slow",
+                "speed": "fast",
                 "pass": true,
                 "fail": false,
                 "pending": false,
-                "code": "let query = 'path='+sourceFile+'/balbalba'\nlet opt = getHttpOptions('GET', '/_plugin/filesystem/download?'+query)\nexecRequestExpectError(opt, done, 404)",
+                "code": "let path = tmpDir+'/fileToDelete.txt'\n\nlet opt = getHttpOptions('POST', '/_plugin/filesystem/deleteFiles')\nopt.body = {\n\tpath: path\n}\nif (fs.pathExistsSync(path))\n\tfs.unlinkSync(path)\n\t\t\nexecRequestExpectError(opt, done, 404)",
                 "err": {},
                 "isRoot": false,
-                "uuid": "d9eb1ac9-26f6-4317-ba3f-f127c241d83c",
+                "uuid": "840cfacf-0a5c-4733-bd6b-dcb3697ba71a",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "d9eb1ac9-26f6-4317-ba3f-f127c241d83c"
+              "840cfacf-0a5c-4733-bd6b-dcb3697ba71a"
             ],
             "failures": [],
             "pending": [],
             "skipped": [],
-            "duration": 84,
-            "root": false,
-            "rootEmpty": false,
-            "_timeout": 2000
-          },
-          {
-            "uuid": "432aad25-5531-440e-b4a4-fed488a17a49",
-            "title": "Download directory",
-            "fullFile": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
-            "file": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
-            "beforeHooks": [],
-            "afterHooks": [],
-            "tests": [
-              {
-                "title": "should return 200",
-                "fullTitle": "/_plugin/filesystem/download Download directory should return 200",
-                "timedOut": false,
-                "duration": 1502,
-                "state": "passed",
-                "speed": "slow",
-                "pass": true,
-                "fail": false,
-                "pending": false,
-                "code": "let query = 'path='+sourceDir\nlet dest = tmpDir+'/downloadZip.zip'\nlet opt = getHttpOptions('GET', '/_plugin/filesystem/download?'+query)\nopt.json = false\nif (fs.pathExistsSync(dest))\n\tfs.unlinkSync(dest)\nlet destFileStream = fs.createWriteStream(dest);\nrequest( opt , (error, res, body) => {\n\tassert.strictEqual(res.statusCode, 200);\n\tassert.strictEqual(typeof res.body, 'string');\n\tassert.strictEqual(res.headers['content-type'], 'application/zip');\n\tassert.strictEqual(res.headers['content-disposition'], 'attachment; filename=\"dist.zip\"');\t\t\n})\n.pipe(destFileStream)\n\t\t    .on('finish', () => {\n\n\t\t    \tif (fs.pathExistsSync(dest) && (fs.statSync(dest).size > 0))\n\t\t       \t\tdone();\t\t \t      \n\t\t       \telse\n\t\t       \t\tdone('Downloaded file does not exists or is empty');\t\t \t      \n\t\t    })\n\t\t    .on('error', (error) => {\n\t\t        done(error);\n\t\t    })",
-                "err": {},
-                "isRoot": false,
-                "uuid": "77c7148c-7957-4d6c-939d-4bef09eada38",
-                "isHook": false,
-                "skipped": false
-              }
-            ],
-            "suites": [],
-            "passes": [
-              "77c7148c-7957-4d6c-939d-4bef09eada38"
-            ],
-            "failures": [],
-            "pending": [],
-            "skipped": [],
-            "duration": 1502,
+            "duration": 2,
             "root": false,
             "rootEmpty": false,
             "_timeout": 2000
@@ -2270,25 +2137,25 @@
         "_timeout": 2000
       },
       {
-        "uuid": "2d7297e6-3cb9-4ee8-a803-c1eb37dee6e5",
-        "title": "plugin-http",
-        "fullFile": "D:\\projets\\mr-agent\\test\\worker\\30-plugin-http.js",
-        "file": "D:\\projets\\mr-agent\\test\\worker\\30-plugin-http.js",
+        "uuid": "fa57a9dc-3f16-4491-831a-ab04ee3da25e",
+        "title": "/_plugin/filesystem/download",
+        "fullFile": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
+        "file": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
         "beforeHooks": [],
         "afterHooks": [],
         "tests": [],
         "suites": [
           {
-            "uuid": "33d4d4fc-8230-4fa4-bae6-b32ab2cfc4e6",
-            "title": "POST /_plugin/http/request",
-            "fullFile": "D:\\projets\\mr-agent\\test\\worker\\30-plugin-http.js",
-            "file": "D:\\projets\\mr-agent\\test\\worker\\30-plugin-http.js",
+            "uuid": "c4212f53-685f-430e-9f6d-0051ce96796f",
+            "title": "Download existing file",
+            "fullFile": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
+            "file": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
             "beforeHooks": [],
             "afterHooks": [],
             "tests": [
               {
                 "title": "should return 200",
-                "fullTitle": "plugin-http POST /_plugin/http/request should return 200",
+                "fullTitle": "/_plugin/filesystem/download Download existing file should return 200",
                 "timedOut": false,
                 "duration": 4,
                 "state": "passed",
@@ -2296,17 +2163,17 @@
                 "pass": true,
                 "fail": false,
                 "pending": false,
-                "code": "let opt = getHttpOptions('POST', '/_plugin/http/request')\nopt.body = {\n\turl: 'http://'+HOST+':'+PORT+'/api/checkAgent',\n\tmethod: 'GET',\n\tjson: true\n}\nrequest( opt )\n.then( (res) => {\t\t\n\t//console.log(res.body)\t\n\texpect(res.statusCode).to.equal(200);\n\tassert.strictEqual(typeof res.body, 'object');\n\tassert.strictEqual(typeof res.body.body, 'object');\n\tassert.strictEqual(res.body.body.status, 0);\n\texpect(res.body.status).to.equal(200);\n\tassert.strictEqual(typeof res.body.body.version, 'string');\n\tdone();\t\t\t\t\n})\n.catch( err => {\n\tdone(err)\n})",
+                "code": "let query = 'path='+sourceFile\nlet opt = getHttpOptions('GET', '/_plugin/filesystem/download?'+query)\nopt.json = false\nrequest( opt )\n.then( (res) => {\t\n\tassert.strictEqual(res.statusCode, 200);\n\tassert.strictEqual(typeof res.body, 'string');\n\tassert.strictEqual(res.headers['content-type'], 'application/javascript; charset=UTF-8');\n\tassert.strictEqual(res.headers['content-disposition'], 'attachment; filename=\"index.js\"');\n\tassert.strictEqual(res.headers['content-length'] > 0 , true, 'content-type > 0');\n\tdone();\t\t\t\t\n})\n.catch( err => {\n\tdone(err)\n})",
                 "err": {},
                 "isRoot": false,
-                "uuid": "e01f34da-90c5-4286-bd27-b9890b108d21",
+                "uuid": "d797b72a-e555-487e-9b05-34cf13d86d81",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "e01f34da-90c5-4286-bd27-b9890b108d21"
+              "d797b72a-e555-487e-9b05-34cf13d86d81"
             ],
             "failures": [],
             "pending": [],
@@ -2317,7 +2184,178 @@
             "_timeout": 2000
           },
           {
-            "uuid": "09677c64-84ee-4435-bd1b-0c3f79014220",
+            "uuid": "aaffd83a-5495-42c5-afd8-50c77d6787b5",
+            "title": "Download existing file - compress=false",
+            "fullFile": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
+            "file": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
+            "beforeHooks": [],
+            "afterHooks": [],
+            "tests": [
+              {
+                "title": "should return 200",
+                "fullTitle": "/_plugin/filesystem/download Download existing file - compress=false should return 200",
+                "timedOut": false,
+                "duration": 4,
+                "state": "passed",
+                "speed": "fast",
+                "pass": true,
+                "fail": false,
+                "pending": false,
+                "code": "let query = 'path='+sourceFile+'&compress=false'\nlet opt = getHttpOptions('GET', '/_plugin/filesystem/download?'+query)\nopt.json = false\nrequest( opt )\n.then( (res) => {\t\n\tassert.strictEqual(res.statusCode, 200);\n\tassert.strictEqual(typeof res.body, 'string');\n\t/*assert.strictEqual(res.headers['content-type'], 'application/javascript');\n\tassert.strictEqual(res.headers['content-disposition'], 'attachment; filename=\"index.js\"');*/\n\tdone();\t\t\t\t\n})\n.catch( err => {\n\tdone(err)\n})",
+                "err": {},
+                "isRoot": false,
+                "uuid": "384e83cd-32b7-44d4-872a-ec8f6fbee5af",
+                "isHook": false,
+                "skipped": false
+              }
+            ],
+            "suites": [],
+            "passes": [
+              "384e83cd-32b7-44d4-872a-ec8f6fbee5af"
+            ],
+            "failures": [],
+            "pending": [],
+            "skipped": [],
+            "duration": 4,
+            "root": false,
+            "rootEmpty": false,
+            "_timeout": 2000
+          },
+          {
+            "uuid": "797c1b75-76a6-4900-837c-7cd943b3a2be",
+            "title": "Download file - file does not exists",
+            "fullFile": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
+            "file": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
+            "beforeHooks": [],
+            "afterHooks": [],
+            "tests": [
+              {
+                "title": "should return 404",
+                "fullTitle": "/_plugin/filesystem/download Download file - file does not exists should return 404",
+                "timedOut": false,
+                "duration": 2,
+                "state": "passed",
+                "speed": "fast",
+                "pass": true,
+                "fail": false,
+                "pending": false,
+                "code": "let query = 'path='+sourceFile+'/balbalba'\nlet opt = getHttpOptions('GET', '/_plugin/filesystem/download?'+query)\nexecRequestExpectError(opt, done, 404)",
+                "err": {},
+                "isRoot": false,
+                "uuid": "348d7520-3925-4c2b-81d9-f96fa0c95e70",
+                "isHook": false,
+                "skipped": false
+              }
+            ],
+            "suites": [],
+            "passes": [
+              "348d7520-3925-4c2b-81d9-f96fa0c95e70"
+            ],
+            "failures": [],
+            "pending": [],
+            "skipped": [],
+            "duration": 2,
+            "root": false,
+            "rootEmpty": false,
+            "_timeout": 2000
+          },
+          {
+            "uuid": "fbec2106-c02e-40da-97d5-242b18345309",
+            "title": "Download directory",
+            "fullFile": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
+            "file": "D:\\projets\\mr-agent\\test\\worker\\20-plugin-filesystem.js",
+            "beforeHooks": [],
+            "afterHooks": [],
+            "tests": [
+              {
+                "title": "should return 200",
+                "fullTitle": "/_plugin/filesystem/download Download directory should return 200",
+                "timedOut": false,
+                "duration": 424,
+                "state": "passed",
+                "speed": "slow",
+                "pass": true,
+                "fail": false,
+                "pending": false,
+                "code": "let query = 'path='+sourceDir\nlet dest = tmpDir+'/downloadZip.zip'\nlet opt = getHttpOptions('GET', '/_plugin/filesystem/download?'+query)\nopt.json = false\nif (fs.pathExistsSync(dest))\n\tfs.unlinkSync(dest)\nlet destFileStream = fs.createWriteStream(dest);\nrequest( opt , (error, res, body) => {\n\tassert.strictEqual(res.statusCode, 200);\n\tassert.strictEqual(typeof res.body, 'string');\n\tassert.strictEqual(res.headers['content-type'], 'application/zip');\n\tassert.strictEqual(res.headers['content-disposition'], 'attachment; filename=\"dist.zip\"');\t\t\n})\n.pipe(destFileStream)\n\t\t    .on('finish', () => {\n\n\t\t    \tif (fs.pathExistsSync(dest) && (fs.statSync(dest).size > 0))\n\t\t       \t\tdone();\t\t \t      \n\t\t       \telse\n\t\t       \t\tdone('Downloaded file does not exists or is empty');\t\t \t      \n\t\t    })\n\t\t    .on('error', (error) => {\n\t\t        done(error);\n\t\t    })",
+                "err": {},
+                "isRoot": false,
+                "uuid": "8c4e2742-e61c-4373-90af-65a33d51e412",
+                "isHook": false,
+                "skipped": false
+              }
+            ],
+            "suites": [],
+            "passes": [
+              "8c4e2742-e61c-4373-90af-65a33d51e412"
+            ],
+            "failures": [],
+            "pending": [],
+            "skipped": [],
+            "duration": 424,
+            "root": false,
+            "rootEmpty": false,
+            "_timeout": 2000
+          }
+        ],
+        "passes": [],
+        "failures": [],
+        "pending": [],
+        "skipped": [],
+        "duration": 0,
+        "root": false,
+        "rootEmpty": false,
+        "_timeout": 2000
+      },
+      {
+        "uuid": "0028c453-ca10-424b-97b8-56401309984d",
+        "title": "plugin-http",
+        "fullFile": "D:\\projets\\mr-agent\\test\\worker\\30-plugin-http.js",
+        "file": "D:\\projets\\mr-agent\\test\\worker\\30-plugin-http.js",
+        "beforeHooks": [],
+        "afterHooks": [],
+        "tests": [],
+        "suites": [
+          {
+            "uuid": "2f808fb8-298e-4fa5-9ff3-82109b5b5342",
+            "title": "POST /_plugin/http/request",
+            "fullFile": "D:\\projets\\mr-agent\\test\\worker\\30-plugin-http.js",
+            "file": "D:\\projets\\mr-agent\\test\\worker\\30-plugin-http.js",
+            "beforeHooks": [],
+            "afterHooks": [],
+            "tests": [
+              {
+                "title": "should return 200",
+                "fullTitle": "plugin-http POST /_plugin/http/request should return 200",
+                "timedOut": false,
+                "duration": 5,
+                "state": "passed",
+                "speed": "fast",
+                "pass": true,
+                "fail": false,
+                "pending": false,
+                "code": "let opt = getHttpOptions('POST', '/_plugin/http/request')\nopt.body = {\n\turl: 'http://'+HOST+':'+PORT+'/api/checkAgent',\n\tmethod: 'GET',\n\tjson: true\n}\nrequest( opt )\n.then( (res) => {\t\t\n\t//console.log(res.body)\t\n\texpect(res.statusCode).to.equal(200);\n\tassert.strictEqual(typeof res.body, 'object');\n\tassert.strictEqual(typeof res.body.body, 'object');\n\tassert.strictEqual(res.body.body.status, 0);\n\texpect(res.body.status).to.equal(200);\n\tassert.strictEqual(typeof res.body.body.version, 'string');\n\tdone();\t\t\t\t\n})\n.catch( err => {\n\tdone(err)\n})",
+                "err": {},
+                "isRoot": false,
+                "uuid": "92ccb577-3731-47ab-bee2-cbf8c6648cd5",
+                "isHook": false,
+                "skipped": false
+              }
+            ],
+            "suites": [],
+            "passes": [
+              "92ccb577-3731-47ab-bee2-cbf8c6648cd5"
+            ],
+            "failures": [],
+            "pending": [],
+            "skipped": [],
+            "duration": 5,
+            "root": false,
+            "rootEmpty": false,
+            "_timeout": 2000
+          },
+          {
+            "uuid": "7f0e211d-9c51-4b67-9b93-3505808d7029",
             "title": "POST /_plugin/http/request to unkown host",
             "fullFile": "D:\\projets\\mr-agent\\test\\worker\\30-plugin-http.js",
             "file": "D:\\projets\\mr-agent\\test\\worker\\30-plugin-http.js",
@@ -2328,34 +2366,34 @@
                 "title": "should return 200 - content is error",
                 "fullTitle": "plugin-http POST /_plugin/http/request to unkown host should return 200 - content is error",
                 "timedOut": false,
-                "duration": 8,
+                "duration": 93,
                 "state": "passed",
-                "speed": "fast",
+                "speed": "slow",
                 "pass": true,
                 "fail": false,
                 "pending": false,
                 "code": "let opt = getHttpOptions('POST', '/_plugin/http/request')\nopt.body = {\n\turl: 'http://'+HOST+'blablabla:'+PORT+'/api/checkAgent',\n\tmethod: 'GET',\n\tjson: true\n}\nrequest( opt )\n.then( (res) => {\t\t\n\t//console.log(res.body)\t\n\texpect(res.statusCode).to.equal(200);\n\tassert.strictEqual(typeof res.body, 'object');\n\tassert.strictEqual(res.body.isError, true);\n\tassert.strictEqual(typeof res.body.error !== 'undefined', true);\n\tassert.strictEqual(res.body.status, null);\n\tdone();\t\t\t\t\n})\n.catch( err => {\n\tdone(err)\n})",
                 "err": {},
                 "isRoot": false,
-                "uuid": "ab9bc6bf-9acf-4371-ba6c-7a1e428085b3",
+                "uuid": "ad6c288c-c277-465f-8ace-d5823cd002dc",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "ab9bc6bf-9acf-4371-ba6c-7a1e428085b3"
+              "ad6c288c-c277-465f-8ace-d5823cd002dc"
             ],
             "failures": [],
             "pending": [],
             "skipped": [],
-            "duration": 8,
+            "duration": 93,
             "root": false,
             "rootEmpty": false,
             "_timeout": 2000
           },
           {
-            "uuid": "00ccb783-aae3-43cb-a917-8d547b26fefd",
+            "uuid": "3a840aae-387c-4ca6-9b3e-6c39b687a5c5",
             "title": "POST /_plugin/http/request to unkown url",
             "fullFile": "D:\\projets\\mr-agent\\test\\worker\\30-plugin-http.js",
             "file": "D:\\projets\\mr-agent\\test\\worker\\30-plugin-http.js",
@@ -2375,14 +2413,14 @@
                 "code": "let opt = getHttpOptions('POST', '/_plugin/http/request')\nopt.body = {\n\turl: 'http://'+HOST+':'+PORT+'/api/checkAgentBLABLABLA',\n\tmethod: 'GET',\n\tjson: true\n}\nrequest( opt )\n.then( (res) => {\t\t\n\t//console.log(res.body)\t\n\texpect(res.statusCode).to.equal(200);\n\tassert.strictEqual(typeof res.body, 'object');\n\tassert.strictEqual(res.body.isError, false);\n\tassert.strictEqual(res.body.error, null);\n\tassert.strictEqual(res.body.status, 404);\n\tdone();\t\t\t\t\n})\n.catch( err => {\n\tdone(err)\n})",
                 "err": {},
                 "isRoot": false,
-                "uuid": "4269ed9b-8707-44a6-97d8-f6b4617b1708",
+                "uuid": "83ecf5f8-8460-43e2-aae2-9518d0eed671",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "4269ed9b-8707-44a6-97d8-f6b4617b1708"
+              "83ecf5f8-8460-43e2-aae2-9518d0eed671"
             ],
             "failures": [],
             "pending": [],
@@ -2403,7 +2441,7 @@
         "_timeout": 2000
       },
       {
-        "uuid": "88591d67-6775-445b-8ec7-be51a2e664b2",
+        "uuid": "5504c6bc-0cc3-4e81-9a15-148a51641818",
         "title": "plugin-metrics",
         "fullFile": "D:\\projets\\mr-agent\\test\\worker\\40-plugin-metrics.js",
         "file": "D:\\projets\\mr-agent\\test\\worker\\40-plugin-metrics.js",
@@ -2412,7 +2450,7 @@
         "tests": [],
         "suites": [
           {
-            "uuid": "5faa3631-bb82-4c10-a2e5-685db6ae88c9",
+            "uuid": "70701b00-8893-4915-818a-06e0399a2dcb",
             "title": "GET metrics getInfos",
             "fullFile": "D:\\projets\\mr-agent\\test\\worker\\40-plugin-metrics.js",
             "file": "D:\\projets\\mr-agent\\test\\worker\\40-plugin-metrics.js",
@@ -2432,14 +2470,14 @@
                 "code": "request( getHttpOptions('GET', '/_plugin/metrics') )\n\t\t\t.then( (res) => {\t\t\n\t\t\t\n\t\t\t\texpect(res.statusCode).to.equal(200);\n\t\t\t\tassert.strictEqual(typeof res.body, 'object')\t\n\t\t\t\tassert.strictEqual( _.isArray(res.body.metrics) , true, 'body.metrics is not array')\t\t\n\t\t\t\tassert.strictEqual( res.body.metrics.length , 5, 'body.metrics length is not 5')\t\t\n\t\t\t\tlet cpuMetric =  res.body.metrics[0]\n\t\t\t\tassert.strictEqual( cpuMetric.name , 'cpu')\t\t\t\n\t\t\t\tassert.strictEqual( cpuMetric.url , 'http://'+HOST+':'+PORT+'/_plugin/metrics/cpu')\t\t\t\n\t\t\t\tassert.strictEqual( _.isArray(cpuMetric.args) , true, 'body.metrics[0].args is not array')\t\t\t\n\t\t\t\tdone();\t\t\t\t\n\t\t\t})\n\t\t\t.catch( err => {\n\t\t\t\tdone(err)\n\t\t\t})",
                 "err": {},
                 "isRoot": false,
-                "uuid": "49baedb4-ca7f-41ee-865d-e842e0f73525",
+                "uuid": "14033ca9-8143-4589-9c9d-f294b2b89f8c",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "49baedb4-ca7f-41ee-865d-e842e0f73525"
+              "14033ca9-8143-4589-9c9d-f294b2b89f8c"
             ],
             "failures": [],
             "pending": [],
@@ -2450,7 +2488,7 @@
             "_timeout": 2000
           },
           {
-            "uuid": "7fd54b14-7f82-4aaf-b25b-885d2d835047",
+            "uuid": "73d7bae3-c057-4be2-ac31-01529895cfd7",
             "title": "GET metrics systemInfo",
             "fullFile": "D:\\projets\\mr-agent\\test\\worker\\40-plugin-metrics.js",
             "file": "D:\\projets\\mr-agent\\test\\worker\\40-plugin-metrics.js",
@@ -2461,7 +2499,7 @@
                 "title": "should return object",
                 "fullTitle": "plugin-metrics GET metrics systemInfo should return object",
                 "timedOut": false,
-                "duration": 17,
+                "duration": 23,
                 "state": "passed",
                 "speed": "fast",
                 "pass": true,
@@ -2470,25 +2508,25 @@
                 "code": "request( getHttpOptions('GET', '/_plugin/metrics/systemInfo') )\n\t\t\t.then( (res) => {\t\t\n\t\t\t\n\t\t\t\texpect(res.statusCode).to.equal(200);\n\t\t\t\tassert.strictEqual(typeof res.body, 'object')\t\n\t\t\t\tassert.strictEqual(typeof res.body.release == 'string', true, \"'release' property is not number\")\t\n\t\t\t\tassert.strictEqual(typeof res.body.uptime == 'number', true, \"'uptime' property is not number'\")\t\n\t\t\t\tassert.strictEqual(typeof res.body.osType == 'string', true, \"'osType' property is not number'\")\t\t\t\n\t\t\t\tdone();\t\t\t\t\n\t\t\t})\n\t\t\t.catch( err => {\n\t\t\t\tdone(err)\n\t\t\t})",
                 "err": {},
                 "isRoot": false,
-                "uuid": "24b6989a-0f26-413a-a79b-586bbb339ac9",
+                "uuid": "42796684-0240-4b00-9c50-ab56a1ac3fbe",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "24b6989a-0f26-413a-a79b-586bbb339ac9"
+              "42796684-0240-4b00-9c50-ab56a1ac3fbe"
             ],
             "failures": [],
             "pending": [],
             "skipped": [],
-            "duration": 17,
+            "duration": 23,
             "root": false,
             "rootEmpty": false,
             "_timeout": 2000
           },
           {
-            "uuid": "fb419e80-b234-4463-9fbc-d3c138145747",
+            "uuid": "b90b1038-22ec-45de-8af3-53ba6ac547b9",
             "title": "GET metrics systemInfo format=nagios",
             "fullFile": "D:\\projets\\mr-agent\\test\\worker\\40-plugin-metrics.js",
             "file": "D:\\projets\\mr-agent\\test\\worker\\40-plugin-metrics.js",
@@ -2499,7 +2537,7 @@
                 "title": "should return string",
                 "fullTitle": "plugin-metrics GET metrics systemInfo format=nagios should return string",
                 "timedOut": false,
-                "duration": 7,
+                "duration": 9,
                 "state": "passed",
                 "speed": "fast",
                 "pass": true,
@@ -2508,25 +2546,25 @@
                 "code": "request( getHttpOptions('GET', '/_plugin/metrics/systemInfo?format=nagios') )\n\t\t\t.then( (res) => {\t\t\n\t\t\t\tcheckNagiosResult( res, false, 0 )\t\t\t\t\n\t\t\t\tdone();\t\t\t\t\n\t\t\t})\n\t\t\t.catch( err => {\n\t\t\t\tdone(err)\n\t\t\t})",
                 "err": {},
                 "isRoot": false,
-                "uuid": "bcec2762-ec15-4ae4-b58e-b8a77a53ae82",
+                "uuid": "340a9c0e-cfca-423f-8f5c-72b3ddf4d398",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "bcec2762-ec15-4ae4-b58e-b8a77a53ae82"
+              "340a9c0e-cfca-423f-8f5c-72b3ddf4d398"
             ],
             "failures": [],
             "pending": [],
             "skipped": [],
-            "duration": 7,
+            "duration": 9,
             "root": false,
             "rootEmpty": false,
             "_timeout": 2000
           },
           {
-            "uuid": "d43ea1b0-2029-4c86-8e6c-71c35570504f",
+            "uuid": "10406ce3-f0ee-4bb5-b22d-3383cfd9c69b",
             "title": "GET metrics cpu",
             "fullFile": "D:\\projets\\mr-agent\\test\\worker\\40-plugin-metrics.js",
             "file": "D:\\projets\\mr-agent\\test\\worker\\40-plugin-metrics.js",
@@ -2537,7 +2575,7 @@
                 "title": "should return object",
                 "fullTitle": "plugin-metrics GET metrics cpu should return object",
                 "timedOut": false,
-                "duration": 1004,
+                "duration": 1028,
                 "state": "passed",
                 "speed": "slow",
                 "pass": true,
@@ -2546,25 +2584,25 @@
                 "code": "request( getHttpOptions('GET', '/_plugin/metrics/cpu') )\n\t\t\t.then( (res) => {\t\t\n\t\t\t\n\t\t\t\texpect(res.statusCode).to.equal(200);\n\t\t\t\tassert.strictEqual(typeof res.body, 'object')\t\n\t\t\t\tassert.strictEqual(typeof res.body.ellapsed == 'number', true, \"'ellapsed' property is not number\")\t\n\t\t\t\tassert.strictEqual(typeof res.body.percentageCPU == 'number', true, \"'percentageCPU' property is not number'\")\t\t\t\t\t\n\t\t\t\tdone();\t\t\t\t\n\t\t\t})\n\t\t\t.catch( err => {\n\t\t\t\tdone(err)\n\t\t\t})",
                 "err": {},
                 "isRoot": false,
-                "uuid": "ec9dc471-5a21-4fec-a338-7fa9c7809779",
+                "uuid": "581f7303-4149-4a33-b2f8-1b5605944990",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "ec9dc471-5a21-4fec-a338-7fa9c7809779"
+              "581f7303-4149-4a33-b2f8-1b5605944990"
             ],
             "failures": [],
             "pending": [],
             "skipped": [],
-            "duration": 1004,
+            "duration": 1028,
             "root": false,
             "rootEmpty": false,
             "_timeout": 2000
           },
           {
-            "uuid": "afad35cd-be30-41bc-bfc9-0785ee7c95f6",
+            "uuid": "2a2e8548-b240-41f3-a9ec-d58cc3aa974c",
             "title": "GET metrics cpu format=nagios",
             "fullFile": "D:\\projets\\mr-agent\\test\\worker\\40-plugin-metrics.js",
             "file": "D:\\projets\\mr-agent\\test\\worker\\40-plugin-metrics.js",
@@ -2575,7 +2613,7 @@
                 "title": "should return string",
                 "fullTitle": "plugin-metrics GET metrics cpu format=nagios should return string",
                 "timedOut": false,
-                "duration": 1011,
+                "duration": 1005,
                 "state": "passed",
                 "speed": "slow",
                 "pass": true,
@@ -2584,25 +2622,25 @@
                 "code": "request( getHttpOptions('GET', '/_plugin/metrics/cpu?format=nagios') )\n\t\t\t.then( (res) => {\t\t\n\t\t\t\tcheckNagiosResult( res, true )\t\t\t\t\n\t\t\t\tdone();\t\t\t\t\n\t\t\t})\n\t\t\t.catch( err => {\n\t\t\t\tdone(err)\n\t\t\t})",
                 "err": {},
                 "isRoot": false,
-                "uuid": "cfcc46cb-bfec-4b06-988a-208ab25ea018",
+                "uuid": "c482b367-bbf2-4de3-90c2-d7881e0d9823",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "cfcc46cb-bfec-4b06-988a-208ab25ea018"
+              "c482b367-bbf2-4de3-90c2-d7881e0d9823"
             ],
             "failures": [],
             "pending": [],
             "skipped": [],
-            "duration": 1011,
+            "duration": 1005,
             "root": false,
             "rootEmpty": false,
             "_timeout": 2000
           },
           {
-            "uuid": "20f86c86-5dea-4be2-9f77-ecf817c85123",
+            "uuid": "83105834-93d1-468b-afd6-ea7ab8ea1932",
             "title": "GET metrics cpu warn=10 critic=5 format=nagios",
             "fullFile": "D:\\projets\\mr-agent\\test\\worker\\40-plugin-metrics.js",
             "file": "D:\\projets\\mr-agent\\test\\worker\\40-plugin-metrics.js",
@@ -2613,7 +2651,7 @@
                 "title": "should return currentState 3",
                 "fullTitle": "plugin-metrics GET metrics cpu warn=10 critic=5 format=nagios should return currentState 3",
                 "timedOut": false,
-                "duration": 1004,
+                "duration": 1005,
                 "state": "passed",
                 "speed": "slow",
                 "pass": true,
@@ -2622,25 +2660,25 @@
                 "code": "request( getHttpOptions('GET', '/_plugin/metrics/cpu?warn=10&critic=5&format=nagios') )\n\t\t\t.then( (res) => {\t\t\n\t\t\t\tcheckNagiosResult( res, false, 3 )\t\t\t\t\t\n\t\t\t\tdone();\t\t\t\t\n\t\t\t})\n\t\t\t.catch( err => {\n\t\t\t\tdone(err)\n\t\t\t})",
                 "err": {},
                 "isRoot": false,
-                "uuid": "2f695a80-f33a-4a73-857b-edc4647a4b5a",
+                "uuid": "a3c3f2d5-bcf5-4985-8f70-349952dfb17e",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "2f695a80-f33a-4a73-857b-edc4647a4b5a"
+              "a3c3f2d5-bcf5-4985-8f70-349952dfb17e"
             ],
             "failures": [],
             "pending": [],
             "skipped": [],
-            "duration": 1004,
+            "duration": 1005,
             "root": false,
             "rootEmpty": false,
             "_timeout": 2000
           },
           {
-            "uuid": "1c3a3e21-a994-4216-bfe4-571bd129e24b",
+            "uuid": "4cbaf149-41e7-4a29-af19-85a485ca2f20",
             "title": "GET metrics cpu warn=0 critic=0 format=nagios",
             "fullFile": "D:\\projets\\mr-agent\\test\\worker\\40-plugin-metrics.js",
             "file": "D:\\projets\\mr-agent\\test\\worker\\40-plugin-metrics.js",
@@ -2651,7 +2689,7 @@
                 "title": "should return currentState 2",
                 "fullTitle": "plugin-metrics GET metrics cpu warn=0 critic=0 format=nagios should return currentState 2",
                 "timedOut": false,
-                "duration": 1006,
+                "duration": 1005,
                 "state": "passed",
                 "speed": "slow",
                 "pass": true,
@@ -2660,25 +2698,25 @@
                 "code": "request( getHttpOptions('GET', '/_plugin/metrics/cpu?warn=0&critic=0&format=nagios') )\n\t\t\t.then( (res) => {\t\t\n\t\t\t\tcheckNagiosResult( res, true, 2 )\t\t\t\t\t\n\t\t\t\tdone();\t\t\t\t\n\t\t\t})\n\t\t\t.catch( err => {\n\t\t\t\tdone(err)\n\t\t\t})",
                 "err": {},
                 "isRoot": false,
-                "uuid": "e60d1c9e-2402-4ea4-b0ae-f2b51502c527",
+                "uuid": "c274a7c1-0d25-4084-9ca4-12f78564e5d6",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "e60d1c9e-2402-4ea4-b0ae-f2b51502c527"
+              "c274a7c1-0d25-4084-9ca4-12f78564e5d6"
             ],
             "failures": [],
             "pending": [],
             "skipped": [],
-            "duration": 1006,
+            "duration": 1005,
             "root": false,
             "rootEmpty": false,
             "_timeout": 2000
           },
           {
-            "uuid": "01150bd5-9a5e-4302-b5c9-94bc245a6c43",
+            "uuid": "db974dfd-015b-44e6-8ade-bd113b7584b6",
             "title": "GET metrics cpu warn=0 critic=100 format=nagios",
             "fullFile": "D:\\projets\\mr-agent\\test\\worker\\40-plugin-metrics.js",
             "file": "D:\\projets\\mr-agent\\test\\worker\\40-plugin-metrics.js",
@@ -2698,14 +2736,14 @@
                 "code": "request( getHttpOptions('GET', '/_plugin/metrics/cpu?warn=0&critic=100&format=nagios') )\n\t\t\t.then( (res) => {\t\t\n\t\t\t\tcheckNagiosResult( res, true, 1 )\t\t\t\t\t\n\t\t\t\tdone();\t\t\t\t\n\t\t\t})\n\t\t\t.catch( err => {\n\t\t\t\tdone(err)\n\t\t\t})",
                 "err": {},
                 "isRoot": false,
-                "uuid": "440f3350-86cf-4804-bb42-69c87a6a1a87",
+                "uuid": "3863eb27-ad01-4f4d-a6ec-0a3c04b4e211",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "440f3350-86cf-4804-bb42-69c87a6a1a87"
+              "3863eb27-ad01-4f4d-a6ec-0a3c04b4e211"
             ],
             "failures": [],
             "pending": [],
@@ -2716,7 +2754,7 @@
             "_timeout": 2000
           },
           {
-            "uuid": "eac5a9c5-198e-47af-948c-9bbc6138ec56",
+            "uuid": "c30e3b3a-945b-4f38-8270-b313ab4f0272",
             "title": "GET metrics memory",
             "fullFile": "D:\\projets\\mr-agent\\test\\worker\\40-plugin-metrics.js",
             "file": "D:\\projets\\mr-agent\\test\\worker\\40-plugin-metrics.js",
@@ -2727,7 +2765,7 @@
                 "title": "should return object",
                 "fullTitle": "plugin-metrics GET metrics memory should return object",
                 "timedOut": false,
-                "duration": 2,
+                "duration": 1,
                 "state": "passed",
                 "speed": "fast",
                 "pass": true,
@@ -2736,25 +2774,25 @@
                 "code": "request( getHttpOptions('GET', '/_plugin/metrics/memory') )\n\t\t\t.then( (res) => {\t\t\n\t\t\t\n\t\t\t\texpect(res.statusCode).to.equal(200);\n\t\t\t\tassert.strictEqual(typeof res.body, 'object')\t\n\t\t\t\tassert.strictEqual(typeof res.body.usedPercent == 'number', true, \"'usedPercent' property is not number\")\t\n\t\t\t\tassert.strictEqual(typeof res.body.usedMem == 'number', true, \"'usedMem' property is not number'\")\t\t\t\t\t\n\t\t\t\tassert.strictEqual(typeof res.body.totalMem == 'number', true, \"'totalMem' property is not number'\")\t\t\t\t\t\n\t\t\t\t\n\t\t\t\tdone();\t\t\t\t\n\t\t\t})\n\t\t\t.catch( err => {\n\t\t\t\tdone(err)\n\t\t\t})",
                 "err": {},
                 "isRoot": false,
-                "uuid": "948e5cc1-ee39-4de7-b66b-0c8ae9a094e9",
+                "uuid": "29bc5d66-262e-4672-9434-2a49a2a13168",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "948e5cc1-ee39-4de7-b66b-0c8ae9a094e9"
+              "29bc5d66-262e-4672-9434-2a49a2a13168"
             ],
             "failures": [],
             "pending": [],
             "skipped": [],
-            "duration": 2,
+            "duration": 1,
             "root": false,
             "rootEmpty": false,
             "_timeout": 2000
           },
           {
-            "uuid": "0cc7c683-8c2b-4c81-af18-f28bde03514e",
+            "uuid": "744ec7d0-8650-45c2-a398-b01c9190e379",
             "title": "GET metrics memory format=nagios",
             "fullFile": "D:\\projets\\mr-agent\\test\\worker\\40-plugin-metrics.js",
             "file": "D:\\projets\\mr-agent\\test\\worker\\40-plugin-metrics.js",
@@ -2774,14 +2812,14 @@
                 "code": "request( getHttpOptions('GET', '/_plugin/metrics/memory?format=nagios') )\n\t\t\t.then( (res) => {\t\t\n\t\t\t\t\n\t\t\t\tcheckNagiosResult( res, true )\t\t\t\t\t\n\t\t\t\tdone();\t\t\t\t\n\t\t\t})\n\t\t\t.catch( err => {\n\t\t\t\tdone(err)\n\t\t\t})",
                 "err": {},
                 "isRoot": false,
-                "uuid": "27dd10b2-d601-4bb8-b313-a2813f24de4b",
+                "uuid": "15b0cdcd-3c90-4136-ac40-fe6bb066efd7",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "27dd10b2-d601-4bb8-b313-a2813f24de4b"
+              "15b0cdcd-3c90-4136-ac40-fe6bb066efd7"
             ],
             "failures": [],
             "pending": [],
@@ -2792,7 +2830,7 @@
             "_timeout": 2000
           },
           {
-            "uuid": "4b1cd1dd-5864-4f41-bb98-43b07cc803ef",
+            "uuid": "b590e54c-61a8-4383-8dcd-1afcd69bcf62",
             "title": "GET metrics memory warn=10 critic=5 format=nagios",
             "fullFile": "D:\\projets\\mr-agent\\test\\worker\\40-plugin-metrics.js",
             "file": "D:\\projets\\mr-agent\\test\\worker\\40-plugin-metrics.js",
@@ -2803,7 +2841,7 @@
                 "title": "should return currentState 3",
                 "fullTitle": "plugin-metrics GET metrics memory warn=10 critic=5 format=nagios should return currentState 3",
                 "timedOut": false,
-                "duration": 2,
+                "duration": 1,
                 "state": "passed",
                 "speed": "fast",
                 "pass": true,
@@ -2812,25 +2850,25 @@
                 "code": "request( getHttpOptions('GET', '/_plugin/metrics/memory?warn=10&critic=5&format=nagios') )\n.then( (res) => {\t\t\n\tcheckNagiosResult( res, false, 3)\t\n\tdone();\t\t\t\t\n})\n.catch( err => {\n\tdone(err)\n})",
                 "err": {},
                 "isRoot": false,
-                "uuid": "d91c1dcc-32bd-47dc-9525-dcee689d0446",
+                "uuid": "8fc1cdc6-290e-4b58-bce9-e8908c7c5b74",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "d91c1dcc-32bd-47dc-9525-dcee689d0446"
+              "8fc1cdc6-290e-4b58-bce9-e8908c7c5b74"
             ],
             "failures": [],
             "pending": [],
             "skipped": [],
-            "duration": 2,
+            "duration": 1,
             "root": false,
             "rootEmpty": false,
             "_timeout": 2000
           },
           {
-            "uuid": "d69659ef-48ad-44e5-b2c2-f02646e3cd8e",
+            "uuid": "a81e1c04-f7d2-4559-8aae-988efc833bc2",
             "title": "GET metrics memory warn=0 critic=0 format=nagios",
             "fullFile": "D:\\projets\\mr-agent\\test\\worker\\40-plugin-metrics.js",
             "file": "D:\\projets\\mr-agent\\test\\worker\\40-plugin-metrics.js",
@@ -2850,14 +2888,14 @@
                 "code": "request( getHttpOptions('GET', '/_plugin/metrics/memory?warn=0&critic=0&format=nagios') )\n\t\t\t.then( (res) => {\t\t\n\t\t\t\tcheckNagiosResult( res, true, 2 )\t\t\t\t\t\n\t\t\t\tdone();\t\t\t\t\n\t\t\t})\n\t\t\t.catch( err => {\n\t\t\t\tdone(err)\n\t\t\t})",
                 "err": {},
                 "isRoot": false,
-                "uuid": "1669aaec-e789-4142-9729-befaa660ee40",
+                "uuid": "79ab7fd4-9b50-4adb-a5f8-f48cacf6cfe8",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "1669aaec-e789-4142-9729-befaa660ee40"
+              "79ab7fd4-9b50-4adb-a5f8-f48cacf6cfe8"
             ],
             "failures": [],
             "pending": [],
@@ -2868,7 +2906,7 @@
             "_timeout": 2000
           },
           {
-            "uuid": "e13a132f-a7f1-4850-b907-b4841fa2ad63",
+            "uuid": "7b31af19-1498-41bb-b306-e854693048b4",
             "title": "GET metrics memory warn=0 critic=100 format=nagios",
             "fullFile": "D:\\projets\\mr-agent\\test\\worker\\40-plugin-metrics.js",
             "file": "D:\\projets\\mr-agent\\test\\worker\\40-plugin-metrics.js",
@@ -2879,7 +2917,7 @@
                 "title": "should return currentState 1",
                 "fullTitle": "plugin-metrics GET metrics memory warn=0 critic=100 format=nagios should return currentState 1",
                 "timedOut": false,
-                "duration": 2,
+                "duration": 1,
                 "state": "passed",
                 "speed": "fast",
                 "pass": true,
@@ -2888,25 +2926,25 @@
                 "code": "request( getHttpOptions('GET', '/_plugin/metrics/memory?warn=0&critic=100&format=nagios') )\n\t\t\t.then( (res) => {\t\t\n\t\t\t\tcheckNagiosResult( res, true, 1 )\t\t\t\t\t\n\t\t\t\tdone();\t\t\t\t\n\t\t\t})\n\t\t\t.catch( err => {\n\t\t\t\tdone(err)\n\t\t\t})",
                 "err": {},
                 "isRoot": false,
-                "uuid": "3b66c74a-0bb6-4aa7-847c-07f4ec2c399c",
+                "uuid": "79ab1326-7e27-4ca4-ab19-2175e647fa06",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "3b66c74a-0bb6-4aa7-847c-07f4ec2c399c"
+              "79ab1326-7e27-4ca4-ab19-2175e647fa06"
             ],
             "failures": [],
             "pending": [],
             "skipped": [],
-            "duration": 2,
+            "duration": 1,
             "root": false,
             "rootEmpty": false,
             "_timeout": 2000
           },
           {
-            "uuid": "0ff08708-cffc-41a3-b024-8457f41aaac5",
+            "uuid": "c5832cbe-a42a-415d-809e-7fc30ad2b0a7",
             "title": "GET metrics load",
             "fullFile": "D:\\projets\\mr-agent\\test\\worker\\40-plugin-metrics.js",
             "file": "D:\\projets\\mr-agent\\test\\worker\\40-plugin-metrics.js",
@@ -2926,14 +2964,14 @@
                 "code": "request( getHttpOptions('GET', '/_plugin/metrics/load') )\n\t\t\t.then( (res) => {\t\t\n\t\t\t\n\t\t\t\texpect(res.statusCode).to.equal(200);\n\t\t\t\tassert.strictEqual(typeof res.body, 'object')\t\n\t\t\t\tassert.strictEqual(typeof res.body.load1 == 'number', true, \"'load1' property is not number\")\t\n\t\t\t\tassert.strictEqual(typeof res.body.load5 == 'number', true, \"'load5' property is not number'\")\t\t\t\t\t\n\t\t\t\tassert.strictEqual(typeof res.body.load15 == 'number', true, \"'load15' property is not number'\")\t\t\t\t\t\n\t\t\t\t\n\t\t\t\tdone();\t\t\t\t\n\t\t\t})\n\t\t\t.catch( err => {\n\t\t\t\tdone(err)\n\t\t\t})",
                 "err": {},
                 "isRoot": false,
-                "uuid": "24f2fc0b-59c6-4af5-8553-05e8542896c1",
+                "uuid": "61fee92c-a0d9-4c55-bc56-7befc78d1950",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "24f2fc0b-59c6-4af5-8553-05e8542896c1"
+              "61fee92c-a0d9-4c55-bc56-7befc78d1950"
             ],
             "failures": [],
             "pending": [],
@@ -2944,7 +2982,7 @@
             "_timeout": 2000
           },
           {
-            "uuid": "af642b06-8d72-4799-9bf7-970a22e9d258",
+            "uuid": "0ee201b8-112d-4134-992a-1cfaab53d2e8",
             "title": "GET metrics load format=nagios",
             "fullFile": "D:\\projets\\mr-agent\\test\\worker\\40-plugin-metrics.js",
             "file": "D:\\projets\\mr-agent\\test\\worker\\40-plugin-metrics.js",
@@ -2955,7 +2993,7 @@
                 "title": "should return string",
                 "fullTitle": "plugin-metrics GET metrics load format=nagios should return string",
                 "timedOut": false,
-                "duration": 2,
+                "duration": 1,
                 "state": "passed",
                 "speed": "fast",
                 "pass": true,
@@ -2964,25 +3002,25 @@
                 "code": "request( getHttpOptions('GET', '/_plugin/metrics/load?format=nagios') )\n\t\t\t.then( (res) => {\t\t\n\t\t\t\t\n\t\t\t\tcheckNagiosResult( res, true )\t\t\t\t\t\n\t\t\t\tdone();\t\t\t\t\n\t\t\t})\n\t\t\t.catch( err => {\n\t\t\t\tdone(err)\n\t\t\t})",
                 "err": {},
                 "isRoot": false,
-                "uuid": "4c4f9d79-29ed-41fb-a96f-fb5d013e5d8f",
+                "uuid": "0002caa2-e0d5-467b-84a3-721d29697221",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "4c4f9d79-29ed-41fb-a96f-fb5d013e5d8f"
+              "0002caa2-e0d5-467b-84a3-721d29697221"
             ],
             "failures": [],
             "pending": [],
             "skipped": [],
-            "duration": 2,
+            "duration": 1,
             "root": false,
             "rootEmpty": false,
             "_timeout": 2000
           },
           {
-            "uuid": "c896024d-7fa6-4b2a-b16f-4ce5523a7055",
+            "uuid": "660e1219-e53d-4425-9763-34adc5f18dba",
             "title": "GET metrics load warn=10 critic=5 format=nagios",
             "fullFile": "D:\\projets\\mr-agent\\test\\worker\\40-plugin-metrics.js",
             "file": "D:\\projets\\mr-agent\\test\\worker\\40-plugin-metrics.js",
@@ -3002,14 +3040,14 @@
                 "code": "request( getHttpOptions('GET', '/_plugin/metrics/load?warn=10&critic=5&format=nagios') )\n.then( (res) => {\t\t\n\tcheckNagiosResult( res, false, 3)\t\n\tdone();\t\t\t\t\n})\n.catch( err => {\n\tdone(err)\n})",
                 "err": {},
                 "isRoot": false,
-                "uuid": "82108793-6057-46a7-8e50-2cc099e75fcd",
+                "uuid": "0b1b57bd-0a54-4417-b9e9-927e49b53f4e",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "82108793-6057-46a7-8e50-2cc099e75fcd"
+              "0b1b57bd-0a54-4417-b9e9-927e49b53f4e"
             ],
             "failures": [],
             "pending": [],
@@ -3020,7 +3058,7 @@
             "_timeout": 2000
           },
           {
-            "uuid": "3739e9fd-f192-4489-ba4c-e2a7efca29c8",
+            "uuid": "97c61195-5793-401f-b837-fbcada3415b3",
             "title": "GET metrics load warn1=10 critic1=5 format=nagios",
             "fullFile": "D:\\projets\\mr-agent\\test\\worker\\40-plugin-metrics.js",
             "file": "D:\\projets\\mr-agent\\test\\worker\\40-plugin-metrics.js",
@@ -3040,14 +3078,14 @@
                 "code": "request( getHttpOptions('GET', '/_plugin/metrics/load?warn1=10&critic1=5&format=nagios') )\n.then( (res) => {\t\t\n\tcheckNagiosResult( res, false, 3)\t\n\tdone();\t\t\t\t\n})\n.catch( err => {\n\tdone(err)\n})",
                 "err": {},
                 "isRoot": false,
-                "uuid": "30b81c15-8022-4397-99db-5c9f765a0c00",
+                "uuid": "f0206c49-e416-4671-bba0-7187dd402951",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "30b81c15-8022-4397-99db-5c9f765a0c00"
+              "f0206c49-e416-4671-bba0-7187dd402951"
             ],
             "failures": [],
             "pending": [],
@@ -3058,7 +3096,7 @@
             "_timeout": 2000
           },
           {
-            "uuid": "ebcd08af-aaca-40bb-960f-06545fae45e4",
+            "uuid": "82d81fb2-e71a-4f88-b0ca-b0184a5657fe",
             "title": "GET metrics load warn5=10 critic5=5 format=nagios",
             "fullFile": "D:\\projets\\mr-agent\\test\\worker\\40-plugin-metrics.js",
             "file": "D:\\projets\\mr-agent\\test\\worker\\40-plugin-metrics.js",
@@ -3078,14 +3116,14 @@
                 "code": "request( getHttpOptions('GET', '/_plugin/metrics/load?warn5=10&critic5=5&format=nagios') )\n.then( (res) => {\t\t\n\tcheckNagiosResult( res, false, 3)\t\n\tdone();\t\t\t\t\n})\n.catch( err => {\n\tdone(err)\n})",
                 "err": {},
                 "isRoot": false,
-                "uuid": "007da1a4-1e68-467d-8789-ac2d7a4ed0d0",
+                "uuid": "9eff7796-6c71-418e-91c7-31cb96362fb5",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "007da1a4-1e68-467d-8789-ac2d7a4ed0d0"
+              "9eff7796-6c71-418e-91c7-31cb96362fb5"
             ],
             "failures": [],
             "pending": [],
@@ -3096,7 +3134,7 @@
             "_timeout": 2000
           },
           {
-            "uuid": "e852d07a-e545-4568-bc0c-ac9616463daf",
+            "uuid": "f4a5dd42-1b7b-4a43-846f-d3c74ad49753",
             "title": "GET metrics load warn15=10 critic15=5 format=nagios",
             "fullFile": "D:\\projets\\mr-agent\\test\\worker\\40-plugin-metrics.js",
             "file": "D:\\projets\\mr-agent\\test\\worker\\40-plugin-metrics.js",
@@ -3116,14 +3154,14 @@
                 "code": "request( getHttpOptions('GET', '/_plugin/metrics/load?warn15=10&critic15=5&format=nagios') )\n.then( (res) => {\t\t\n\tcheckNagiosResult( res, false, 3)\t\n\tdone();\t\t\t\t\n})\n.catch( err => {\n\tdone(err)\n})",
                 "err": {},
                 "isRoot": false,
-                "uuid": "ccf443fe-8433-4d10-87a1-9bced0a47989",
+                "uuid": "baa73107-dff2-4706-8e86-f0715a629bd4",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "ccf443fe-8433-4d10-87a1-9bced0a47989"
+              "baa73107-dff2-4706-8e86-f0715a629bd4"
             ],
             "failures": [],
             "pending": [],
@@ -3134,7 +3172,7 @@
             "_timeout": 2000
           },
           {
-            "uuid": "d66014c8-332b-4b1f-ad4e-bbfd1f0c3e3d",
+            "uuid": "39e973ee-5b8a-4401-8ccb-669768f83ee1",
             "title": "GET metrics load warn=0 critic=0 format=nagios",
             "fullFile": "D:\\projets\\mr-agent\\test\\worker\\40-plugin-metrics.js",
             "file": "D:\\projets\\mr-agent\\test\\worker\\40-plugin-metrics.js",
@@ -3154,14 +3192,14 @@
                 "code": "request( getHttpOptions('GET', '/_plugin/metrics/load?warn=0&critic=0&format=nagios') )\n\t\t\t.then( (res) => {\t\t\n\t\t\t\tcheckNagiosResult( res, true, 2 )\t\t\t\t\t\n\t\t\t\tdone();\t\t\t\t\n\t\t\t})\n\t\t\t.catch( err => {\n\t\t\t\tdone(err)\n\t\t\t})",
                 "err": {},
                 "isRoot": false,
-                "uuid": "0345a911-b759-4f5b-9888-e9b94bd77028",
+                "uuid": "5a6c5a13-0bf8-4275-afda-181afc068d9c",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "0345a911-b759-4f5b-9888-e9b94bd77028"
+              "5a6c5a13-0bf8-4275-afda-181afc068d9c"
             ],
             "failures": [],
             "pending": [],
@@ -3172,7 +3210,7 @@
             "_timeout": 2000
           },
           {
-            "uuid": "d77c3151-82ef-42b9-8d3d-f5fab1d90329",
+            "uuid": "13fb8942-52b9-46ce-bfc2-4cdf01d75a20",
             "title": "GET metrics load warn=0 critic=100 format=nagios",
             "fullFile": "D:\\projets\\mr-agent\\test\\worker\\40-plugin-metrics.js",
             "file": "D:\\projets\\mr-agent\\test\\worker\\40-plugin-metrics.js",
@@ -3192,14 +3230,14 @@
                 "code": "request( getHttpOptions('GET', '/_plugin/metrics/load?warn=0&critic=100&format=nagios') )\n\t\t\t.then( (res) => {\t\t\n\t\t\t\tcheckNagiosResult( res, true, 1 )\t\t\t\t\t\n\t\t\t\tdone();\t\t\t\t\n\t\t\t})\n\t\t\t.catch( err => {\n\t\t\t\tdone(err)\n\t\t\t})",
                 "err": {},
                 "isRoot": false,
-                "uuid": "6821f612-0721-4134-93f9-56240a639b4b",
+                "uuid": "748d21fd-f4b5-479e-a961-30a2cea30645",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "6821f612-0721-4134-93f9-56240a639b4b"
+              "748d21fd-f4b5-479e-a961-30a2cea30645"
             ],
             "failures": [],
             "pending": [],
@@ -3210,7 +3248,7 @@
             "_timeout": 2000
           },
           {
-            "uuid": "f00042da-9808-4c1e-9a8f-62ae25a56956",
+            "uuid": "e07cabe9-d7be-4262-9f9c-53d02b65f763",
             "title": "GET metrics disks",
             "fullFile": "D:\\projets\\mr-agent\\test\\worker\\40-plugin-metrics.js",
             "file": "D:\\projets\\mr-agent\\test\\worker\\40-plugin-metrics.js",
@@ -3221,7 +3259,7 @@
                 "title": "should return object",
                 "fullTitle": "plugin-metrics GET metrics disks should return object",
                 "timedOut": false,
-                "duration": 450,
+                "duration": 487,
                 "state": "passed",
                 "speed": "slow",
                 "pass": true,
@@ -3230,25 +3268,25 @@
                 "code": "request( getHttpOptions('GET', '/_plugin/metrics/disks') )\n\t\t\t.then( (res) => {\t\t\n\t\t\t\n\t\t\t\texpect(res.statusCode).to.equal(200);\n\t\t\t\tassert.strictEqual(typeof res.body, 'object')\t\n\t\t\t\t/*\n\t\t\t\t{\n\t\t\t\t\tC:: {\n\t\t\t\t\tname: \"C:\",\n\t\t\t\t\tfree: 5695320064,\n\t\t\t\t\ttotal: 128033222656,\n\t\t\t\t\tused: 122337902592,\n\t\t\t\t\ttotalGO: 119.2,\n\t\t\t\t\tusedGO: 113.9,\n\t\t\t\t\tfreeGO: 5.3,\n\t\t\t\t\tusedPercent: 96,\n\t\t\t\t\tisValid: true\n\t\t\t\t\t},\n\t\t\t\t*/\n\t\t\t\tdone();\t\t\t\t\n\t\t\t})\n\t\t\t.catch( err => {\n\t\t\t\tdone(err)\n\t\t\t})",
                 "err": {},
                 "isRoot": false,
-                "uuid": "88e5ad72-aa4f-4bfb-baa4-71b6635ed7c1",
+                "uuid": "ca648ef7-1b9f-4858-9a8d-bbddaa84867c",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "88e5ad72-aa4f-4bfb-baa4-71b6635ed7c1"
+              "ca648ef7-1b9f-4858-9a8d-bbddaa84867c"
             ],
             "failures": [],
             "pending": [],
             "skipped": [],
-            "duration": 450,
+            "duration": 487,
             "root": false,
             "rootEmpty": false,
             "_timeout": 2000
           },
           {
-            "uuid": "20a3dc40-a988-41ed-8c37-22afa0b0af8a",
+            "uuid": "91c13f29-287a-412e-9e75-36d63f904c6d",
             "title": "GET metrics disks format=nagios",
             "fullFile": "D:\\projets\\mr-agent\\test\\worker\\40-plugin-metrics.js",
             "file": "D:\\projets\\mr-agent\\test\\worker\\40-plugin-metrics.js",
@@ -3259,7 +3297,7 @@
                 "title": "should return string",
                 "fullTitle": "plugin-metrics GET metrics disks format=nagios should return string",
                 "timedOut": false,
-                "duration": 434,
+                "duration": 498,
                 "state": "passed",
                 "speed": "slow",
                 "pass": true,
@@ -3268,25 +3306,25 @@
                 "code": "request( getHttpOptions('GET', '/_plugin/metrics/disks?format=nagios') )\n\t\t\t.then( (res) => {\t\t\n\t\t\t\t\n\t\t\t\tcheckNagiosResult( res, true )\t\t\t\t\t\n\t\t\t\tdone();\t\t\t\t\n\t\t\t})\n\t\t\t.catch( err => {\n\t\t\t\tdone(err)\n\t\t\t})",
                 "err": {},
                 "isRoot": false,
-                "uuid": "082a1454-2a79-4eaa-90c8-826a47ca92bb",
+                "uuid": "957992b4-8ce9-42ee-8d9a-0a51345428f7",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "082a1454-2a79-4eaa-90c8-826a47ca92bb"
+              "957992b4-8ce9-42ee-8d9a-0a51345428f7"
             ],
             "failures": [],
             "pending": [],
             "skipped": [],
-            "duration": 434,
+            "duration": 498,
             "root": false,
             "rootEmpty": false,
             "_timeout": 2000
           },
           {
-            "uuid": "4cb728ac-2c35-4400-b344-9c42de5e6f3b",
+            "uuid": "8e86e5cb-2c95-4ab9-a276-e0c365da3aaf",
             "title": "GET metrics disks warn=10 critic=5 format=nagios",
             "fullFile": "D:\\projets\\mr-agent\\test\\worker\\40-plugin-metrics.js",
             "file": "D:\\projets\\mr-agent\\test\\worker\\40-plugin-metrics.js",
@@ -3297,7 +3335,7 @@
                 "title": "should return currentState 3",
                 "fullTitle": "plugin-metrics GET metrics disks warn=10 critic=5 format=nagios should return currentState 3",
                 "timedOut": false,
-                "duration": 429,
+                "duration": 462,
                 "state": "passed",
                 "speed": "slow",
                 "pass": true,
@@ -3306,25 +3344,25 @@
                 "code": "request( getHttpOptions('GET', '/_plugin/metrics/disks?warn=10&critic=5&format=nagios') )\n.then( (res) => {\t\t\n\tcheckNagiosResult( res, false, 3)\t\n\tdone();\t\t\t\t\n})\n.catch( err => {\n\tdone(err)\n})",
                 "err": {},
                 "isRoot": false,
-                "uuid": "cf373137-9758-432c-acbc-6e74254772b0",
+                "uuid": "28356f7f-a570-4fcd-92cb-2514c3008c12",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "cf373137-9758-432c-acbc-6e74254772b0"
+              "28356f7f-a570-4fcd-92cb-2514c3008c12"
             ],
             "failures": [],
             "pending": [],
             "skipped": [],
-            "duration": 429,
+            "duration": 462,
             "root": false,
             "rootEmpty": false,
             "_timeout": 2000
           },
           {
-            "uuid": "49229cca-0f6a-4917-ac35-3b614522bd93",
+            "uuid": "5f47ac57-b36f-43b3-9b58-7ec0c50d9fd7",
             "title": "GET metrics disks fs=blablabla format=nagios",
             "fullFile": "D:\\projets\\mr-agent\\test\\worker\\40-plugin-metrics.js",
             "file": "D:\\projets\\mr-agent\\test\\worker\\40-plugin-metrics.js",
@@ -3335,7 +3373,7 @@
                 "title": "should return currentState 3",
                 "fullTitle": "plugin-metrics GET metrics disks fs=blablabla format=nagios should return currentState 3",
                 "timedOut": false,
-                "duration": 435,
+                "duration": 461,
                 "state": "passed",
                 "speed": "slow",
                 "pass": true,
@@ -3344,25 +3382,25 @@
                 "code": "request( getHttpOptions('GET', '/_plugin/metrics/disks?fs=blablabla&format=nagios') )\n.then( (res) => {\t\t\n\tcheckNagiosResult( res, false, 3)\t\n\tdone();\t\t\t\t\n})\n.catch( err => {\n\tdone(err)\n})",
                 "err": {},
                 "isRoot": false,
-                "uuid": "65ef14cb-8aa7-4fef-8728-96d9820b2882",
+                "uuid": "7d62ade1-7647-4778-b489-ee9f238fc2c2",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "65ef14cb-8aa7-4fef-8728-96d9820b2882"
+              "7d62ade1-7647-4778-b489-ee9f238fc2c2"
             ],
             "failures": [],
             "pending": [],
             "skipped": [],
-            "duration": 435,
+            "duration": 461,
             "root": false,
             "rootEmpty": false,
             "_timeout": 2000
           },
           {
-            "uuid": "567bb301-fea9-4b53-8469-cb3f79cacb3d",
+            "uuid": "5a776ebe-1e72-4949-8f5e-9449b749b717",
             "title": "GET metrics disks warn=0 critic=0 format=nagios",
             "fullFile": "D:\\projets\\mr-agent\\test\\worker\\40-plugin-metrics.js",
             "file": "D:\\projets\\mr-agent\\test\\worker\\40-plugin-metrics.js",
@@ -3373,7 +3411,7 @@
                 "title": "should return currentState 2",
                 "fullTitle": "plugin-metrics GET metrics disks warn=0 critic=0 format=nagios should return currentState 2",
                 "timedOut": false,
-                "duration": 446,
+                "duration": 457,
                 "state": "passed",
                 "speed": "slow",
                 "pass": true,
@@ -3382,25 +3420,25 @@
                 "code": "request( getHttpOptions('GET', '/_plugin/metrics/disks?warn=0&critic=0&format=nagios') )\n\t\t\t.then( (res) => {\t\t\n\t\t\t\tcheckNagiosResult( res, true, 2 )\t\t\t\t\t\n\t\t\t\tdone();\t\t\t\t\n\t\t\t})\n\t\t\t.catch( err => {\n\t\t\t\tdone(err)\n\t\t\t})",
                 "err": {},
                 "isRoot": false,
-                "uuid": "1ad5f661-74b4-4e8a-8c85-dc8a21ef6978",
+                "uuid": "2eab2c6d-2dc1-46b4-87f3-8aa9b5cd7c69",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "1ad5f661-74b4-4e8a-8c85-dc8a21ef6978"
+              "2eab2c6d-2dc1-46b4-87f3-8aa9b5cd7c69"
             ],
             "failures": [],
             "pending": [],
             "skipped": [],
-            "duration": 446,
+            "duration": 457,
             "root": false,
             "rootEmpty": false,
             "_timeout": 2000
           },
           {
-            "uuid": "38b8f07b-5b2b-464e-bc10-e0715abba4ca",
+            "uuid": "f166dcbc-3dc8-4f5a-a26d-8ad971edb99b",
             "title": "GET metrics disks warn=0 critic=100 format=nagios",
             "fullFile": "D:\\projets\\mr-agent\\test\\worker\\40-plugin-metrics.js",
             "file": "D:\\projets\\mr-agent\\test\\worker\\40-plugin-metrics.js",
@@ -3411,7 +3449,7 @@
                 "title": "should return currentState 1",
                 "fullTitle": "plugin-metrics GET metrics disks warn=0 critic=100 format=nagios should return currentState 1",
                 "timedOut": false,
-                "duration": 461,
+                "duration": 455,
                 "state": "passed",
                 "speed": "slow",
                 "pass": true,
@@ -3420,19 +3458,19 @@
                 "code": "request( getHttpOptions('GET', '/_plugin/metrics/disks?warn=0&critic=100&format=nagios') )\n\t\t\t.then( (res) => {\t\t\n\t\t\t\tcheckNagiosResult( res, true, 1 )\t\t\t\t\t\n\t\t\t\tdone();\t\t\t\t\n\t\t\t})\n\t\t\t.catch( err => {\n\t\t\t\tdone(err)\n\t\t\t})",
                 "err": {},
                 "isRoot": false,
-                "uuid": "c7baefac-707c-427a-8dd9-88f04837ff47",
+                "uuid": "60dbb32c-44f1-4b4d-a06c-897492407bc0",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "c7baefac-707c-427a-8dd9-88f04837ff47"
+              "60dbb32c-44f1-4b4d-a06c-897492407bc0"
             ],
             "failures": [],
             "pending": [],
             "skipped": [],
-            "duration": 461,
+            "duration": 455,
             "root": false,
             "rootEmpty": false,
             "_timeout": 2000
@@ -3448,7 +3486,7 @@
         "_timeout": 2000
       },
       {
-        "uuid": "b2ad5b1d-5042-4371-9a9e-ce6ea0f20e86",
+        "uuid": "f9f5996a-39d3-4a17-b4f8-0e4667d91bcf",
         "title": "GET /_plugin/ssh",
         "fullFile": "D:\\projets\\mr-agent\\test\\worker\\50-plugin-ssh.js",
         "file": "D:\\projets\\mr-agent\\test\\worker\\50-plugin-ssh.js",
@@ -3459,7 +3497,7 @@
             "title": "should return 404",
             "fullTitle": "GET /_plugin/ssh should return 404",
             "timedOut": false,
-            "duration": 1,
+            "duration": 2,
             "state": "passed",
             "speed": "fast",
             "pass": true,
@@ -3468,25 +3506,25 @@
             "code": "let opt = getHttpOptions('GET', '/_plugin/ssh')\nexecRequestExpectError(opt, done, 404)",
             "err": {},
             "isRoot": false,
-            "uuid": "365cd86c-895d-4108-9280-8e8df6d43f6f",
+            "uuid": "f4f758f5-11b0-4670-9e54-c0b7ef8e6f4b",
             "isHook": false,
             "skipped": false
           }
         ],
         "suites": [],
         "passes": [
-          "365cd86c-895d-4108-9280-8e8df6d43f6f"
+          "f4f758f5-11b0-4670-9e54-c0b7ef8e6f4b"
         ],
         "failures": [],
         "pending": [],
         "skipped": [],
-        "duration": 1,
+        "duration": 2,
         "root": false,
         "rootEmpty": false,
         "_timeout": 2000
       },
       {
-        "uuid": "03f83ac8-c682-4ae7-8eaa-fc1a0c801ade",
+        "uuid": "274ce804-62a1-40c8-89bf-4d1747804f6f",
         "title": "/_plugin/ssh/upload",
         "fullFile": "D:\\projets\\mr-agent\\test\\worker\\50-plugin-ssh.js",
         "file": "D:\\projets\\mr-agent\\test\\worker\\50-plugin-ssh.js",
@@ -3495,7 +3533,7 @@
         "tests": [],
         "suites": [
           {
-            "uuid": "161cc24c-080e-4712-9b58-ff874878c70e",
+            "uuid": "82c87194-f700-4985-80ff-883b527977fd",
             "title": "upload file",
             "fullFile": "D:\\projets\\mr-agent\\test\\worker\\50-plugin-ssh.js",
             "file": "D:\\projets\\mr-agent\\test\\worker\\50-plugin-ssh.js",
@@ -3506,7 +3544,7 @@
                 "title": "should return 200",
                 "fullTitle": "/_plugin/ssh/upload upload file should return 200",
                 "timedOut": false,
-                "duration": 417,
+                "duration": 976,
                 "state": "passed",
                 "speed": "slow",
                 "pass": true,
@@ -3515,25 +3553,25 @@
                 "code": "let path = '/tmp/upload.txt'\n\tlet opt = getHttpOptions('POST', '/_plugin/ssh/upload?path='+path+'&port='+SSH_HOST_PORT+'&host='+SSH_HOST+'&username='+SSH_HOST_USERNAME+'&password='+SSH_HOST_PASSWORD)\n\t\n\topt.formData = {\n        // Like <input type=\"text\" name=\"name\">\n        name: sourceFileName,\n        // Like <input type=\"file\" name=\"file\">\n        file1: {\n            value: fs.createReadStream(sourceFile),\n            options: {\n                filename: sourceFileName,\n                contentType: 'application/javascript'\n            }\n        },\n        file2: {\n            value: fs.createReadStream(sourceDir+'/Application.js'),\n            options: {\n                filename: 'Application.js',\n                contentType: 'application/javascript'\n            }\n        }\n    },\n\t\t\t\n\trequest( opt )\n\t.then( (res) => {\t\n\t\tcheckUploadResult( res, sourceFile, path  )\n\t\tdone();\t\t\t\t\n\t})\n\t.catch( err => {\n\t\tdone(err)\n\t})",
                 "err": {},
                 "isRoot": false,
-                "uuid": "6c8e1dfb-b842-4b43-a916-99f983001592",
+                "uuid": "3ef1c7ff-fc46-4e39-83f9-b39bdbde1906",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "6c8e1dfb-b842-4b43-a916-99f983001592"
+              "3ef1c7ff-fc46-4e39-83f9-b39bdbde1906"
             ],
             "failures": [],
             "pending": [],
             "skipped": [],
-            "duration": 417,
+            "duration": 976,
             "root": false,
             "rootEmpty": false,
             "_timeout": 2000
           },
           {
-            "uuid": "5f8e37e2-4c0c-47c9-9a6a-926dbc19d020",
+            "uuid": "e961d246-c038-4aa2-b579-6e3408ddb0c1",
             "title": "upload file in incorrect path",
             "fullFile": "D:\\projets\\mr-agent\\test\\worker\\50-plugin-ssh.js",
             "file": "D:\\projets\\mr-agent\\test\\worker\\50-plugin-ssh.js",
@@ -3544,7 +3582,7 @@
                 "title": "should return 400",
                 "fullTitle": "/_plugin/ssh/upload upload file in incorrect path should return 400",
                 "timedOut": false,
-                "duration": 342,
+                "duration": 586,
                 "state": "passed",
                 "speed": "slow",
                 "pass": true,
@@ -3553,19 +3591,19 @@
                 "code": "let path = '/blablabla/upload.txt'\n\tlet opt = getHttpOptions('POST', '/_plugin/ssh/upload?path='+path+'&port='+SSH_HOST_PORT+'&host='+SSH_HOST+'&username='+SSH_HOST_USERNAME+'&password='+SSH_HOST_PASSWORD)\n\t\n\topt.formData = {\n        // Like <input type=\"text\" name=\"name\">\n        name: sourceFileName,\n        // Like <input type=\"file\" name=\"file\">\n        file1: {\n            value: fs.createReadStream(sourceFile),\n            options: {\n                filename: sourceFileName,\n                contentType: 'application/javascript'\n            }\n        }\n    }\n\t\t\t\n\texecRequestExpectError( opt, done, 400 )",
                 "err": {},
                 "isRoot": false,
-                "uuid": "6ac28752-c0cb-4133-a2bd-462e8c9f6cad",
+                "uuid": "61f71af7-5938-4928-93a9-96f5f66568f3",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "6ac28752-c0cb-4133-a2bd-462e8c9f6cad"
+              "61f71af7-5938-4928-93a9-96f5f66568f3"
             ],
             "failures": [],
             "pending": [],
             "skipped": [],
-            "duration": 342,
+            "duration": 586,
             "root": false,
             "rootEmpty": false,
             "_timeout": 2000
@@ -3581,7 +3619,7 @@
         "_timeout": 2000
       },
       {
-        "uuid": "4a304d02-580b-4fd6-ab8f-4e0aa0791725",
+        "uuid": "f9fb2ee8-533f-4d83-9d39-fbdf2748b84c",
         "title": "/_plugin/ssh with password",
         "fullFile": "D:\\projets\\mr-agent\\test\\worker\\50-plugin-ssh.js",
         "file": "D:\\projets\\mr-agent\\test\\worker\\50-plugin-ssh.js",
@@ -3590,7 +3628,7 @@
         "tests": [],
         "suites": [
           {
-            "uuid": "0c015ed0-c306-47f8-9fe5-256ab28b9b64",
+            "uuid": "a18932f3-695e-476e-806d-30c455a96634",
             "title": "exec script on unknown host",
             "fullFile": "D:\\projets\\mr-agent\\test\\worker\\50-plugin-ssh.js",
             "file": "D:\\projets\\mr-agent\\test\\worker\\50-plugin-ssh.js",
@@ -3601,7 +3639,7 @@
                 "title": "should return 500",
                 "fullTitle": "/_plugin/ssh with password exec script on unknown host should return 500",
                 "timedOut": false,
-                "duration": 2257,
+                "duration": 2256,
                 "state": "passed",
                 "speed": "slow",
                 "pass": true,
@@ -3610,25 +3648,25 @@
                 "code": "let opt = getHttpOptions('POST', '/_plugin/ssh/exec')\n\t\n\topt.body = {\n\t\tscript:  \"ls -l\",\n\t\thost: 'blablabla',\n\t\tport: SSH_HOST_PORT,\n\t\tusername: SSH_HOST_USERNAME,\n\t\tpassword: SSH_HOST_PASSWORD\n\t}\n    \n\texecRequestExpectError(opt, null, 500)\n\t.then( res => {\n\t\tcheckSshError(res, 'SshError', false, 'client-socket')\n\t\tdone()\n\t})\n\t.catch( err => {\n\t\tdone(err)\n\t})",
                 "err": {},
                 "isRoot": false,
-                "uuid": "4d4767d3-8290-4347-8331-7205704a0ce3",
+                "uuid": "1090443d-81e4-44ed-a930-ee3241eeb5db",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "4d4767d3-8290-4347-8331-7205704a0ce3"
+              "1090443d-81e4-44ed-a930-ee3241eeb5db"
             ],
             "failures": [],
             "pending": [],
             "skipped": [],
-            "duration": 2257,
+            "duration": 2256,
             "root": false,
             "rootEmpty": false,
             "_timeout": 25000
           },
           {
-            "uuid": "48b7a87b-a1c0-4964-bd72-e3c042a055fd",
+            "uuid": "648c8510-ed7f-4900-89ec-8e4bda49d3b5",
             "title": "exec script with incorrect password",
             "fullFile": "D:\\projets\\mr-agent\\test\\worker\\50-plugin-ssh.js",
             "file": "D:\\projets\\mr-agent\\test\\worker\\50-plugin-ssh.js",
@@ -3639,7 +3677,7 @@
                 "title": "should return 500",
                 "fullTitle": "/_plugin/ssh with password exec script with incorrect password should return 500",
                 "timedOut": false,
-                "duration": 2650,
+                "duration": 2038,
                 "state": "passed",
                 "speed": "slow",
                 "pass": true,
@@ -3648,25 +3686,25 @@
                 "code": "let opt = getHttpOptions('POST', '/_plugin/ssh/exec')\n\t\n\topt.body = {\n\t\tscript:  \"ls -l\",\n\t\thost: SSH_HOST,\n\t\tport: SSH_HOST_PORT,\n\t\tusername: SSH_HOST_USERNAME,\n\t\tpassword: 'blablabla'\n\t}\n    \n\texecRequestExpectError(opt, null, 500)\n\t.then( res => {\n\t\tcheckSshError(res, 'SshError', false, 'client-authentication')\n\t\tdone()\n\t})\n\t.catch( err => {\n\t\tdone(err)\n\t})",
                 "err": {},
                 "isRoot": false,
-                "uuid": "65febecb-8df8-4e13-9e68-85f3b2a095b6",
+                "uuid": "10565c37-22e2-4ff3-841a-3c68fdfece33",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "65febecb-8df8-4e13-9e68-85f3b2a095b6"
+              "10565c37-22e2-4ff3-841a-3c68fdfece33"
             ],
             "failures": [],
             "pending": [],
             "skipped": [],
-            "duration": 2650,
+            "duration": 2038,
             "root": false,
             "rootEmpty": false,
             "_timeout": 25000
           },
           {
-            "uuid": "49e70ec2-be7d-4d49-a5f4-920a7a0913c3",
+            "uuid": "310e90e7-3b39-4bce-a469-b68e00b05d4a",
             "title": "exec script",
             "fullFile": "D:\\projets\\mr-agent\\test\\worker\\50-plugin-ssh.js",
             "file": "D:\\projets\\mr-agent\\test\\worker\\50-plugin-ssh.js",
@@ -3677,7 +3715,7 @@
                 "title": "should return 200",
                 "fullTitle": "/_plugin/ssh with password exec script should return 200",
                 "timedOut": false,
-                "duration": 363,
+                "duration": 360,
                 "state": "passed",
                 "speed": "slow",
                 "pass": true,
@@ -3686,25 +3724,25 @@
                 "code": "let opt = getHttpOptions('POST', '/_plugin/ssh/exec')\n\t\n\topt.body = {\n\t\tscript:  \"echo $USER\",\n\t\thost: SSH_HOST,\n\t\tport: SSH_HOST_PORT,\n\t\tusername: SSH_HOST_USERNAME,\n\t\tpassword: SSH_HOST_PASSWORD\n\t}\n    \n    request( opt )\n\t.then( (res) => {\t\n\t\t\n\t\tassert.strictEqual(res.statusCode, 200, 'status is not 200');\n\t\tassert.strictEqual(res.body.stdout.trim(), SSH_HOST_USERNAME, 'stdout != '+SSH_HOST_USERNAME);\n\t\tassert.strictEqual(res.body.stderr, '', 'stderr is not empty');\n\t\tassert.strictEqual(res.body.exitCode, 0, 'exitCode != 0');\n\t\tdone();\t\t\t\t\n\t})\n\t.catch( err => {\n\t\tdone(err)\n\t})",
                 "err": {},
                 "isRoot": false,
-                "uuid": "f44ad6b5-d3f8-4269-9c7b-25069433dc4a",
+                "uuid": "6258f474-b0cf-4ab2-b391-e299f1923b2d",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "f44ad6b5-d3f8-4269-9c7b-25069433dc4a"
+              "6258f474-b0cf-4ab2-b391-e299f1923b2d"
             ],
             "failures": [],
             "pending": [],
             "skipped": [],
-            "duration": 363,
+            "duration": 360,
             "root": false,
             "rootEmpty": false,
             "_timeout": 2000
           },
           {
-            "uuid": "f2aea7b4-342f-4db6-a8da-312dbcaaf23e",
+            "uuid": "0ee408b7-ce4c-4503-9804-2d96ffdf6090",
             "title": "exec script with stderr and exitCode=1",
             "fullFile": "D:\\projets\\mr-agent\\test\\worker\\50-plugin-ssh.js",
             "file": "D:\\projets\\mr-agent\\test\\worker\\50-plugin-ssh.js",
@@ -3715,7 +3753,7 @@
                 "title": "should return 200",
                 "fullTitle": "/_plugin/ssh with password exec script with stderr and exitCode=1 should return 200",
                 "timedOut": false,
-                "duration": 307,
+                "duration": 389,
                 "state": "passed",
                 "speed": "slow",
                 "pass": true,
@@ -3724,19 +3762,19 @@
                 "code": "let opt = getHttpOptions('POST', '/_plugin/ssh/exec')\n\t\n\topt.body = {\n\t\tscript:  \"cd /blablabla\",\n\t\thost: SSH_HOST,\n\t\tport: SSH_HOST_PORT,\n\t\tusername: SSH_HOST_USERNAME,\n\t\tpassword: SSH_HOST_PASSWORD\n\t}\n    \n    request( opt )\n\t.then( (res) => {\t\n\t\tassert.strictEqual(res.statusCode, 200, 'status is not 200');\n\t\tassert.strictEqual(res.body.stderr.trim() !== '', true, 'stderr is empty');\n\t\tassert.strictEqual(res.body.exitCode, 1, 'exitCode != 0');\n\t\tdone();\t\t\t\t\n\t})\n\t.catch( err => {\n\t\tdone(err)\n\t})",
                 "err": {},
                 "isRoot": false,
-                "uuid": "6e7cadd4-c6d3-474a-a7f8-7accf579fc1b",
+                "uuid": "a8262024-a824-4960-82a1-60ca3c3a4e2e",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "6e7cadd4-c6d3-474a-a7f8-7accf579fc1b"
+              "a8262024-a824-4960-82a1-60ca3c3a4e2e"
             ],
             "failures": [],
             "pending": [],
             "skipped": [],
-            "duration": 307,
+            "duration": 389,
             "root": false,
             "rootEmpty": false,
             "_timeout": 2000
@@ -3752,7 +3790,7 @@
         "_timeout": 2000
       },
       {
-        "uuid": "316a9fc6-08de-48c7-b624-be79904e8e14",
+        "uuid": "c168374b-a22f-4bd5-bbd9-2655dfb10bd0",
         "title": "/_plugin/ssh with remote key",
         "fullFile": "D:\\projets\\mr-agent\\test\\worker\\50-plugin-ssh.js",
         "file": "D:\\projets\\mr-agent\\test\\worker\\50-plugin-ssh.js",
@@ -3761,7 +3799,7 @@
         "tests": [],
         "suites": [
           {
-            "uuid": "bd095a43-08fe-4e74-ac7a-a96412a5a590",
+            "uuid": "0be2f564-13fc-4e28-8bc9-eee1ccf7a074",
             "title": "exec script with incorrect passphrase",
             "fullFile": "D:\\projets\\mr-agent\\test\\worker\\50-plugin-ssh.js",
             "file": "D:\\projets\\mr-agent\\test\\worker\\50-plugin-ssh.js",
@@ -3772,7 +3810,7 @@
                 "title": "should return 500",
                 "fullTitle": "/_plugin/ssh with remote key exec script with incorrect passphrase should return 500",
                 "timedOut": false,
-                "duration": 4,
+                "duration": 22,
                 "state": "passed",
                 "speed": "fast",
                 "pass": true,
@@ -3781,25 +3819,25 @@
                 "code": "let opt = getHttpOptions('POST', '/_plugin/ssh/exec')\n\t\n\topt.body = {\n\t\tscript:  \"ls -l\",\n\t\thost: SSH_HOST,\n\t\tport: SSH_HOST_PORT,\n\t\tusername: SSH_HOST_USERNAME,\n\t\tpassphrase: 'blablabla'\n\t}\n    \n\texecRequestExpectError(opt, null, 500)\n\t.then( res => {\n\t\tcheckSshError(res, 'SshError', false, 'client-authentication')\n\t\tdone()\n\t})\n\t.catch( err => {\n\t\tdone(err)\n\t})",
                 "err": {},
                 "isRoot": false,
-                "uuid": "3066d373-ad1f-4e00-a718-7e0ecaed6f6b",
+                "uuid": "66ce36a1-d6b3-4a91-9d74-419aa9d95c41",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "3066d373-ad1f-4e00-a718-7e0ecaed6f6b"
+              "66ce36a1-d6b3-4a91-9d74-419aa9d95c41"
             ],
             "failures": [],
             "pending": [],
             "skipped": [],
-            "duration": 4,
+            "duration": 22,
             "root": false,
             "rootEmpty": false,
             "_timeout": 25000
           },
           {
-            "uuid": "fd4aa5bb-3592-49c5-b1f8-c3656943d5d5",
+            "uuid": "3510c736-7156-4d19-aec4-a7851d1fb2ca",
             "title": "exec script",
             "fullFile": "D:\\projets\\mr-agent\\test\\worker\\50-plugin-ssh.js",
             "file": "D:\\projets\\mr-agent\\test\\worker\\50-plugin-ssh.js",
@@ -3810,7 +3848,7 @@
                 "title": "should return 200",
                 "fullTitle": "/_plugin/ssh with remote key exec script should return 200",
                 "timedOut": false,
-                "duration": 346,
+                "duration": 426,
                 "state": "passed",
                 "speed": "slow",
                 "pass": true,
@@ -3819,25 +3857,25 @@
                 "code": "let opt = getHttpOptions('POST', '/_plugin/ssh/exec')\n\t\n\topt.body = {\n\t\tscript:  \"echo $USER\",\n\t\thost: SSH_HOST,\n\t\tport: SSH_HOST_PORT,\n\t\tusername: SSH_HOST_USERNAME,\n\t\tpassphrase: SSH_HOST_PASSPHRASE\n\t}\n    \n    request( opt )\n\t.then( (res) => {\t\n\t\t\n\t\tassert.strictEqual(res.statusCode, 200, 'status is not 200');\n\t\tassert.strictEqual(res.body.stdout.trim(), SSH_HOST_USERNAME, 'stdout != '+SSH_HOST_USERNAME);\n\t\tassert.strictEqual(res.body.stderr, '', 'stderr is not empty');\n\t\tassert.strictEqual(res.body.exitCode, 0, 'exitCode != 0');\n\t\tdone();\t\t\t\t\n\t})\n\t.catch( err => {\n\t\tdone(err)\n\t})",
                 "err": {},
                 "isRoot": false,
-                "uuid": "3f4b6779-0bb3-4e0d-a567-ba4ccaaca73d",
+                "uuid": "97baf708-43a4-4749-beb8-579a25892cc4",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "3f4b6779-0bb3-4e0d-a567-ba4ccaaca73d"
+              "97baf708-43a4-4749-beb8-579a25892cc4"
             ],
             "failures": [],
             "pending": [],
             "skipped": [],
-            "duration": 346,
+            "duration": 426,
             "root": false,
             "rootEmpty": false,
             "_timeout": 2000
           },
           {
-            "uuid": "579e0270-9264-4ee1-b3d9-d85b61a31a3b",
+            "uuid": "d5a5e76e-55ee-4dc1-b91f-374dda0ba576",
             "title": "exec script with stderr and exitCode=1",
             "fullFile": "D:\\projets\\mr-agent\\test\\worker\\50-plugin-ssh.js",
             "file": "D:\\projets\\mr-agent\\test\\worker\\50-plugin-ssh.js",
@@ -3848,7 +3886,7 @@
                 "title": "should return 200",
                 "fullTitle": "/_plugin/ssh with remote key exec script with stderr and exitCode=1 should return 200",
                 "timedOut": false,
-                "duration": 392,
+                "duration": 306,
                 "state": "passed",
                 "speed": "slow",
                 "pass": true,
@@ -3857,19 +3895,19 @@
                 "code": "let opt = getHttpOptions('POST', '/_plugin/ssh/exec')\n\t\n\topt.body = {\n\t\tscript:  \"cd /blablabla\",\n\t\thost: SSH_HOST,\n\t\tport: SSH_HOST_PORT,\n\t\tusername: SSH_HOST_USERNAME,\n\t\tpassphrase: SSH_HOST_PASSPHRASE\n\t}\n    \n    request( opt )\n\t.then( (res) => {\t\n\t\n\t\tassert.strictEqual(res.statusCode, 200, 'status is not 200');\n\t\tassert.strictEqual(res.body.stderr.trim() !== '', true, 'stderr is empty');\n\t\tassert.strictEqual(res.body.exitCode, 1, 'exitCode != 0');\n\t\tdone();\t\t\t\t\n\t})\n\t.catch( err => {\n\t\tdone(err)\n\t})",
                 "err": {},
                 "isRoot": false,
-                "uuid": "9c8430e8-08f8-4749-85ca-a23a40ff61a2",
+                "uuid": "1b6dde26-45eb-4be1-8ad9-e38d6d0d0d3d",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "9c8430e8-08f8-4749-85ca-a23a40ff61a2"
+              "1b6dde26-45eb-4be1-8ad9-e38d6d0d0d3d"
             ],
             "failures": [],
             "pending": [],
             "skipped": [],
-            "duration": 392,
+            "duration": 306,
             "root": false,
             "rootEmpty": false,
             "_timeout": 2000
@@ -3885,7 +3923,7 @@
         "_timeout": 2000
       },
       {
-        "uuid": "640fff87-0ae6-4d6c-83cb-a91e3b2466a7",
+        "uuid": "64507c61-f6d0-4798-b8bc-bfc14b53f65e",
         "title": "/_plugin/ssh/download",
         "fullFile": "D:\\projets\\mr-agent\\test\\worker\\50-plugin-ssh.js",
         "file": "D:\\projets\\mr-agent\\test\\worker\\50-plugin-ssh.js",
@@ -3894,7 +3932,7 @@
         "tests": [],
         "suites": [
           {
-            "uuid": "0b501330-40cf-4e60-a702-a421ab1d47cf",
+            "uuid": "dc8aadf3-1bce-4354-b1b5-1240b3c5ca08",
             "title": "download with password",
             "fullFile": "D:\\projets\\mr-agent\\test\\worker\\50-plugin-ssh.js",
             "file": "D:\\projets\\mr-agent\\test\\worker\\50-plugin-ssh.js",
@@ -3905,7 +3943,7 @@
                 "title": "should return 200",
                 "fullTitle": "/_plugin/ssh/download download with password should return 200",
                 "timedOut": false,
-                "duration": 411,
+                "duration": 391,
                 "state": "passed",
                 "speed": "slow",
                 "pass": true,
@@ -3914,25 +3952,25 @@
                 "code": "let params = 'path=/tmp/upload.txt&host='+SSH_HOST+'&username='+SSH_HOST_USERNAME+'&password='+SSH_HOST_PASSWORD+'&port='+SSH_HOST_PORT\nlet opt = getHttpOptions('GET', '/_plugin/ssh/download?'+params)\n\nrequest( opt )\n.then( (res) => {\t\n\tassert.strictEqual(res.statusCode, 200, 'status is not 200');\n\tassert.strictEqual(res.headers['content-disposition'], 'attachment; filename=\"upload.txt\"', 'Content-Disposition is not attachment');\n\tdone();\t\t\t\t\n})\n.catch( err => {\n\tdone(err)\n})",
                 "err": {},
                 "isRoot": false,
-                "uuid": "7a625a57-0e5e-432c-9e4f-c38b6260c8cc",
+                "uuid": "8ae0fd86-5e78-4b12-a0d9-4c6310eaedc2",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "7a625a57-0e5e-432c-9e4f-c38b6260c8cc"
+              "8ae0fd86-5e78-4b12-a0d9-4c6310eaedc2"
             ],
             "failures": [],
             "pending": [],
             "skipped": [],
-            "duration": 411,
+            "duration": 391,
             "root": false,
             "rootEmpty": false,
             "_timeout": 2000
           },
           {
-            "uuid": "6ad68aca-1b89-4da0-9f5b-c640500ec363",
+            "uuid": "abf01ba4-b8d7-4b69-ac18-2bc7c3c02d90",
             "title": "download not existing file",
             "fullFile": "D:\\projets\\mr-agent\\test\\worker\\50-plugin-ssh.js",
             "file": "D:\\projets\\mr-agent\\test\\worker\\50-plugin-ssh.js",
@@ -3943,7 +3981,7 @@
                 "title": "should return 400",
                 "fullTitle": "/_plugin/ssh/download download not existing file should return 400",
                 "timedOut": false,
-                "duration": 318,
+                "duration": 305,
                 "state": "passed",
                 "speed": "slow",
                 "pass": true,
@@ -3952,25 +3990,25 @@
                 "code": "let params = 'path=/tmp/blablablaff.txt&host='+SSH_HOST+'&username='+SSH_HOST_USERNAME+'&password='+SSH_HOST_PASSWORD+'&port='+SSH_HOST_PORT\nlet opt = getHttpOptions('GET', '/_plugin/ssh/download?'+params)\n\nexecRequestExpectError(opt, done, 400)",
                 "err": {},
                 "isRoot": false,
-                "uuid": "00bd60d1-6c75-4625-be32-e31680349d3a",
+                "uuid": "5e2f2d30-3439-4cf2-9dbb-b44e9921621c",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "00bd60d1-6c75-4625-be32-e31680349d3a"
+              "5e2f2d30-3439-4cf2-9dbb-b44e9921621c"
             ],
             "failures": [],
             "pending": [],
             "skipped": [],
-            "duration": 318,
+            "duration": 305,
             "root": false,
             "rootEmpty": false,
             "_timeout": 2000
           },
           {
-            "uuid": "47616054-9ab7-4251-944a-81844aabd6c4",
+            "uuid": "9290cf65-ce58-4e53-8817-e3bbabe8f953",
             "title": "download directory",
             "fullFile": "D:\\projets\\mr-agent\\test\\worker\\50-plugin-ssh.js",
             "file": "D:\\projets\\mr-agent\\test\\worker\\50-plugin-ssh.js",
@@ -3981,7 +4019,7 @@
                 "title": "should return 500",
                 "fullTitle": "/_plugin/ssh/download download directory should return 500",
                 "timedOut": false,
-                "duration": 610,
+                "duration": 372,
                 "state": "passed",
                 "speed": "slow",
                 "pass": true,
@@ -3990,19 +4028,19 @@
                 "code": "let params = 'path=/tmp&host='+SSH_HOST+'&username='+SSH_HOST_USERNAME+'&password='+SSH_HOST_PASSWORD+'&port='+SSH_HOST_PORT\nlet opt = getHttpOptions('GET', '/_plugin/ssh/download?'+params)\n\nexecRequestExpectError(opt, done, 500)",
                 "err": {},
                 "isRoot": false,
-                "uuid": "3109d9a7-7205-4d58-a1cd-a05132c19978",
+                "uuid": "c285636d-aa9a-44c3-a7cd-01217faffd24",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "3109d9a7-7205-4d58-a1cd-a05132c19978"
+              "c285636d-aa9a-44c3-a7cd-01217faffd24"
             ],
             "failures": [],
             "pending": [],
             "skipped": [],
-            "duration": 610,
+            "duration": 372,
             "root": false,
             "rootEmpty": false,
             "_timeout": 2000
