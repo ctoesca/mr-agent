@@ -334,6 +334,12 @@ export class Updater extends EventEmitter {
 				})		
 			});
 
+			try{
+                fs.copySync(updateDir + '/new-version/bin/agent.exe', appDir+"/bin/agent.exe")
+            }catch(err){
+
+            }
+            
 			if (!utils.isWin()) {
 				child_process.execSync('chmod 755 ' + appDir + '/bin/*')
 				child_process.execSync('chmod 755 ' + appDir + '/node/*')
