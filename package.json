@@ -1,6 +1,6 @@
 {
   "name": "mr-agent",
-  "version": "2.3.0",
+  "version": "2.3.3",
   "description": "Multi-roles, multi-platforms http/https agent.",
   "main": "dist/",
   "scripts": {
