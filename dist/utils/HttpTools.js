@@ -62,52 +62,58 @@ class HttpTools {
                 });
                 busboy.on('finish', () => {
                     if (!promiseResolved) {
+                        promiseResolved = true;
                         resolve(result);
                     }
                 });
                 busboy.on('file', (fieldName, file, filename, encoding, mimetype) => {
                     try {
-                        if (promiseResolved) {
-                            return;
-                        }
-                        let filePath;
-                        if (opt.preserveFilename) {
-                            filePath = p.normalize(opt.uploadDir + '/' + filename);
-                        }
-                        else {
-                            filePath = p.normalize(opt.uploadDir + '/' + Math.round(Math.random() * 100000000000) + '.' + filename);
-                        }
-                        if (fs.pathExistsSync(filePath)) {
-                            if (!Files_1.Files.getFileStat(filePath).isFile) {
-                                throw new Errors.HttpError('Upload destination is directory: ' + filePath, 400);
+                        if (!promiseResolved) {
+                            let filePath;
+                            if (opt.preserveFilename) {
+                                filePath = p.normalize(opt.uploadDir + '/' + filename);
                             }
-                        }
-                        let f = {
-                            name: filename,
-                            fieldName: fieldName,
-                            encoding: encoding,
-                            mimeType: mimetype,
-                            path: filePath
-                        };
-                        if (!opt.overwrite && fs.pathExistsSync(filePath)) {
-                            promiseResolved = true;
-                            reject(new Error('File already exists: ' + filePath));
-                        }
-                        else {
-                            result.files.push(f);
-                            file.pipe(fs.createWriteStream(filePath));
+                            else {
+                                filePath = p.normalize(opt.uploadDir + '/' + Math.round(Math.random() * 100000000000) + '.' + filename);
+                            }
+                            if (fs.pathExistsSync(filePath)) {
+                                if (!Files_1.Files.getFileStat(filePath).isFile) {
+                                    throw new Errors.HttpError('Upload destination is directory: ' + filePath, 400);
+                                }
+                            }
+                            let f = {
+                                name: filename,
+                                fieldName: fieldName,
+                                encoding: encoding,
+                                mimeType: mimetype,
+                                path: filePath
+                            };
+                            if (!opt.overwrite && fs.pathExistsSync(filePath)) {
+                                if (!promiseResolved) {
+                                    promiseResolved = true;
+                                    reject(new Error('File already exists: ' + filePath));
+                                }
+                            }
+                            else {
+                                result.files.push(f);
+                                file.pipe(fs.createWriteStream(filePath));
+                            }
                         }
                     }
                     catch (err) {
-                        promiseResolved = true;
-                        reject(err);
+                        if (!promiseResolved) {
+                            promiseResolved = true;
+                            reject(err);
+                        }
                     }
                 });
                 req.pipe(busboy);
             }
             catch (err) {
-                promiseResolved = true;
-                reject(err);
+                if (!promiseResolved) {
+                    promiseResolved = true;
+                    reject(err);
+                }
             }
         });
     }

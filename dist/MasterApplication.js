@@ -13,7 +13,7 @@ class MasterApplication extends Application_1.Application {
         this.workers = new Map();
         this.workersArray = [];
         this.lastStat = null;
-        this.numProcesses = 1;
+        this.numProcesses = os.cpus().length;
         if (typeof this.config.numProcesses !== 'undefined') {
             if (this.config.numProcesses === 'auto') {
                 this.numProcesses = os.cpus().length;

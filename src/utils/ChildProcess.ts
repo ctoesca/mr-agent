@@ -5,61 +5,68 @@ import './StringTools';
 
 export class ChildProcess {
 
-	public static spawn(path: string, args: string[] = [], opt: any = {}) {
+	public static spawnCmd(cmd: string, args: string[]) {
+    
+        return new Promise((resolve, reject) => {
 
-		return new Promise( (resolve, reject) => {
-			try {
-				let stderr = ''
-				let stdout = ''
-				let error: any = null
+            var argsArray = [ '/C' , cmd].concat(args)
+            var stdout = ''
+            var stderr = ''
 
-				let child = child_process.spawn(path, args);
-				child.stdout.on('data', (data: any) => {
-					stdout += data;
-					if (opt.logger) {
-						opt.logger.info(data.toString());
-					}
-				});
+            let child = child_process.spawn('cmd', argsArray, {
+            });
 
-				child.stderr.on('data', (data: any) => {
-					if (opt.logger) {
-						opt.logger.error(data.toString());
-					}
-					stderr += data;
-				});
+            child.on('close', (code) => {
+                
+                var r = {
+                    exitCode: code,
+                    stdout: stdout,
+                    stderr: stderr
+                }
 
-				child.on('error', (err: any) => {
-					if (opt.logger) {
-						opt.logger.error(err.toString());
-					}
-					error = err
-				});
+                resolve(r)
+                
+            });
 
-				/*
-				child.on('exit', (code: number) => {
-				});
-				*/
+            child.stdout.on('data', (data) => {
+                stdout += data.toString();
+            });
 
-				child.on('close', (code: number) => {
-					if (code === null) {
-						code = 0;
-					}
-					if (!error) {
-						resolve({
-							stdout: stdout,
-							stderr: stderr,
-							exitCode: code
-						});
-					} else {
-						reject(error)
-					}
-				})
+            child.stderr.on('data', (data) => {
+                stderr += data.toString();
+            });
 
-			} catch (err) {
-				reject(err)
-			}
+            child.on('error', (error) => {
+                reject(error);
+            });
+        })    
+    }
 
-		})
-	}
+    public static execCmd(cmd: string, args: string[]) {
+    
+        return new Promise((resolve, reject) => {
+
+          	var argsStr: string = ''
+          	if (args.length > 0)
+          		argsStr = '"' + args.join('" "')+'"'
+
+            child_process.exec('"'+cmd+'"' + ' '+argsStr, (error, stdout, stderr) => {
+
+            	let exitCode = 0
+            	if (error)
+            		exitCode = error.code
+            	
+            	var r = {
+                    exitCode: exitCode,
+                    stdout: stdout,
+                    stderr: stderr
+                }
+
+                resolve(r)
+
+            });
+
+        })    
+    }
 
 }

@@ -6,7 +6,7 @@ export declare class MasterApplication extends Application {
     protected workersArray: any[];
     protected statTimer: Timer;
     protected lastStat: Date;
-    protected numProcesses: number;
+    protected numProcesses: any;
     constructor(configPath: string, opt?: any);
     execScript(script: string): Promise<unknown>;
     onStatTimer(): void;

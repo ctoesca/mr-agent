@@ -99,10 +99,10 @@ class Tmetric extends TbaseMetric_1.default {
         seuilsInfos = 'seuil warning: ' + params.warn + '% , seuil critic: ' + params.critic + '%';
         let r = {
             output: '',
-            currentState: null,
+            currentState: 0,
             perfdata: ''
         };
-        let state = null;
+        let state = "OK";
         Object.keys(result).forEach((fsName) => {
             let diskInfo = result[fsName];
             if (diskInfo.isValid) {
@@ -125,6 +125,7 @@ class Tmetric extends TbaseMetric_1.default {
                 diskInfo.output = state + ' - ' + diskInfo.name + ' utilisé à ' + diskInfo.usedPercent + '% (' + diskInfo.freeGO + 'GO libres/' + diskInfo.totalGO + 'Go)';
             }
             else {
+                r.currentState = 3;
                 if (diskInfo.output) {
                     diskInfo.output = 'UNKNOWN - ' + diskInfo.name + ' ' + diskInfo.output;
                 }

@@ -14,7 +14,7 @@ export class MasterApplication extends Application {
 	protected  workersArray: any[] = []
 	protected statTimer: Timer;
 	protected  lastStat: Date = null
-	protected numProcesses = 1
+	protected numProcesses: any = os.cpus().length
 	/*protected  currentSelectedWorker = 0;*/
 
 	constructor( configPath: string, opt: any = {} ) {
@@ -27,7 +27,7 @@ export class MasterApplication extends Application {
 			} else {
 				this.numProcesses = this.config.numProcesses
 			}
-		}
+		} 
 
 		if (typeof this.config.startScript !== 'undefined') {
 			this.execScript(this.config.startScript)

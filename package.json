@@ -21,7 +21,7 @@
   "license": "MIT",
   "readme": "README.md",
   "dependencies": {
-    "adm-zip": "^0.4.13",
+    "adm-zip": "^0.4.12",
     "archiver": "^3.0.0",
     "basic-auth": "^2.0.1",
     "bluebird": "^3.5.3",

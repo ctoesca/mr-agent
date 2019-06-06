@@ -1,13 +1,14 @@
 
 
-import fs = require('fs')
+import fs = require('fs-extra')
 import mime = require('mime')
 import * as utils from '../utils'
 import * as Promise from 'bluebird'
 import './StringTools';
+//import {ChildProcess} from "./ChildProcess";
 
 export class Files {
-
+	
 	public static isDir(path: string) {
 		return new Promise( (resolve, reject) => {
 			fs.stat(path, (err, stats) => {
@@ -19,6 +20,38 @@ export class Files {
 			})
 		})
 	}
+
+	/*public static shellMoveFile(source: string, dest: string, opt: any = {}): any {
+    	
+    	let params: any = utils.parseParams(opt, {
+			overwrite: {
+				type: 'boolean',
+				default: true
+			}
+		})
+
+    	let args: string[] = []
+    	if (params.overwrite)
+    		args.push( '/Y'	)
+    	args.push(source)
+    	args.push(dest)
+
+        return ChildProcess.execCmd('copy', args)
+        .then( (result: any) => {
+        	if (result.exitCode !== 0){
+        		
+        		if (result.stderr != '')
+        			return result.stderr
+        		else if (result.stdout != '')
+        			throw result.stdout
+        		else
+        			throw 'copy error - exitCode='+result.exitCode
+        	}
+        	else{
+        		return result
+        	}
+        })
+    }*/
 
 	public static getFileName(path: string) {
 		return require('path').basename(path);

@@ -71,12 +71,7 @@ class Tprocessor extends TbaseProcessor_1.TbaseProcessor {
                 if (selector.fields) {
                     Object.keys(selector.fields).forEach((k) => {
                         if (data[k] === selector.fields[k].match) {
-                            if (selector.selectors) {
-                                return this.getParser(data);
-                            }
-                            else {
-                                return selector.parser;
-                            }
+                            return selector.parser;
                         }
                     });
                 }
@@ -88,7 +83,7 @@ class Tprocessor extends TbaseProcessor_1.TbaseProcessor {
         return r;
     }
     createMessage(data) {
-        data.message = data.message.replace(/\0/g, '');
+        data.message = data.message.replace(/\0/g, '').trim();
         if (data.fields) {
             data.format = data.fields.format;
         }

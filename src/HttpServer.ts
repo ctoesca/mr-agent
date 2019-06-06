@@ -144,8 +144,7 @@ export class HttpServer extends EventEmitter {
 				}
  
 				if (!res.headersSent) {
-					res.set('X-Error', err.toString())
-
+					
 					let response: any = {
 						error: true,
 						errorMessage: err.toString(),
@@ -164,7 +163,7 @@ export class HttpServer extends EventEmitter {
 				}
 
 			}catch(err){
-				console.log('HttpServer.onError: ' + err.toString())
+				this.logger.error('HttpServer.onError: ' + err.toString())
 			}
 		}.bind(this));
 

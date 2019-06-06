@@ -176,7 +176,7 @@ class Application extends EventEmitter {
         return this.logsConfig;
     }
 }
-Application.version = '2.1.2';
+Application.version = '2.3.0';
 Application.applicationDirPath = __dirname;
 Application._instance = null;
 exports.Application = Application;

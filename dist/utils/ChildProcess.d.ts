@@ -1,5 +1,6 @@
 import * as Promise from 'bluebird';
 import './StringTools';
 export declare class ChildProcess {
-    static spawn(path: string, args?: string[], opt?: any): Promise<unknown>;
+    static spawnCmd(cmd: string, args: string[]): Promise<unknown>;
+    static execCmd(cmd: string, args: string[]): Promise<unknown>;
 }

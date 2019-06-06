@@ -9,7 +9,7 @@ export declare class Updater extends EventEmitter {
     protected static excludedFromBackup: string[];
     protected static excludedFromUpdate: string[];
     application: WorkerApplication;
-    protected logger: bunyan;
+    logger: bunyan;
     constructor(application: WorkerApplication);
     onUpdateRequest(req: express.Request, res: express.Response, next: express.NextFunction): void;
     execUpdate(zipPath: string): void;

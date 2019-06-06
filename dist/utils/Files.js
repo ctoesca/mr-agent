@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const fs = require("fs");
+const fs = require("fs-extra");
 const mime = require("mime");
 const utils = require("../utils");
 const Promise = require("bluebird");

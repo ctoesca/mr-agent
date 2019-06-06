@@ -10,7 +10,7 @@ class Tplugin extends ThttpPlugin_js_1.ThttpPlugin {
     constructor(application, config) {
         super(application, config);
         this.ipHash = new Map();
-        if (this.config.dnsServers) {
+        if (this.config.dnsServers && (this.config.dnsServers.length > 0)) {
             dns.setServers(this.config.dnsServers);
         }
     }
@@ -36,11 +36,12 @@ class Tplugin extends ThttpPlugin_js_1.ThttpPlugin {
                 if (!err) {
                     r.hostnames = hostnames;
                     this.ipHash.set(params.ip, r);
-                    res.status(200).json(r);
                 }
-                else {
+                else if (err.code != 'ENOTFOUND') {
                     next(new Errors.HttpError(err.toString(), 500));
+                    return;
                 }
+                res.status(200).json(r);
             });
         }
         else {

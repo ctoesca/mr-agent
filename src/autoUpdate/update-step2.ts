@@ -7,6 +7,8 @@
 
 import parseArgs = require('minimist')
 import * as mrAgent from '..'
+import bunyan = require('bunyan');
+import fs = require('fs-extra')
 
 let args = parseArgs(process.argv.slice(2));
 
@@ -38,6 +40,17 @@ if (args.appDir) {
 
 let app = mrAgent.create( mrAgent.WorkerApplication, configPath)
 let updater = new mrAgent.Updater(app as mrAgent.WorkerApplication)
+
+
+var logDir = appDir+"/logs"
+fs.ensureDirSync(logDir);
+
+updater.logger = bunyan.createLogger({
+    name: 'updater-step2',
+    streams: [{
+        path: logDir+"/updater-step2.log",
+    }]
+});
 
 updater.execUpdateStep2(appDir, updateDir, appUrl)
 .catch((err: any) => {

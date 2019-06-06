@@ -144,14 +144,14 @@ class Tplugin extends ThttpPlugin_1.ThttpPlugin {
                 type: 'boolean'
             }
         });
-        this.logger.info('upload ' + params.path + ', overwrite = ' + params.overwrite);
+        this.logger.info('Upload ' + params.path + ', overwrite = ' + params.overwrite);
         let uploadDir = p.normalize(p.dirname(params.path));
         if (!fs.pathExistsSync(uploadDir)) {
             throw new Errors.HttpError(uploadDir + ' directory does not exist', 400);
         }
         if (fs.pathExistsSync(params.path)) {
             if (!params.overwrite) {
-                throw new Errors.HttpError('File already exist: ' + params.path + ' (user overwrite option)', 400);
+                throw new Errors.HttpError('File already exist: ' + params.path + ' (use overwrite option)', 400);
             }
             if (!Files_1.Files.getFileStat(params.path).isFile) {
                 throw new Errors.HttpError('Upload destination is directory: ' + params.path, 400);
@@ -163,19 +163,23 @@ class Tplugin extends ThttpPlugin_1.ThttpPlugin {
         })
             .then((result) => {
             if (result.files.length === 0) {
-                next(new Errors.HttpError('No file uploaded', 400));
+                throw new Errors.HttpError('No file uploaded', 400);
             }
             else {
-                fs.moveSync(result.files[0].path, params.path, { overwrite: params.overwrite });
-                let r = {
-                    result: true,
-                    path: params.path,
-                    file: Files_1.Files.getFileStat(params.path, true)
-                };
-                res.status(200).json(r);
+                return fs.move(result.files[0].path, params.path, { overwrite: params.overwrite });
             }
         })
+            .then(result => {
+            this.logger.info('Succes upload ' + params.path + ', overwrite = ' + params.overwrite);
+            let r = {
+                result: true,
+                path: params.path,
+                file: Files_1.Files.getFileStat(params.path, true)
+            };
+            res.status(200).json(r);
+        })
             .catch((err) => {
+            this.logger.error(err.toString());
             next(err);
         });
     }
@@ -185,7 +189,7 @@ class Tplugin extends ThttpPlugin_1.ThttpPlugin {
                 type: 'string'
             },
             compress: {
-                default: true,
+                default: false,
                 type: 'boolean'
             }
         });
@@ -211,8 +215,7 @@ class Tplugin extends ThttpPlugin_1.ThttpPlugin {
             });
         }
         else {
-            let filestream = fs.createReadStream(params.path);
-            filestream.pipe(res);
+            res.download(params.path);
         }
     }
     deleteFiles(req, res, next) {
@@ -239,6 +242,10 @@ class Tplugin extends ThttpPlugin_1.ThttpPlugin {
             },
             dest: {
                 type: 'string'
+            },
+            overwrite: {
+                type: 'boolean',
+                default: false
             }
         });
         this.logger.info('moveFile path=' + params.path + ', dest=' + params.dest);
@@ -254,10 +261,13 @@ class Tplugin extends ThttpPlugin_1.ThttpPlugin {
             return fs.pathExists(params.dest);
         })
             .then(destExists => {
-            if (destExists) {
+            if (destExists && !params.overwrite) {
                 throw new Errors.HttpError('Destination ' + params.dest + ' already exists', 400);
             }
-            return fs.rename(params.path, params.dest);
+            let dir = p.normalize(p.dirname(params.dest));
+            if (!fs.pathExistsSync(dir))
+                throw new Errors.HttpError('Destination directory' + dir + ' does not exist', 400);
+            return fs.move(params.path, params.dest, { overwrite: params.overwrite });
         })
             .then(() => {
             res.status(200).json({ result: true, path: params.path, dest: params.dest });
@@ -294,7 +304,10 @@ class Tplugin extends ThttpPlugin_1.ThttpPlugin {
                     throw new Errors.HttpError('Destination ' + params.dest + ' is not a file', 400);
                 }
             }
-            return fs.copy(params.path, params.dest);
+            let dir = p.normalize(p.dirname(params.dest));
+            if (!fs.pathExistsSync(dir))
+                throw new Errors.HttpError('Destination directory' + dir + ' does not exist', 400);
+            return fs.copy(params.path, params.dest, { errorOnExist: true, overwrite: true });
         })
             .then(() => {
             res.status(200).json({ result: true, path: params.path, dest: params.dest });

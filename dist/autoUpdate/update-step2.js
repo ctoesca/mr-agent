@@ -2,6 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const parseArgs = require("minimist");
 const mrAgent = require("..");
+const bunyan = require("bunyan");
+const fs = require("fs-extra");
 let args = parseArgs(process.argv.slice(2));
 let configPath = __dirname + '/../../conf/config.js';
 if (args.c) {
@@ -30,6 +32,14 @@ else {
 }
 let app = mrAgent.create(mrAgent.WorkerApplication, configPath);
 let updater = new mrAgent.Updater(app);
+var logDir = appDir + "/logs";
+fs.ensureDirSync(logDir);
+updater.logger = bunyan.createLogger({
+    name: 'updater-step2',
+    streams: [{
+            path: logDir + "/updater-step2.log",
+        }]
+});
 updater.execUpdateStep2(appDir, updateDir, appUrl)
     .catch((err) => {
     console.log(err);

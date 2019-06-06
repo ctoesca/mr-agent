@@ -35,7 +35,12 @@ getHttpOptions = function(method, url) {
 }
 assertHttpError = function(done, res, status) {
 	//console.log(res.body)
-	console.log("status: "+res.statusCode, 'errorMessage='+res.body.errorMessage)
+	
+	if (typeof res.body.errorMessage === "undefined")
+		console.log("status: "+res.statusCode, 'body=', res.body)
+	else
+		console.log("status: "+res.statusCode, 'errorMessage='+res.body.errorMessage)
+
 	assert.strictEqual(res.statusCode, status, 'status is not '+status);
 	assert.strictEqual(typeof res.body, 'object', 'body is not object');
 	assert.strictEqual(typeof res.body.errorMessage, 'string', 'errorMessage is not string');

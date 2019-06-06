@@ -5,6 +5,7 @@ const fs = require("fs-extra");
 const p = require("path");
 const request = require("request-promise");
 const parseArgs = require("minimist");
+const Bluebird = require("bluebird");
 const child_process = require("child_process");
 const utils = require("../utils");
 const EventEmitter = require("events");
@@ -110,65 +111,102 @@ class Updater extends EventEmitter {
         return p.normalize(Application_1.Application.applicationDirPath + '/..');
     }
     backup(backupDir) {
-        let appDir = this.getAppDir();
-        this.logger.info('backup started ' + appDir + ' --> ' + backupDir);
-        if (fs.pathExistsSync(backupDir)) {
-            fs.removeSync(backupDir);
+        try {
+            let appDir = this.getAppDir();
+            this.logger.info('backup started ' + appDir + ' --> ' + backupDir);
+            if (fs.pathExistsSync(backupDir)) {
+                fs.removeSync(backupDir);
+            }
+            fs.readdirSync(appDir).filter((file) => {
+                return (Updater.excludedFromBackup.indexOf(file) === -1);
+            }).forEach((file) => {
+                let path = appDir + '/' + file;
+                this.logger.info('copying ' + file + ' ...');
+                fs.copySync(path, backupDir + '/' + file);
+            });
+            if (!utils.isWin()) {
+                child_process.execSync('chmod 700 ' + backupDir + '/bin/*');
+                child_process.execSync('chmod 700 ' + backupDir + '/node/*');
+                child_process.execSync('chmod 700 ' + backupDir + '/node_modules/.bin/*');
+            }
+            this.logger.info('backup completed');
         }
-        fs.readdirSync(appDir).filter((file) => {
-            return (Updater.excludedFromBackup.indexOf(file) === -1);
-        }).forEach((file) => {
-            let path = appDir + '/' + file;
-            this.logger.info('copying ' + file + ' ...');
-            fs.copySync(path, backupDir + '/' + file);
-        });
-        if (!utils.isWin()) {
-            child_process.execSync('chmod 700 ' + backupDir + '/bin/*');
-            child_process.execSync('chmod 700 ' + backupDir + '/node/*');
-            child_process.execSync('chmod 700 ' + backupDir + '/node_modules/.bin/*');
+        catch (err) {
+            this.logger.error(err);
+            throw err;
         }
-        this.logger.info('backup completed');
     }
     uncompressPackage(zipPath, newVersionCopyDir) {
-        this.logger.info('uncompress ' + zipPath + ' --> ' + newVersionCopyDir + ' started ...');
-        if (fs.pathExistsSync(newVersionCopyDir)) {
-            fs.removeSync(newVersionCopyDir);
-            this.logger.info('updateDir deleted (' + newVersionCopyDir + ')');
+        try {
+            this.logger.info('uncompress ' + zipPath + ' --> ' + newVersionCopyDir + ' started ...');
+            if (fs.pathExistsSync(newVersionCopyDir)) {
+                fs.removeSync(newVersionCopyDir);
+                this.logger.info('updateDir deleted (' + newVersionCopyDir + ')');
+            }
+            let zip = new AdmZip(zipPath);
+            zip.extractAllTo(newVersionCopyDir, true);
+            this.logger.info('uncompress zip completed');
         }
-        let zip = new AdmZip(zipPath);
-        zip.extractAllTo(newVersionCopyDir, true);
-        this.logger.info('uncompress zip completed');
+        catch (err) {
+            this.logger.error(err);
+            throw err;
+        }
     }
     stopApp(appUrl) {
-        let url = appUrl + '/api/admin/stop';
-        this.logger.info('Stopping... call ' + url);
-        let opt = {
-            url: url,
-            method: 'GET',
-            json: true
-        };
-        return request(opt)
-            .then(() => {
-            this.logger.info('Stop command sent...');
-            return new Promise(resolve => {
-                setTimeout(() => {
-                    resolve();
-                }, 5000);
+        this.logger.info('Stopping... ');
+        if (!utils.isWin()) {
+            let url = appUrl + '/api/admin/stop';
+            let opt = {
+                url: url,
+                method: 'GET',
+                json: true,
+                strictSSL: false
+            };
+            return request(opt)
+                .then(() => {
+                this.logger.info('Stop command sent...');
+                return new Promise(resolve => {
+                    setTimeout(() => {
+                        resolve();
+                    }, 5000);
+                });
+            })
+                .catch((err) => {
+                this.logger.error('STOP failed : ' + err.toString());
+                throw err;
             });
-        })
-            .catch((err) => {
-            this.logger.error('STOP failed : ' + err.toString());
-        });
+        }
+        else {
+            return new Bluebird((resolve, reject) => {
+                try {
+                    var cmd = 'sc';
+                    var args = ['stop', 'ctop-agent'];
+                    let child = child_process.spawn(cmd, args, {
+                        detached: true,
+                        windowsVerbatimArguments: true,
+                        stdio: 'ignore'
+                    });
+                    child.unref();
+                    setTimeout(() => {
+                        resolve();
+                    }, 5000);
+                }
+                catch (err) {
+                    reject(err);
+                }
+            });
+        }
     }
     startApp(appDir) {
         let cmd;
         let args;
+        this.logger.info("Starting agent ...");
         if (utils.isWin()) {
-            cmd = appDir + '/bin/mr-agent.bat';
-            args = [];
+            cmd = 'sc';
+            args = ['start', 'ctop-agent'];
         }
         else {
-            cmd = appDir + '/bin/mr-agent.sh';
+            cmd = appDir + '/bin/agent.sh';
             args = ['start'];
         }
         let child = child_process.spawn(cmd, args, {
@@ -179,36 +217,68 @@ class Updater extends EventEmitter {
         child.unref();
     }
     remove(appDir) {
-        this.logger.info('Removing old version...');
-        fs.readdirSync(appDir).filter((file) => {
-            return (Updater.excludedFromUpdate.indexOf(file) === -1);
-        }).forEach((file) => {
-            let path = appDir + '/' + file;
-            this.logger.info('removing ' + path + ' ...');
-            fs.removeSync(path);
-        });
-        this.logger.info('Old version removed successfully');
+        try {
+            this.logger.info('Removing old version...');
+            var errors = 0;
+            fs.readdirSync(appDir).filter((file) => {
+                return (Updater.excludedFromUpdate.indexOf(file) === -1);
+            }).forEach((file) => {
+                let path = appDir + '/' + file;
+                this.logger.info('removing ' + path + ' ...');
+                try {
+                    fs.removeSync(path);
+                }
+                catch (err) {
+                    errors++;
+                    this.logger.error(err.toString());
+                }
+            });
+            if (errors === 0)
+                this.logger.info('Old version removed successfully');
+            else
+                this.logger.warn(errors + ' errors removing old version');
+        }
+        catch (err) {
+            this.logger.error(err);
+            throw err;
+        }
     }
     copy(updateDir, appDir) {
         this.logger.info('Copying new version ...');
-        fs.readdirSync(updateDir + '/new-version').filter((file) => {
-            return (Updater.excludedFromUpdate.indexOf(file) === -1);
-        }).forEach((file) => {
-            let source = updateDir + '/new-version/' + file;
-            let dest = appDir + '/' + file;
-            this.logger.info('copying ' + source + ' --> ' + dest + ' ...');
-            fs.copySync(source, dest);
-        });
-        if (!utils.isWin()) {
-            child_process.execSync('chmod 700 ' + appDir + '/bin/*');
-            child_process.execSync('chmod 700 ' + appDir + '/node/*');
-            child_process.execSync('chmod 700 ' + appDir + '/node_modules/.bin/*');
+        try {
+            fs.readdirSync(updateDir + '/new-version').filter((file) => {
+                return (Updater.excludedFromUpdate.indexOf(file) === -1);
+            }).forEach((file) => {
+                let source = updateDir + '/new-version/' + file;
+                let dest = appDir + '/' + file;
+                this.logger.info('copying ' + source + ' --> ' + dest + ' ...');
+                fs.copySync(source, dest, {
+                    filter: function (src, dest) {
+                        if ((file === 'bin') && (p.basename(dest) === 'agent.exe')) {
+                            this.logger.error("Non copié: " + dest);
+                            return false;
+                        }
+                        else {
+                            return true;
+                        }
+                    }.bind(this)
+                });
+            });
+            if (!utils.isWin()) {
+                child_process.execSync('chmod 755 ' + appDir + '/bin/*');
+                child_process.execSync('chmod 755 ' + appDir + '/node/*');
+                child_process.execSync('chmod 755 ' + appDir + '/node_modules/.bin/*');
+            }
+            this.logger.info('New version copied successfully');
         }
-        this.logger.info('New version copied successfully');
+        catch (err) {
+            this.logger.error(err);
+            throw err;
+        }
     }
 }
 Updater.updateIsRunning = false;
 Updater.excludedFromBackup = ['tmp', '.svn', 'logs', 'data', '.git', '.nyc_output', 'coverage', 'last_release'];
-Updater.excludedFromUpdate = ['tmp', 'conf', '.svn', 'logs', 'data', '.git', '.nyc_output', 'coverage', 'last_release'];
+Updater.excludedFromUpdate = ['tmp', 'conf', '.svn', 'logs', 'data', '.git', '.nyc_output', 'coverage'];
 exports.Updater = Updater;
 //# sourceMappingURL=Updater.js.map

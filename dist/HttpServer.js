@@ -112,7 +112,6 @@ class HttpServer extends EventEmitter {
                     this.logger.warn('***** ' + status + ' : ' + req.method + ' ' + req.path, err.toString());
                 }
                 if (!res.headersSent) {
-                    res.set('X-Error', err.toString());
                     let response = {
                         error: true,
                         errorMessage: err.toString(),
@@ -131,7 +130,7 @@ class HttpServer extends EventEmitter {
                 }
             }
             catch (err) {
-                console.log('HttpServer.onError: ' + err.toString());
+                this.logger.error('HttpServer.onError: ' + err.toString());
             }
         }.bind(this));
     }
