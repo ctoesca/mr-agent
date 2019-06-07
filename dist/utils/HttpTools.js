@@ -60,12 +60,6 @@ class HttpTools {
                         mimetype: mimetype
                     };
                 });
-                busboy.on('finish', () => {
-                    if (!promiseResolved) {
-                        promiseResolved = true;
-                        resolve(result);
-                    }
-                });
                 busboy.on('file', (fieldName, file, filename, encoding, mimetype) => {
                     try {
                         if (!promiseResolved) {
@@ -96,7 +90,14 @@ class HttpTools {
                             }
                             else {
                                 result.files.push(f);
-                                file.pipe(fs.createWriteStream(filePath));
+                                let fstream = fs.createWriteStream(filePath);
+                                file.pipe(fstream);
+                                fstream.on('close', () => {
+                                    if (!promiseResolved) {
+                                        promiseResolved = true;
+                                        resolve(result);
+                                    }
+                                });
                             }
                         }
                     }

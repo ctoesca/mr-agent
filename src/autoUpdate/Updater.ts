@@ -74,9 +74,10 @@ export class Updater extends EventEmitter {
 
 		this.logger.info('Updating - step-1...')
 
-		this.backup(backupDir)
 		this.uncompressPackage(zipPath, newVersionCopyDir)
 		fs.removeSync(zipPath)
+		
+		this.backup(backupDir)
 		this.logger.info(zipPath + ' removed')
 
 		

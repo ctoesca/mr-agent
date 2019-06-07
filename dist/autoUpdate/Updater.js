@@ -54,9 +54,9 @@ class Updater extends EventEmitter {
         let newVersionCopyDir = p.normalize(updateTmpDir + '/new-version');
         let backupDir = p.normalize(updateTmpDir + '/backup');
         this.logger.info('Updating - step-1...');
-        this.backup(backupDir);
         this.uncompressPackage(zipPath, newVersionCopyDir);
         fs.removeSync(zipPath);
+        this.backup(backupDir);
         this.logger.info(zipPath + ' removed');
         let nodePath = backupDir + '/node/node';
         let args = [p.normalize(backupDir + '/dist/autoUpdate/update-step2'), '--updateDir', updateTmpDir, '--appDir', this.getAppDir(), '--appUrl', this.application.getUrl()];

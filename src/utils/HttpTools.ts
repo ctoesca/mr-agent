@@ -70,14 +70,8 @@ export class HttpTools {
 					}
 				});
 
-				busboy.on('finish', () => {
-
-					if (!promiseResolved) {
-						promiseResolved = true
-						resolve(result)
-					}
-
-				});
+				/*busboy.on('finish', () => {
+				});*/
 
 				busboy.on('file', (fieldName: string, file: NodeJS.ReadableStream, filename: string, encoding: string, mimetype: string) => {
 					try {
@@ -112,7 +106,14 @@ export class HttpTools {
 								}
 							} else {
 								result.files.push( f )
-								file.pipe( fs.createWriteStream(filePath) )
+								let fstream = fs.createWriteStream(filePath)
+								file.pipe( fstream )
+								fstream.on('close', () => {
+									if (!promiseResolved) {
+										promiseResolved = true
+										resolve(result)
+									}
+								})
 							}
 
 						}
