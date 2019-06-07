@@ -507,8 +507,7 @@ export class Tplugin extends ThttpPlugin {
 		.catch( (err: any ) => {
 			if (err.level === 'client-authentication') {
 				return {result: false, params: params, error: err }
-			}
-			else {
+			} else {
 				throw err
 			}
 		})
@@ -592,11 +591,11 @@ export class Tplugin extends ThttpPlugin {
 		let promiseFinished = false;
 
 		return connPromise
-		.then( (sshConnection: SshConnection) => {
+		.then( (connection: SshConnection) => {
 
 			return new Promise((resolve, reject) => {
 
-				let conn = sshConnection.conn;
+				let conn = connection.conn;
 
 				conn.on('end', () => {
 

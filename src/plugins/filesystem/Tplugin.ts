@@ -181,7 +181,7 @@ export class Tplugin extends ThttpPlugin {
 		})
 
 		this.logger.info('Upload ' + params.path + ', overwrite = ' + params.overwrite)
-		
+
 		let uploadDir = p.normalize( p.dirname(params.path) )
 
 		if (!fs.pathExistsSync(uploadDir)) {

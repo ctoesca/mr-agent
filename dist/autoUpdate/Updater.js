@@ -247,9 +247,9 @@ class Updater extends EventEmitter {
                 let dest = appDir + '/' + file;
                 this.logger.info('copying ' + source + ' --> ' + dest + ' ...');
                 fs.copySync(source, dest, {
-                    filter: function (src, dest) {
-                        if ((file === 'bin') && (p.basename(dest) === 'agent.exe')) {
-                            this.logger.error('Non copié: ' + dest);
+                    filter: function (_src, _dest) {
+                        if ((file === 'bin') && (p.basename(_dest) === 'agent.exe')) {
+                            this.logger.error('Non copié: ' + _dest);
                             return false;
                         }
                         else {
@@ -262,6 +262,7 @@ class Updater extends EventEmitter {
                 fs.copySync(updateDir + '/new-version/bin/agent.exe', appDir + '/bin/agent.exe');
             }
             catch (err) {
+                this.logger.warn('copySync agent.exe ' + err.toString());
             }
             if (!utils.isWin()) {
                 child_process.execSync('chmod 755 ' + appDir + '/bin/*');

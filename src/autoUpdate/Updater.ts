@@ -83,9 +83,9 @@ export class Updater extends EventEmitter {
 
 		let nodePath = backupDir + '/node/node';
 
-        if (utils.isWin()) {
-            nodePath = backupDir + '/node/node.exe';
-        }
+		if (utils.isWin()) {
+			nodePath = backupDir + '/node/node.exe';
+		}
 
 		let args = [ p.normalize(backupDir + '/dist/autoUpdate/update-step2'), '--updateDir', updateTmpDir, '--appDir', this.getAppDir(), '--appUrl', this.application.getUrl() ]
 		let thisProcessArgs = parseArgs(process.argv.slice(2));
@@ -225,14 +225,14 @@ export class Updater extends EventEmitter {
 
 		if (utils.isWin()) {
 			return ChildProcess.execCmd(appDir + '/bin/agent.exe', ['stop', this.application.serviceName])
-            .then( (result: any) => {
-                if (result.exitCode > 0) {
-                    throw 'Failed to stop agent: ' + result.stderr
-                }
-            })
+			.then( (result: any) => {
+				if (result.exitCode > 0) {
+					throw 'Failed to stop agent: ' + result.stderr
+				}
+			})
 		} else {
 			let cmd = appDir + '/bin/agent.sh';
-	        let args = ['stop'];
+			let args = ['stop'];
 			let child = child_process.spawn(cmd, args, {
 				detached: true,
 				windowsVerbatimArguments : true,
@@ -241,8 +241,8 @@ export class Updater extends EventEmitter {
 
 			child.unref()
 			return Bluebird.resolve({
-                exitCode: 0
-            });
+				exitCode: 0
+			});
 		}
 
 	}
@@ -256,10 +256,10 @@ export class Updater extends EventEmitter {
 			this.logger.info('Starting agent ...')
 
 			if (utils.isWin()) {
-	            return ChildProcess.execCmd(appDir + '/bin/agent.exe', ['start', this.application.serviceName]);
-	        } else {
-	            cmd = appDir + '/bin/agent.sh';
-	            args = ['start'];
+				return ChildProcess.execCmd(appDir + '/bin/agent.exe', ['start', this.application.serviceName]);
+			} else {
+				cmd = appDir + '/bin/agent.sh';
+				args = ['start'];
 				let child = child_process.spawn(cmd, args, {
 					detached: true,
 					windowsVerbatimArguments : true,
@@ -268,7 +268,7 @@ export class Updater extends EventEmitter {
 
 				child.unref()
 				return Promise.resolve()
-	        }
+			}
 
 
 		})
@@ -316,10 +316,10 @@ export class Updater extends EventEmitter {
 				let dest = appDir + '/' + file
 				this.logger.info('copying ' + source + ' --> ' + dest + ' ...')
 				fs.copySync(source, dest, {
-					filter: function(src: string, dest: string) {
+					filter: function(_src: string, _dest: string) {
 
-						if ( (file === 'bin') && (p.basename(dest) === 'agent.exe')) {
-							this.logger.error('Non copié: ' + dest)
+						if ( (file === 'bin') && (p.basename(_dest) === 'agent.exe')) {
+							this.logger.error('Non copié: ' + _dest)
 							return false
 						} else {
 							return true
@@ -329,10 +329,10 @@ export class Updater extends EventEmitter {
 			});
 
 			try {
-                fs.copySync(updateDir + '/new-version/bin/agent.exe', appDir + '/bin/agent.exe')
-            } catch (err) {
-
-            }
+				fs.copySync(updateDir + '/new-version/bin/agent.exe', appDir + '/bin/agent.exe')
+			} catch (err) {
+				this.logger.warn('copySync agent.exe ' + err.toString())
+			}
 
 			if (!utils.isWin()) {
 				child_process.execSync('chmod 755 ' + appDir + '/bin/*')

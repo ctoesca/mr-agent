@@ -62,8 +62,9 @@ class HttpTools {
                     };
                 });
                 busboy.on('finish', () => {
-                    if (!hasFile && !promiseResolved)
+                    if (!hasFile && !promiseResolved) {
                         reject(new Errors.HttpError('No file uploaded', 400));
+                    }
                 });
                 busboy.on('file', (fieldName, file, filename, encoding, mimetype) => {
                     try {
@@ -80,8 +81,9 @@ class HttpTools {
                                 if (!Files_1.Files.getFileStat(filePath).isFile) {
                                     throw new Errors.HttpError('Upload destination is directory: ' + filePath, 400);
                                 }
-                                if (!opt.overwrite)
+                                if (!opt.overwrite) {
                                     throw new Errors.HttpError('File already exists: ' + filePath, 400);
+                                }
                             }
                             let f = {
                                 name: filename,

@@ -37,7 +37,7 @@ class Tplugin extends ThttpPlugin_js_1.ThttpPlugin {
                     r.hostnames = hostnames;
                     this.ipHash.set(params.ip, r);
                 }
-                else if (err.code != 'ENOTFOUND') {
+                else if (err.code !== 'ENOTFOUND') {
                     next(new Errors.HttpError(err.toString(), 500));
                     return;
                 }

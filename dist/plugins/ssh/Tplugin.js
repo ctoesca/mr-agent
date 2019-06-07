@@ -488,9 +488,9 @@ class Tplugin extends ThttpPlugin_1.ThttpPlugin {
         };
         let promiseFinished = false;
         return connPromise
-            .then((sshConnection) => {
+            .then((connection) => {
             return new Promise((resolve, reject) => {
-                let conn = sshConnection.conn;
+                let conn = connection.conn;
                 conn.on('end', () => {
                     if (!promiseFinished) {
                         if (r.exitCode === null) {

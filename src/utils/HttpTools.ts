@@ -42,7 +42,7 @@ export class HttpTools {
 				fields: []
 			}
 			let promiseResolved = false;
-			let hasFile: boolean = false
+			let hasFile = false
 
 			try {
 
@@ -73,9 +73,10 @@ export class HttpTools {
 
 				busboy.on('finish', () => {
 
-					if (!hasFile && !promiseResolved)
+					if (!hasFile && !promiseResolved) {
 						reject(new Errors.HttpError('No file uploaded', 400));
-						
+					}
+
 				});
 
 				busboy.on('file', (fieldName: string, file: NodeJS.ReadableStream, filename: string, encoding: string, mimetype: string) => {
@@ -95,8 +96,9 @@ export class HttpTools {
 								if (!Files.getFileStat(filePath).isFile) {
 									throw new Errors.HttpError('Upload destination is directory: ' + filePath, 400);
 								}
-								if (!opt.overwrite)
+								if (!opt.overwrite) {
 									throw new Errors.HttpError('File already exists: ' + filePath, 400);
+								}
 							}
 
 							let f: any = {
@@ -107,9 +109,9 @@ export class HttpTools {
 								path: filePath
 							}
 
-							
+
 							result.files.push( f )
-								
+
 							let fstream = fs.createWriteStream(filePath)
 							file.pipe( fstream )
 							fstream.on('close', () => {
@@ -118,13 +120,13 @@ export class HttpTools {
 									resolve(result)
 								}
 							})
-							
+
 						}
 
 
 					} catch (err) {
 						if (!promiseResolved) {
-							console.log('!!!!!!!promiseResolved ='+promiseResolved)
+							console.log('!!!!!!!promiseResolved =' + promiseResolved)
 							promiseResolved = true;
 							reject(err)
 						}

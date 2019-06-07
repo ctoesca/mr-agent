@@ -94,13 +94,13 @@ export class WorkerApplication extends Application {
 	}
 
 	public stop(): Bluebird<any> {
-        if (utils.isWin()) {
-            return ChildProcess.execCmd(__dirname + '/../bin/agent.exe', ['stop', this.serviceName])
-        } else {
-            process.exit(99);
-            return Bluebird.resolve()
-        }
-    }
+		if (utils.isWin()) {
+			return ChildProcess.execCmd(__dirname + '/../bin/agent.exe', ['stop', this.serviceName])
+		} else {
+			process.exit(99);
+			return Bluebird.resolve()
+		}
+	}
 
 	public restart() {
 		process.exit(98);
@@ -176,21 +176,21 @@ export class WorkerApplication extends Application {
 		* Arrêt de l'application
 		*/
 		this.mainApi.get('/admin/stop', (req: express.Request, res: express.Response, next: express.NextFunction) => {
-            this.logger.info('STOP');
+			this.logger.info('STOP');
 
-            this.stop()
-            .then( (result: any) => {
-                if (result.exitCode == 0) {
-                    res.status(200).send(result);
-                } else {
-                    res.status(500).send(result);
-                }
-            })
-            .catch( (err) => {
-                next(err);
-            })
+			this.stop()
+			.then( (result: any) => {
+				if (result.exitCode === 0) {
+					res.status(200).send(result);
+				} else {
+					res.status(500).send(result);
+				}
+			})
+			.catch( (err) => {
+				next(err);
+			})
 
-        });
+		});
 
 		this.mainApi.get('/admin/restart', (req: express.Request, res: express.Response, next: express.NextFunction) => {
 

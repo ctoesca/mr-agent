@@ -46,10 +46,10 @@ let logDir = appDir + '/logs'
 fs.ensureDirSync(logDir);
 
 updater.logger = bunyan.createLogger({
-    name: 'updater-step2',
-    streams: [{
-        path: logDir + '/updater-step2.log'
-    }]
+	name: 'updater-step2',
+	streams: [{
+		path: logDir + '/updater-step2.log'
+	}]
 });
 
 updater.execUpdateStep2(appDir, updateDir, appUrl)

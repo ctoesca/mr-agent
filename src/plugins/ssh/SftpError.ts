@@ -39,8 +39,7 @@ export default class SftpError extends SshError {
 	public getHttpStatus() {
 		if ((this.sftpStatus === 2) ||  (this.sftpStatus === 3)) {
 			return 400
-		}
-		else {
+		} else {
 			return 500
 		}
 	}

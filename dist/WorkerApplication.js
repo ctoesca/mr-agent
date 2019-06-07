@@ -135,7 +135,7 @@ class WorkerApplication extends Application_1.Application {
             this.logger.info('STOP');
             this.stop()
                 .then((result) => {
-                if (result.exitCode == 0) {
+                if (result.exitCode === 0) {
                     res.status(200).send(result);
                 }
                 else {
