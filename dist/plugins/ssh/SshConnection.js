@@ -8,11 +8,11 @@ const EventEmitter = require("events");
 class SshConnection extends EventEmitter {
     constructor(config) {
         super();
+        this.conn = null;
         this.sshKeysDir = null;
         this.defaultPort = 22;
         this.connectTimeout = 10000;
         this.logger = null;
-        this.conn = null;
         this.logger = config.logger;
         this.sshKeysDir = config.sshKeysDir;
         this.defaultPort = config.defaultPort;
@@ -33,8 +33,9 @@ class SshConnection extends EventEmitter {
         }
     }
     connect(params) {
-        if (this.conn !== null)
+        if (this.conn !== null) {
             this.close();
+        }
         let tryPassword = ((typeof params.password !== 'undefined') && (params.password !== null));
         let tryKey = ((typeof params.key !== 'undefined') && (params.key !== null)) && !tryPassword;
         let tryAgentKey = !tryPassword && !tryKey;

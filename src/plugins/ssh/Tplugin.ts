@@ -248,7 +248,7 @@ export class Tplugin extends ThttpPlugin {
 		.catch( err => {
 			next(err)
 		})
-	
+
 	}
 
 	/*
@@ -499,8 +499,54 @@ export class Tplugin extends ThttpPlugin {
 		})
 	}
 
+	public checkConnection(params: any): Promise<{result: boolean, params: any, error: null }> {
+		return this.getConnection(params, {closeConnection: true})
+		.then( (sshConnection: SshConnection ) => {
+			return {result: true, params: params, error: null }
+		})
+		.catch( (err: any ) => {
+			if (err.level === 'client-authentication') {
+				return {result: false, params: params, error: err }
+			}
+			else {
+				throw err
+			}
+		})
+	}
+
+	public getConnection(params: any, options: any = null): Promise<SshConnection> {
+		try {
+			let opt = {
+				closeConnection: false
+			}
+			if (options) {
+				Object.keys(options).forEach( (k: string) => {
+					opt[k] = options[k]
+				})
+			}
+
+			let c = new SshConnection({
+				logger: this.logger,
+				sshKeysDir: this.sshKeysDir,
+				defaultPort: this.defaultPort,
+				connectTimeout: this.connectTimeout
+			})
+
+			return c.connect(params)
+			.then( (conn: Ssh2.Client) => {
+				if (opt.closeConnection) {
+					c.close()
+				}
+				return c
+			})
+
+		} catch (err) {
+			return Promise.reject(err)
+		}
+	}
+
 	protected _exec( opt: any , sshConnection: SshConnection = null ): Promise<any> {
-		
+
 		let connPromise: Promise<any>
 
 		if (sshConnection === null) {
@@ -532,7 +578,7 @@ export class Tplugin extends ThttpPlugin {
 			connPromise = Promise.resolve(sshConnection)
 		}
 
-		
+
 
 		let r: any = {
 			host: opt.host,
@@ -542,7 +588,7 @@ export class Tplugin extends ThttpPlugin {
 			isKilled: false
 		};
 
-		
+
 		let promiseFinished = false;
 
 		return connPromise
@@ -618,55 +664,11 @@ export class Tplugin extends ThttpPlugin {
 					conn.exec(opt.script, onExec.bind(this));
 				}
 
-	
+
 			})
 
 		})
 
-	}
-
-	public checkConnection(params: any): Promise<{result: boolean, params: any, error: null }> {
-		return this.getConnection(params, {closeConnection: true})
-		.then( (sshConnection: SshConnection ) => {
-			return {result: true, params: params, error: null }
-		})
-		.catch( (err: any ) => {
-			if (err.level === 'client-authentication')
-				return {result: false, params: params, error: err }
-			else
-				throw err
-		})
-	}
-
-	public getConnection(params: any, options: any = null): Promise<SshConnection> {
-		try {
-			let opt = {
-				closeConnection: false
-			}
-			if (options) {
-				Object.keys(options).forEach( (k: string) => {
-					opt[k] = options[k]
-				})
-			}
-
-			let c = new SshConnection({
-				logger: this.logger,
-				sshKeysDir: this.sshKeysDir,
-				defaultPort: this.defaultPort,
-				connectTimeout: this.connectTimeout
-			})
-
-			return c.connect(params)
-			.then( (conn: Ssh2.Client) => {
-				if (opt.closeConnection) {
-					c.close()
-				}		
-				return c
-			})
-
-		} catch (err) {
-			return Promise.reject(err)
-		}
 	}
 
 	protected removeTempFileSync( path: string ) {
@@ -747,13 +749,13 @@ export class Tplugin extends ThttpPlugin {
 
 				conn.sftp((err: any, sftp: any) => {
 					if (err) {
-						let sshError:SshError = new SshError(err)
+						let sshError: SshError = new SshError(err)
 						sshError.connected = true
 						reject(sshError);
 					} else {
 						sftp.fastGet(remotePath, localPath, (err2: any, r: any) => {
 							if (err2) {
-								let sftpError:SftpError = new SftpError(err2)
+								let sftpError: SftpError = new SftpError(err2)
 								reject(sftpError);
 							} else {
 

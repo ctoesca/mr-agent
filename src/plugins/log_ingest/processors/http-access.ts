@@ -89,8 +89,8 @@ export class Tprocessor extends TbaseProcessor {
 
 				if (selector.fields) {
 					Object.keys(selector.fields).forEach( (k) => {
-						if (data[k] === selector.fields[k].match ) {							
-							return selector.parser							
+						if (data[k] === selector.fields[k].match ) {
+							return selector.parser
 						}
 					})
 

@@ -27,7 +27,7 @@ export class MasterApplication extends Application {
 			} else {
 				this.numProcesses = this.config.numProcesses
 			}
-		} 
+		}
 
 		if (typeof this.config.startScript !== 'undefined') {
 			this.execScript(this.config.startScript)

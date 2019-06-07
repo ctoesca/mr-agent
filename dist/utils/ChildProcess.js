@@ -6,15 +6,15 @@ require("./StringTools");
 class ChildProcess {
     static spawnCmd(cmd, args) {
         return new Promise((resolve, reject) => {
-            var argsArray = ['/C', cmd].concat(args);
-            var stdout = '';
-            var stderr = '';
+            let argsArray = ['/C', cmd].concat(args);
+            let stdout = '';
+            let stderr = '';
             let child = child_process.spawn('cmd', argsArray, {});
             child.on('close', (code) => {
-                var r = {
+                let r = {
                     exitCode: code,
-                    stdout: stdout,
-                    stderr: stderr
+                    stdout: stdout.replace(/\u0000/g, ''),
+                    stderr: stderr.replace(/\u0000/g, '')
                 };
                 resolve(r);
             });
@@ -31,17 +31,19 @@ class ChildProcess {
     }
     static execCmd(cmd, args) {
         return new Promise((resolve, reject) => {
-            var argsStr = '';
-            if (args.length > 0)
+            let argsStr = '';
+            if (args.length > 0) {
                 argsStr = '"' + args.join('" "') + '"';
+            }
             child_process.exec('"' + cmd + '"' + ' ' + argsStr, (error, stdout, stderr) => {
                 let exitCode = 0;
-                if (error)
+                if (error) {
                     exitCode = error.code;
-                var r = {
+                }
+                let r = {
                     exitCode: exitCode,
-                    stdout: stdout,
-                    stderr: stderr
+                    stdout: stdout.replace(/\u0000/g, ''),
+                    stderr: stderr.replace(/\u0000/g, '')
                 };
                 resolve(r);
             });

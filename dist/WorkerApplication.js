@@ -15,6 +15,7 @@ const Errors = require("./Errors");
 const Updater_1 = require("./autoUpdate/Updater");
 const ChildProcess_1 = require("./utils/ChildProcess");
 const utils = require("./utils");
+const Bluebird = require("bluebird");
 class WorkerApplication extends Application_1.Application {
     constructor(configPath, opt = {}) {
         super(configPath, opt);
@@ -72,10 +73,13 @@ class WorkerApplication extends Application_1.Application {
         return r;
     }
     stop() {
-        if (utils.isWin())
-            ChildProcess_1.ChildProcess.execCmd(__dirname + '/../bin/agent.exe', ['stop', this.serviceName]);
-        else
+        if (utils.isWin()) {
+            return ChildProcess_1.ChildProcess.execCmd(__dirname + '/../bin/agent.exe', ['stop', this.serviceName]);
+        }
+        else {
             process.exit(99);
+            return Bluebird.resolve();
+        }
     }
     restart() {
         process.exit(98);
@@ -116,7 +120,7 @@ class WorkerApplication extends Application_1.Application {
             let updater = new Updater_1.Updater(this);
             updater.onUpdateRequest(req, res, next);
         });
-        this.mainApi.get('/admin/os/cpus', (req, res) => {
+        this.mainApi.get('/admin/os/cpus', (req, res, next) => {
             let r = os.cpus();
             for (let i = 0; i < r.length; i++) {
                 let cpu = r[i];
@@ -127,17 +131,27 @@ class WorkerApplication extends Application_1.Application {
             }
             res.status(200).json(r);
         });
-        this.mainApi.get('/admin/stop', (req, res) => {
+        this.mainApi.get('/admin/stop', (req, res, next) => {
             this.logger.info('STOP');
-            res.status(200).send('Stopping');
-            this.stop();
+            this.stop()
+                .then((result) => {
+                if (result.exitCode == 0) {
+                    res.status(200).send(result);
+                }
+                else {
+                    res.status(500).send(result);
+                }
+            })
+                .catch((err) => {
+                next(err);
+            });
         });
-        this.mainApi.get('/admin/restart', (req, res) => {
+        this.mainApi.get('/admin/restart', (req, res, next) => {
             this.logger.info('RESTART');
             res.status(200).send('Restarting');
             this.restart();
         });
-        this.mainApi.post('/getConfig', (req, res) => {
+        this.mainApi.post('/getConfig', (req, res, next) => {
             let r = {
                 data: fs.readFileSync(this.configPath).toString()
             };

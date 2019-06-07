@@ -36,6 +36,7 @@ class HttpTools {
                 fields: []
             };
             let promiseResolved = false;
+            let hasFile = false;
             try {
                 if (!fs.pathExistsSync(opt.uploadDir)) {
                     if (opt.createDir) {
@@ -60,8 +61,13 @@ class HttpTools {
                         mimetype: mimetype
                     };
                 });
+                busboy.on('finish', () => {
+                    if (!hasFile && !promiseResolved)
+                        reject(new Errors.HttpError('No file uploaded', 400));
+                });
                 busboy.on('file', (fieldName, file, filename, encoding, mimetype) => {
                     try {
+                        hasFile = true;
                         if (!promiseResolved) {
                             let filePath;
                             if (opt.preserveFilename) {
@@ -74,6 +80,8 @@ class HttpTools {
                                 if (!Files_1.Files.getFileStat(filePath).isFile) {
                                     throw new Errors.HttpError('Upload destination is directory: ' + filePath, 400);
                                 }
+                                if (!opt.overwrite)
+                                    throw new Errors.HttpError('File already exists: ' + filePath, 400);
                             }
                             let f = {
                                 name: filename,
@@ -82,27 +90,20 @@ class HttpTools {
                                 mimeType: mimetype,
                                 path: filePath
                             };
-                            if (!opt.overwrite && fs.pathExistsSync(filePath)) {
+                            result.files.push(f);
+                            let fstream = fs.createWriteStream(filePath);
+                            file.pipe(fstream);
+                            fstream.on('close', () => {
                                 if (!promiseResolved) {
                                     promiseResolved = true;
-                                    reject(new Error('File already exists: ' + filePath));
+                                    resolve(result);
                                 }
-                            }
-                            else {
-                                result.files.push(f);
-                                let fstream = fs.createWriteStream(filePath);
-                                file.pipe(fstream);
-                                fstream.on('close', () => {
-                                    if (!promiseResolved) {
-                                        promiseResolved = true;
-                                        resolve(result);
-                                    }
-                                });
-                            }
+                            });
                         }
                     }
                     catch (err) {
                         if (!promiseResolved) {
+                            console.log('!!!!!!!promiseResolved =' + promiseResolved);
                             promiseResolved = true;
                             reject(err);
                         }

@@ -5,10 +5,10 @@ import mime = require('mime')
 import * as utils from '../utils'
 import * as Promise from 'bluebird'
 import './StringTools';
-//import {ChildProcess} from "./ChildProcess";
+// import {ChildProcess} from "./ChildProcess";
 
 export class Files {
-	
+
 	public static isDir(path: string) {
 		return new Promise( (resolve, reject) => {
 			fs.stat(path, (err, stats) => {
@@ -22,7 +22,7 @@ export class Files {
 	}
 
 	/*public static shellMoveFile(source: string, dest: string, opt: any = {}): any {
-    	
+
     	let params: any = utils.parseParams(opt, {
 			overwrite: {
 				type: 'boolean',
@@ -39,7 +39,7 @@ export class Files {
         return ChildProcess.execCmd('copy', args)
         .then( (result: any) => {
         	if (result.exitCode !== 0){
-        		
+
         		if (result.stderr != '')
         			return result.stderr
         		else if (result.stdout != '')

@@ -13,19 +13,19 @@ export interface ApplicationConstructor {
 
 export class Application extends EventEmitter {
 
-	public static version = '2.3.3'
+	public static version = '2.3.9'
 
 	public static applicationDirPath: string = __dirname;
 
 	private static _instance: Application = null
 
 	public config: any = {}
+	public serviceName = 'ctop-agent'
 
 	protected logsConfig: any;
 	protected _loggers: Map<string, bunyan> = new Map<string, bunyan>()
 	protected logger: bunyan = null
 	protected configPath: string = __dirname + '/../conf/config.js'
-	public serviceName: string = 'ctop-agent'
 
 	constructor(configPath: string, opt: any = {}) {
 

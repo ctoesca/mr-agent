@@ -15,6 +15,7 @@ import {Updater} from './autoUpdate/Updater'
 import {TbasePlugin} from './plugins/TbasePlugin'
 import {ChildProcess} from './utils/ChildProcess'
 import * as utils from './utils'
+import * as Bluebird from 'bluebird'
 
 export class WorkerApplication extends Application {
 
@@ -92,12 +93,14 @@ export class WorkerApplication extends Application {
 		return r
 	}
 
-	public stop() {
-		if (utils.isWin())
-			ChildProcess.execCmd(__dirname+'/../bin/agent.exe', ['stop',this.serviceName] ) 
-		else 
-			process.exit(99);
-	}
+	public stop(): Bluebird<any> {
+        if (utils.isWin()) {
+            return ChildProcess.execCmd(__dirname + '/../bin/agent.exe', ['stop', this.serviceName])
+        } else {
+            process.exit(99);
+            return Bluebird.resolve()
+        }
+    }
 
 	public restart() {
 		process.exit(98);
@@ -153,7 +156,7 @@ export class WorkerApplication extends Application {
 
 		});
 
-		this.mainApi.get('/admin/os/cpus', (req: express.Request, res: express.Response) => {
+		this.mainApi.get('/admin/os/cpus', (req: express.Request, res: express.Response, next: express.NextFunction) => {
 
 			let r = os.cpus();
 
@@ -172,15 +175,24 @@ export class WorkerApplication extends Application {
 		/**
 		* Arrêt de l'application
 		*/
-		this.mainApi.get('/admin/stop', (req: express.Request, res: express.Response) => {
+		this.mainApi.get('/admin/stop', (req: express.Request, res: express.Response, next: express.NextFunction) => {
+            this.logger.info('STOP');
 
-			this.logger.info('STOP');
-			res.status(200).send('Stopping');
-			this.stop();
+            this.stop()
+            .then( (result: any) => {
+                if (result.exitCode == 0) {
+                    res.status(200).send(result);
+                } else {
+                    res.status(500).send(result);
+                }
+            })
+            .catch( (err) => {
+                next(err);
+            })
 
-		});
+        });
 
-		this.mainApi.get('/admin/restart', (req: express.Request, res: express.Response) => {
+		this.mainApi.get('/admin/restart', (req: express.Request, res: express.Response, next: express.NextFunction) => {
 
 			this.logger.info('RESTART');
 			res.status(200).send('Restarting');
@@ -188,7 +200,7 @@ export class WorkerApplication extends Application {
 
 		});
 
-		this.mainApi.post('/getConfig', (req: express.Request, res: express.Response) => {
+		this.mainApi.post('/getConfig', (req: express.Request, res: express.Response, next: express.NextFunction) => {
 
 			let r = {
 				data: fs.readFileSync(this.configPath).toString()

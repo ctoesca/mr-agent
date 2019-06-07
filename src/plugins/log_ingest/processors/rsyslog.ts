@@ -91,28 +91,27 @@ export class Tprocessor extends TbaseProcessor {
 		return message;
 	}
 
-	dnsReverse(ip: string) {
+	public dnsReverse(ip: string) {
 		if (!this.ipHash.has(ip)) {
 
-			var ipData: any = {
+			let ipData: any = {
 				ip: ip,
 				hostname: null
 			}
 
 			return new Promise((resolve) => {
-				dns.reverse(ip, (err, hostnames) => {     
+				dns.reverse(ip, (err, hostnames) => {
 					if (!err) {
-						if (hostnames.length > 0) { 
-							ipData.hostname = hostnames[0]                
-						}           
+						if (hostnames.length > 0) {
+							ipData.hostname = hostnames[0]
+						}
 					}
 
 					this.ipHash.set(ip, ipData);
 					resolve(ipData);
 				});
 			});
-		}
-		else {
+		} else {
 			return Promise.resolve(this.ipHash.get(ip));
 		}
 	}

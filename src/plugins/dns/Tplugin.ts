@@ -16,7 +16,7 @@ export class Tplugin extends ThttpPlugin {
 
 		super(application, config);
 
-		if (this.config.dnsServers && (this.config.dnsServers.length>0)) {
+		if (this.config.dnsServers && (this.config.dnsServers.length > 0)) {
 			dns.setServers(this.config.dnsServers)
 		}
 
@@ -49,16 +49,16 @@ export class Tplugin extends ThttpPlugin {
 					hostnames: []
 				}
 
-				if (!err){					
+				if (!err) {
 					r.hostnames = hostnames
 					this.ipHash.set(params.ip, r)
-				} else if (err.code != 'ENOTFOUND'){
+				} else if (err.code != 'ENOTFOUND') {
 					next ( new Errors.HttpError(err.toString(), 500))
 					return
-				} 
+				}
 				// [ 'par21s05-in-f131.1e100.net', 'par21s05-in-f3.1e100.net' ]
 
-				res.status(200).json(r)					
+				res.status(200).json(r)
 
 			})
 

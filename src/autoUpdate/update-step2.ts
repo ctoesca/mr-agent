@@ -42,13 +42,13 @@ let app = mrAgent.create( mrAgent.WorkerApplication, configPath)
 let updater = new mrAgent.Updater(app as mrAgent.WorkerApplication)
 
 
-var logDir = appDir+"/logs"
+let logDir = appDir + '/logs'
 fs.ensureDirSync(logDir);
 
 updater.logger = bunyan.createLogger({
     name: 'updater-step2',
     streams: [{
-        path: logDir+"/updater-step2.log",
+        path: logDir + '/updater-step2.log'
     }]
 });
 

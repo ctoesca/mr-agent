@@ -127,14 +127,14 @@ export class HttpServer extends EventEmitter {
 
 		this.app.use(function (err: Error, req: express.Request, res: express.Response, next: express.NextFunction) {
 
-			try{
+			try {
 
 				let status = 500;
 
 				if (err instanceof Errors.HttpError) {
 					status = err.code;
-				} else if (typeof err["getHttpStatus"] === 'function') {
-					status = err["getHttpStatus"]();
+				} else if (typeof err.getHttpStatus === 'function') {
+					status = err.getHttpStatus();
 				}
 
 				if (status >= 500) {
@@ -142,9 +142,9 @@ export class HttpServer extends EventEmitter {
 				} else {
 					this.logger.warn('***** ' + status + ' : ' + req.method + ' ' + req.path, err.toString());
 				}
- 
+
 				if (!res.headersSent) {
-					
+
 					let response: any = {
 						error: true,
 						errorMessage: err.toString(),
@@ -153,8 +153,8 @@ export class HttpServer extends EventEmitter {
 						errorClass: err.constructor.name,
 						stack: err.stack
 					}
-					if (typeof err["getDetail"] !== 'undefined') {
-						response.detail = err["getDetail"]()
+					if (typeof err.getDetail !== 'undefined') {
+						response.detail = err.getDetail()
 					}
 
 					res.status(status).send(response);
@@ -162,7 +162,7 @@ export class HttpServer extends EventEmitter {
 					this.logger.warn('***** ErrorHandler: Cannot set headers after they are sent to the client.')
 				}
 
-			}catch(err){
+			} catch (err) {
 				this.logger.error('HttpServer.onError: ' + err.toString())
 			}
 		}.bind(this));
@@ -194,7 +194,7 @@ export class HttpServer extends EventEmitter {
 				res.setHeader('WWW-Authenticate', 'Basic realm="mr-agent-realm"');
 			}
 			this.logger.warn('401 - Unauthorized ip=' + ip + ', user=' + auth(req));
-			throw new Errors.HttpError('Unauthorized', 401);		
+			throw new Errors.HttpError('Unauthorized', 401);
 		}
 	}
 	public getUrl() {

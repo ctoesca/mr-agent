@@ -10,12 +10,12 @@ import bunyan = require('bunyan')
 
 export default class SshConnection extends EventEmitter {
 	protected static cachedKeys: Map<string, string> = new Map<string, string>()
+	public conn: Ssh2.Client = null
 
 	protected sshKeysDir: string = null
 	protected defaultPort = 22
 	protected connectTimeout = 10000
 	protected logger: bunyan = null
-	public conn: Ssh2.Client = null
 
 	constructor(config: any) {
 
@@ -33,7 +33,7 @@ export default class SshConnection extends EventEmitter {
 	}
 
 	public close() {
-		if (this.conn) {			
+		if (this.conn) {
 			try {
 				this.conn.end();
 				this.conn = null
@@ -44,9 +44,10 @@ export default class SshConnection extends EventEmitter {
 	}
 
 	public connect(params: any): Promise<Ssh2.Client> {
-		
-		if (this.conn !== null)
+
+		if (this.conn !== null) {
 			this.close()
+		}
 
 		let tryPassword: boolean = ((typeof params.password !== 'undefined') && (params.password !== null))
 		let tryKey: boolean = ((typeof params.key !== 'undefined') && (params.key !== null)) && !tryPassword
@@ -61,8 +62,7 @@ export default class SshConnection extends EventEmitter {
 				username: params.username,
 				password: params.password
 			})
-		}
-		else if (tryKey) {
+		} else if (tryKey) {
 			promise = this._connect({
 				host: params.host,
 				port: params.port,
@@ -70,14 +70,13 @@ export default class SshConnection extends EventEmitter {
 				privateKey: params.key,
 				passphrase: params.passphrase
 			})
-		}
-		else if (tryAgentKey) {
+		} else if (tryAgentKey) {
 
 			let cacheKey = this.getSshKeyCache( params.host,  params.port)
 
 			if (SshConnection.cachedKeys.has(cacheKey)) {
 				let key = SshConnection.cachedKeys.get(cacheKey)
-				
+
 				promise = this._connect({
 						host: params.host,
 						port: params.port,
@@ -89,7 +88,7 @@ export default class SshConnection extends EventEmitter {
 						this.logger.warn('Use key cache error', err.toString().trim() )
 						return this.findKeyConnection(params.host, params.port, params.username, params.passphrase)
 					})
-				
+
 			} else {
 
 				promise = this.findKeyConnection(params.host, params.port, params.username, params.passphrase)
@@ -101,7 +100,7 @@ export default class SshConnection extends EventEmitter {
 			this.conn = conn
 			return conn
 		})
-		
+
 
 	}
 
@@ -173,7 +172,7 @@ export default class SshConnection extends EventEmitter {
 	}
 	protected _connect(params: any): Promise<Ssh2.Client> {
 		let conn = this.getNewSshClient();
-	
+
 		params.keepaliveCountMax = 10
 		params.readyTimeout = this.connectTimeout
 
@@ -203,13 +202,13 @@ export default class SshConnection extends EventEmitter {
 
 				let sshError = new SshError(err, level)
 				reject(sshError);
-			
+
 			});
 
 			conn.on('ready', () => {
 				clearTimeout(timeout)
 				this.logger.info(params.username + '@' + params.host + ': CONNECT OK');
-				
+
 				resolve( conn );
 
 			});
@@ -233,7 +232,7 @@ export default class SshConnection extends EventEmitter {
 	}
 
 	protected getKeyConnection( host: string, port: number, username: string, keyPath: string, passphrase: string ) {
-		
+
 		let key =  require('fs').readFileSync(keyPath)
 		return this._connect({
 			host: host,
@@ -243,10 +242,10 @@ export default class SshConnection extends EventEmitter {
 			passphrase: passphrase
 		})
 		.then( conn => {
-			
+
 			let cacheKey = this.getSshKeyCache(host, port)
 			SshConnection.cachedKeys.set(cacheKey, key)
-			
+
 			return conn
 		})
 

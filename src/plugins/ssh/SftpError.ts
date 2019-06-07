@@ -3,12 +3,12 @@ import {SshError} from './SshError'
 import Ssh2 = require('ssh2')
 
 export default class SftpError extends SshError {
-	
+
 	protected sftpStatus: number = null;
 
 	constructor(err: any) {
 
-		
+
 		super(err.toString())
 
 		this.connected = true;
@@ -37,10 +37,12 @@ export default class SftpError extends SshError {
 	}
 
 	public getHttpStatus() {
-		if ((this.sftpStatus === 2) ||  (this.sftpStatus === 3))
+		if ((this.sftpStatus === 2) ||  (this.sftpStatus === 3)) {
 			return 400
-		else 
+		}
+		else {
 			return 500
+		}
 	}
 
 }

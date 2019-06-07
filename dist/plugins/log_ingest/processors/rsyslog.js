@@ -36,7 +36,7 @@ class Tprocessor extends TbaseProcessor_1.TbaseProcessor {
     }
     dnsReverse(ip) {
         if (!this.ipHash.has(ip)) {
-            var ipData = {
+            let ipData = {
                 ip: ip,
                 hostname: null
             };

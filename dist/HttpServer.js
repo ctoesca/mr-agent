@@ -102,8 +102,8 @@ class HttpServer extends EventEmitter {
                 if (err instanceof Errors.HttpError) {
                     status = err.code;
                 }
-                else if (typeof err["getHttpStatus"] === 'function') {
-                    status = err["getHttpStatus"]();
+                else if (typeof err.getHttpStatus === 'function') {
+                    status = err.getHttpStatus();
                 }
                 if (status >= 500) {
                     this.logger.error('***** ' + status + ' : ' + req.method + ' ' + req.path, err.toString());
@@ -120,8 +120,8 @@ class HttpServer extends EventEmitter {
                         errorClass: err.constructor.name,
                         stack: err.stack
                     };
-                    if (typeof err["getDetail"] !== 'undefined') {
-                        response.detail = err["getDetail"]();
+                    if (typeof err.getDetail !== 'undefined') {
+                        response.detail = err.getDetail();
                     }
                     res.status(status).send(response);
                 }

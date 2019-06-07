@@ -9,11 +9,11 @@ export declare class Application extends EventEmitter {
     static applicationDirPath: string;
     private static _instance;
     config: any;
+    serviceName: string;
     protected logsConfig: any;
     protected _loggers: Map<string, bunyan>;
     protected logger: bunyan;
     protected configPath: string;
-    serviceName: string;
     constructor(configPath: string, opt?: any);
     static create(clazz: ApplicationConstructor, configPath: string, opt?: any): Application;
     static getInstance(): Application;

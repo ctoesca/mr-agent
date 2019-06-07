@@ -42,6 +42,7 @@ export class HttpTools {
 				fields: []
 			}
 			let promiseResolved = false;
+			let hasFile: boolean = false
 
 			try {
 
@@ -70,14 +71,19 @@ export class HttpTools {
 					}
 				});
 
-				/*busboy.on('finish', () => {
-				});*/
+				busboy.on('finish', () => {
+
+					if (!hasFile && !promiseResolved)
+						reject(new Errors.HttpError('No file uploaded', 400));
+						
+				});
 
 				busboy.on('file', (fieldName: string, file: NodeJS.ReadableStream, filename: string, encoding: string, mimetype: string) => {
 					try {
 
+						hasFile = true
 						if (!promiseResolved) {
-							
+
 							let filePath
 							if (opt.preserveFilename) {
 								filePath = p.normalize(opt.uploadDir + '/' + filename)
@@ -89,6 +95,8 @@ export class HttpTools {
 								if (!Files.getFileStat(filePath).isFile) {
 									throw new Errors.HttpError('Upload destination is directory: ' + filePath, 400);
 								}
+								if (!opt.overwrite)
+									throw new Errors.HttpError('File already exists: ' + filePath, 400);
 							}
 
 							let f: any = {
@@ -99,28 +107,24 @@ export class HttpTools {
 								path: filePath
 							}
 
-							if (!opt.overwrite && fs.pathExistsSync(filePath) ) {
-								if (!promiseResolved){
-									promiseResolved = true;
-									reject( new Error('File already exists: ' + filePath));
+							
+							result.files.push( f )
+								
+							let fstream = fs.createWriteStream(filePath)
+							file.pipe( fstream )
+							fstream.on('close', () => {
+								if (!promiseResolved) {
+									promiseResolved = true
+									resolve(result)
 								}
-							} else {
-								result.files.push( f )
-								let fstream = fs.createWriteStream(filePath)
-								file.pipe( fstream )
-								fstream.on('close', () => {
-									if (!promiseResolved) {
-										promiseResolved = true
-										resolve(result)
-									}
-								})
-							}
-
+							})
+							
 						}
 
 
 					} catch (err) {
-						if (!promiseResolved){
+						if (!promiseResolved) {
+							console.log('!!!!!!!promiseResolved ='+promiseResolved)
 							promiseResolved = true;
 							reject(err)
 						}
@@ -130,7 +134,7 @@ export class HttpTools {
 				req.pipe(busboy);
 
 			} catch (err) {
-				if (!promiseResolved){
+				if (!promiseResolved) {
 					promiseResolved = true;
 					reject(err)
 				}

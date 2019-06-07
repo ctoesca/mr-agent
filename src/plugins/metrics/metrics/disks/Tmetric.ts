@@ -122,7 +122,7 @@ export class Tmetric extends TbaseMetric implements IbaseMetric {
 			currentState: 0,
 			perfdata: ''
 		}
-		let state: string = "OK"
+		let state = 'OK'
 
 		Object.keys(result).forEach( (fsName) => {
 			let diskInfo = result[fsName]
@@ -154,7 +154,7 @@ export class Tmetric extends TbaseMetric implements IbaseMetric {
 
 			} else {
 				r.currentState = 3
-				
+
 				if (diskInfo.output) {
 					diskInfo.output = 'UNKNOWN - ' + diskInfo.name + ' ' + diskInfo.output
 				} else {

@@ -102,7 +102,7 @@ class Tmetric extends TbaseMetric_1.default {
             currentState: 0,
             perfdata: ''
         };
-        let state = "OK";
+        let state = 'OK';
         Object.keys(result).forEach((fsName) => {
             let diskInfo = result[fsName];
             if (diskInfo.isValid) {

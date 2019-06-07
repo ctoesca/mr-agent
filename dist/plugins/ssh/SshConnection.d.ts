@@ -5,11 +5,11 @@ import EventEmitter = require('events');
 import bunyan = require('bunyan');
 export default class SshConnection extends EventEmitter {
     protected static cachedKeys: Map<string, string>;
+    conn: Ssh2.Client;
     protected sshKeysDir: string;
     protected defaultPort: number;
     protected connectTimeout: number;
     protected logger: bunyan;
-    conn: Ssh2.Client;
     constructor(config: any);
     getNewSshClient(): Ssh2.Client;
     close(): void;

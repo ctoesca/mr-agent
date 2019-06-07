@@ -407,6 +407,48 @@ class Tplugin extends ThttpPlugin_1.ThttpPlugin {
             });
         });
     }
+    checkConnection(params) {
+        return this.getConnection(params, { closeConnection: true })
+            .then((sshConnection) => {
+            return { result: true, params: params, error: null };
+        })
+            .catch((err) => {
+            if (err.level === 'client-authentication') {
+                return { result: false, params: params, error: err };
+            }
+            else {
+                throw err;
+            }
+        });
+    }
+    getConnection(params, options = null) {
+        try {
+            let opt = {
+                closeConnection: false
+            };
+            if (options) {
+                Object.keys(options).forEach((k) => {
+                    opt[k] = options[k];
+                });
+            }
+            let c = new SshConnection_1.default({
+                logger: this.logger,
+                sshKeysDir: this.sshKeysDir,
+                defaultPort: this.defaultPort,
+                connectTimeout: this.connectTimeout
+            });
+            return c.connect(params)
+                .then((conn) => {
+                if (opt.closeConnection) {
+                    c.close();
+                }
+                return c;
+            });
+        }
+        catch (err) {
+            return Promise.reject(err);
+        }
+    }
     _exec(opt, sshConnection = null) {
         let connPromise;
         if (sshConnection === null) {
@@ -508,46 +550,6 @@ class Tplugin extends ThttpPlugin_1.ThttpPlugin {
                 }
             });
         });
-    }
-    checkConnection(params) {
-        return this.getConnection(params, { closeConnection: true })
-            .then((sshConnection) => {
-            return { result: true, params: params, error: null };
-        })
-            .catch((err) => {
-            if (err.level === 'client-authentication')
-                return { result: false, params: params, error: err };
-            else
-                throw err;
-        });
-    }
-    getConnection(params, options = null) {
-        try {
-            let opt = {
-                closeConnection: false
-            };
-            if (options) {
-                Object.keys(options).forEach((k) => {
-                    opt[k] = options[k];
-                });
-            }
-            let c = new SshConnection_1.default({
-                logger: this.logger,
-                sshKeysDir: this.sshKeysDir,
-                defaultPort: this.defaultPort,
-                connectTimeout: this.connectTimeout
-            });
-            return c.connect(params)
-                .then((conn) => {
-                if (opt.closeConnection) {
-                    c.close();
-                }
-                return c;
-            });
-        }
-        catch (err) {
-            return Promise.reject(err);
-        }
     }
     removeTempFileSync(path) {
         try {

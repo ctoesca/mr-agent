@@ -2,6 +2,7 @@ import { Application } from './Application';
 import { HttpServer } from './HttpServer';
 import express = require('express');
 import { TbasePlugin } from './plugins/TbasePlugin';
+import * as Bluebird from 'bluebird';
 export declare class WorkerApplication extends Application {
     httpServer: HttpServer;
     protected pluginsInstances: any;
@@ -13,7 +14,7 @@ export declare class WorkerApplication extends Application {
     getUrl(): string;
     loadPlugins(): void;
     getPluginInstance(name: string): TbasePlugin;
-    stop(): void;
+    stop(): Bluebird<any>;
     restart(): void;
     initRoutes(): void;
 }

@@ -17,10 +17,12 @@ class SftpError extends SshError_1.SshError {
         };
     }
     getHttpStatus() {
-        if ((this.sftpStatus === 2) || (this.sftpStatus === 3))
+        if ((this.sftpStatus === 2) || (this.sftpStatus === 3)) {
             return 400;
-        else
+        }
+        else {
             return 500;
+        }
     }
 }
 exports.default = SftpError;

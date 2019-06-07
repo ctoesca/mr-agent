@@ -76,13 +76,17 @@ export class Updater extends EventEmitter {
 
 		this.uncompressPackage(zipPath, newVersionCopyDir)
 		fs.removeSync(zipPath)
-		
+
 		this.backup(backupDir)
 		this.logger.info(zipPath + ' removed')
 
-		
 
-		let nodePath = backupDir + '/node/node'
+		let nodePath = backupDir + '/node/node';
+
+        if (utils.isWin()) {
+            nodePath = backupDir + '/node/node.exe';
+        }
+
 		let args = [ p.normalize(backupDir + '/dist/autoUpdate/update-step2'), '--updateDir', updateTmpDir, '--appDir', this.getAppDir(), '--appUrl', this.application.getUrl() ]
 		let thisProcessArgs = parseArgs(process.argv.slice(2));
 		if (thisProcessArgs.c) {
@@ -90,19 +94,20 @@ export class Updater extends EventEmitter {
 			args.push(thisProcessArgs.c)
 		}
 
-		fs.writeFileSync(updateTmpDir+'/step2.bat', nodePath+' '+args.join(' ')+' 1>'+this.getAppDir()+'/logs/step2.out 2>'+this.getAppDir()+'/logs/step2.err')
-		if (!utils.isWin())
-			child_process.execSync('chmod 755 ' +updateTmpDir+'/step2.bat')
+		fs.writeFileSync(updateTmpDir + '/step2.bat', nodePath + ' ' + args.join(' ') + ' 1>' + this.getAppDir() + '/logs/step2.out 2>' + this.getAppDir() + '/logs/step2.err')
+		if (!utils.isWin()) {
+			child_process.execSync('chmod 755 ' + updateTmpDir + '/step2.bat')
+		}
 
 		this.logger.info('EXECUTING step2: ' + nodePath + ' ' + args.join(' '))
-		
+
 		if (!fs.pathExistsSync(nodePath)) {
 			this.logger.error('execUpdate: ' + nodePath + ' does not exists')
 			throw 'Cannot exec step2: node path does not exists. Update failed'
 		}
 
 		this.logger.info('Starting - step-2... application will stop')
-		let child = child_process.spawn(updateTmpDir+'/step2.bat', [], {
+		let child = child_process.spawn(updateTmpDir + '/step2.bat', [], {
 			detached: true,
 			stdio: 'ignore'
 		});
@@ -115,8 +120,8 @@ export class Updater extends EventEmitter {
 
 		return this.stopApp(appDir, appUrl)
 
-		.then( () => {
-			return this.remove(appDir)		
+		.then( (result) => {
+			return this.remove(appDir)
 		})
 
 		.then( result => {
@@ -163,7 +168,7 @@ export class Updater extends EventEmitter {
 	/************  STEP 1 ************/
 
 	protected backup(backupDir: string) {
-		try{
+		try {
 			let appDir = this.getAppDir()
 
 			this.logger.info('backup started ' + appDir + ' --> ' + backupDir)
@@ -188,7 +193,7 @@ export class Updater extends EventEmitter {
 
 			this.logger.info('backup completed')
 
-		}catch(err){
+		} catch (err) {
 			this.logger.error(err)
 			throw err
 		}
@@ -196,7 +201,7 @@ export class Updater extends EventEmitter {
 
 	protected uncompressPackage(zipPath: string, newVersionCopyDir: string) {
 
-		try{
+		try {
 			this.logger.info('uncompress ' + zipPath + ' --> ' + newVersionCopyDir + ' started ...')
 			if (fs.pathExistsSync(newVersionCopyDir)) {
 				fs.removeSync( newVersionCopyDir )
@@ -206,7 +211,7 @@ export class Updater extends EventEmitter {
 			zip.extractAllTo(newVersionCopyDir, true);
 
 			this.logger.info('uncompress zip completed')
-		}catch(err){
+		} catch (err) {
 			this.logger.error(err)
 			throw err
 		}
@@ -214,15 +219,18 @@ export class Updater extends EventEmitter {
 	}
 
 	protected stopApp(appDir: string, appUrl: string): Bluebird<any> {
-		
+
 
 		this.logger.info('Stopping... ')
 
 		if (utils.isWin()) {
-			return ChildProcess.spawnCmd(appDir+'/bin/agent.exe', ['stop',this.application.serviceName])
-			.delay( 5000 )			
-		}else
-		{
+			return ChildProcess.execCmd(appDir + '/bin/agent.exe', ['stop', this.application.serviceName])
+            .then( (result: any) => {
+                if (result.exitCode > 0) {
+                    throw 'Failed to stop agent: ' + result.stderr
+                }
+            })
+		} else {
 			let cmd = appDir + '/bin/agent.sh';
 	        let args = ['stop'];
 			let child = child_process.spawn(cmd, args, {
@@ -232,7 +240,9 @@ export class Updater extends EventEmitter {
 			});
 
 			child.unref()
-			return Bluebird.resolve()
+			return Bluebird.resolve({
+                exitCode: 0
+            });
 		}
 
 	}
@@ -242,13 +252,12 @@ export class Updater extends EventEmitter {
 
 			let cmd: string
 			let args: string[]
-			
-			this.logger.info("Starting agent ...")
+
+			this.logger.info('Starting agent ...')
 
 			if (utils.isWin()) {
-	            return ChildProcess.spawnCmd(appDir+'/bin/agent.exe', ['start',this.application.serviceName])
-	        }
-	        else {
+	            return ChildProcess.execCmd(appDir + '/bin/agent.exe', ['start', this.application.serviceName]);
+	        } else {
 	            cmd = appDir + '/bin/agent.sh';
 	            args = ['start'];
 				let child = child_process.spawn(cmd, args, {
@@ -260,37 +269,37 @@ export class Updater extends EventEmitter {
 				child.unref()
 				return Promise.resolve()
 	        }
-			
+
 
 		})
 	}
 
 
 	protected remove(appDir: string) {
-		
-		try{
+
+		try {
 			this.logger.info('Removing old version...')
-			var errors: number = 0
+			let errors = 0
 
 			fs.readdirSync(appDir).filter( (file) => {
 				return (Updater.excludedFromUpdate.indexOf(file) === -1)
 			}).forEach( (file) => {
 				let path = appDir + '/' + file
-				this.logger.info('removing ' + path + ' ...')		
-				try
-				{	
+				this.logger.info('removing ' + path + ' ...')
+				try {
 					fs.removeSync(path)
-				}catch(err){
+				} catch (err) {
 					errors ++
 					this.logger.error(err.toString())
-				}	
+				}
 			});
-			if (errors===0)
+			if (errors === 0) {
 				this.logger.info('Old version removed successfully')
-			else
-				this.logger.warn(errors+' errors removing old version')
+			} else {
+				this.logger.warn(errors + ' errors removing old version')
+			}
 
-		}catch(err){
+		} catch (err) {
 			this.logger.error(err)
 			throw err;
 		}
@@ -299,7 +308,7 @@ export class Updater extends EventEmitter {
 	protected copy(updateDir: string, appDir: string) {
 
 		this.logger.info('Copying new version ...')
-		try{
+		try {
 			fs.readdirSync(updateDir + '/new-version').filter( (file) => {
 				return (Updater.excludedFromUpdate.indexOf(file) === -1)
 			}).forEach( (file) => {
@@ -307,22 +316,21 @@ export class Updater extends EventEmitter {
 				let dest = appDir + '/' + file
 				this.logger.info('copying ' + source + ' --> ' + dest + ' ...')
 				fs.copySync(source, dest, {
-					filter: function(src: string, dest: string){
-						
-						if ( (file === 'bin') && (p.basename(dest) === 'agent.exe')){
-							this.logger.error("Non copié: "+dest)
+					filter: function(src: string, dest: string) {
+
+						if ( (file === 'bin') && (p.basename(dest) === 'agent.exe')) {
+							this.logger.error('Non copié: ' + dest)
 							return false
-						}
-						else{
+						} else {
 							return true
 						}
 					}.bind(this)
-				})		
+				})
 			});
 
-			try{
-                fs.copySync(updateDir + '/new-version/bin/agent.exe', appDir+"/bin/agent.exe")
-            }catch(err){
+			try {
+                fs.copySync(updateDir + '/new-version/bin/agent.exe', appDir + '/bin/agent.exe')
+            } catch (err) {
 
             }
 
@@ -331,10 +339,10 @@ export class Updater extends EventEmitter {
 				child_process.execSync('chmod 755 ' + appDir + '/node/*')
 				child_process.execSync('chmod 755 ' + appDir + '/node_modules/.bin/*')
 			}
-			
+
 			this.logger.info('New version copied successfully')
 
-		}catch(err){
+		} catch (err) {
 			this.logger.error(err)
 			throw err;
 		}

@@ -59,6 +59,9 @@ class Updater extends EventEmitter {
         this.backup(backupDir);
         this.logger.info(zipPath + ' removed');
         let nodePath = backupDir + '/node/node';
+        if (utils.isWin()) {
+            nodePath = backupDir + '/node/node.exe';
+        }
         let args = [p.normalize(backupDir + '/dist/autoUpdate/update-step2'), '--updateDir', updateTmpDir, '--appDir', this.getAppDir(), '--appUrl', this.application.getUrl()];
         let thisProcessArgs = parseArgs(process.argv.slice(2));
         if (thisProcessArgs.c) {
@@ -66,8 +69,9 @@ class Updater extends EventEmitter {
             args.push(thisProcessArgs.c);
         }
         fs.writeFileSync(updateTmpDir + '/step2.bat', nodePath + ' ' + args.join(' ') + ' 1>' + this.getAppDir() + '/logs/step2.out 2>' + this.getAppDir() + '/logs/step2.err');
-        if (!utils.isWin())
+        if (!utils.isWin()) {
             child_process.execSync('chmod 755 ' + updateTmpDir + '/step2.bat');
+        }
         this.logger.info('EXECUTING step2: ' + nodePath + ' ' + args.join(' '));
         if (!fs.pathExistsSync(nodePath)) {
             this.logger.error('execUpdate: ' + nodePath + ' does not exists');
@@ -82,7 +86,7 @@ class Updater extends EventEmitter {
     }
     execUpdateStep2(appDir, updateDir, appUrl) {
         return this.stopApp(appDir, appUrl)
-            .then(() => {
+            .then((result) => {
             return this.remove(appDir);
         })
             .then(result => {
@@ -162,8 +166,12 @@ class Updater extends EventEmitter {
     stopApp(appDir, appUrl) {
         this.logger.info('Stopping... ');
         if (utils.isWin()) {
-            return ChildProcess_1.ChildProcess.spawnCmd(appDir + '/bin/agent.exe', ['stop', this.application.serviceName])
-                .delay(5000);
+            return ChildProcess_1.ChildProcess.execCmd(appDir + '/bin/agent.exe', ['stop', this.application.serviceName])
+                .then((result) => {
+                if (result.exitCode > 0) {
+                    throw 'Failed to stop agent: ' + result.stderr;
+                }
+            });
         }
         else {
             let cmd = appDir + '/bin/agent.sh';
@@ -174,16 +182,18 @@ class Updater extends EventEmitter {
                 stdio: 'ignore'
             });
             child.unref();
-            return Bluebird.resolve();
+            return Bluebird.resolve({
+                exitCode: 0
+            });
         }
     }
     startApp(appDir) {
         return new Bluebird((resolve, reject) => {
             let cmd;
             let args;
-            this.logger.info("Starting agent ...");
+            this.logger.info('Starting agent ...');
             if (utils.isWin()) {
-                return ChildProcess_1.ChildProcess.spawnCmd(appDir + '/bin/agent.exe', ['start', this.application.serviceName]);
+                return ChildProcess_1.ChildProcess.execCmd(appDir + '/bin/agent.exe', ['start', this.application.serviceName]);
             }
             else {
                 cmd = appDir + '/bin/agent.sh';
@@ -201,7 +211,7 @@ class Updater extends EventEmitter {
     remove(appDir) {
         try {
             this.logger.info('Removing old version...');
-            var errors = 0;
+            let errors = 0;
             fs.readdirSync(appDir).filter((file) => {
                 return (Updater.excludedFromUpdate.indexOf(file) === -1);
             }).forEach((file) => {
@@ -215,10 +225,12 @@ class Updater extends EventEmitter {
                     this.logger.error(err.toString());
                 }
             });
-            if (errors === 0)
+            if (errors === 0) {
                 this.logger.info('Old version removed successfully');
-            else
+            }
+            else {
                 this.logger.warn(errors + ' errors removing old version');
+            }
         }
         catch (err) {
             this.logger.error(err);
@@ -237,7 +249,7 @@ class Updater extends EventEmitter {
                 fs.copySync(source, dest, {
                     filter: function (src, dest) {
                         if ((file === 'bin') && (p.basename(dest) === 'agent.exe')) {
-                            this.logger.error("Non copié: " + dest);
+                            this.logger.error('Non copié: ' + dest);
                             return false;
                         }
                         else {
@@ -247,7 +259,7 @@ class Updater extends EventEmitter {
                 });
             });
             try {
-                fs.copySync(updateDir + '/new-version/bin/agent.exe', appDir + "/bin/agent.exe");
+                fs.copySync(updateDir + '/new-version/bin/agent.exe', appDir + '/bin/agent.exe');
             }
             catch (err) {
             }
