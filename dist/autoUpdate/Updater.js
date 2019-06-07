@@ -60,18 +60,21 @@ class Updater extends EventEmitter {
         this.logger.info(zipPath + ' removed');
         let nodePath = backupDir + '/node/node';
         let args = [p.normalize(backupDir + '/dist/autoUpdate/update-step2'), '--updateDir', updateTmpDir, '--appDir', this.getAppDir(), '--appUrl', this.application.getUrl()];
-        this.logger.info('EXECUTING step2: ' + nodePath + ' ' + args.join(' '));
         let thisProcessArgs = parseArgs(process.argv.slice(2));
         if (thisProcessArgs.c) {
             args.push('-c');
             args.push(thisProcessArgs.c);
         }
+        fs.writeFileSync(updateTmpDir + '/step2.bat', nodePath + ' ' + args.join(' ') + ' 1>' + this.getAppDir() + '/logs/step2.out 2>' + this.getAppDir() + '/logs/step2.err');
+        if (!utils.isWin())
+            child_process.execSync('chmod 755 ' + updateTmpDir + '/step2.bat');
+        this.logger.info('EXECUTING step2: ' + nodePath + ' ' + args.join(' '));
         if (!fs.pathExistsSync(nodePath)) {
             this.logger.error('execUpdate: ' + nodePath + ' does not exists');
             throw 'Cannot exec step2: node path does not exists. Update failed';
         }
         this.logger.info('Starting - step-2... application will stop');
-        let child = child_process.spawn(nodePath, args, {
+        let child = child_process.spawn(updateTmpDir + '/step2.bat', [], {
             detached: true,
             stdio: 'ignore'
         });
