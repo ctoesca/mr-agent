@@ -161,7 +161,6 @@ class Tplugin extends ThttpPlugin_1.ThttpPlugin {
             .then(() => {
             return HttpTools_1.HttpTools.saveUploadedFile(req, res, next);
         })
-            .delay(500)
             .then((result) => {
             if (result.files.length === 0) {
                 throw new Errors.HttpError('No file uploaded', 400);

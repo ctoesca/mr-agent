@@ -200,7 +200,6 @@ export class Tplugin extends ThttpPlugin {
 		.then( () => {
 			return HttpTools.saveUploadedFile(req, res, next)
 		})
-		.delay(500)
 		.then( (result: any) => {
 
 			if (result.files.length === 0) {
