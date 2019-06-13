@@ -85,19 +85,18 @@ export class Tprocessor extends TbaseProcessor {
 			r = node.parser
 		} else if (node.selectors) {
 			for (let i = 0; i < node.selectors.length; i++) {
-				let selector = node.selectors[i]
-
-				if (selector.fields) {
-					Object.keys(selector.fields).forEach( (k) => {
-						if (data[k] === selector.fields[k].match ) {
-							return selector.parser
-						}
-					})
-
-				} else if (selector.parser) {
-					return selector.parser
-				}
-			}
+                let selector = node.selectors[i];
+                if (selector.fields) {
+                    for (let k in selector.fields){
+                        if (data[k] == selector.fields[k].match) {
+                            return selector.parser;
+                        }
+                    };
+                }
+                else if (selector.parser) {
+                    return selector.parser;
+                }
+            }
 		}
 
 		return r

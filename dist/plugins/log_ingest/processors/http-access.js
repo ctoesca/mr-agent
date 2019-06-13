@@ -69,11 +69,12 @@ class Tprocessor extends TbaseProcessor_1.TbaseProcessor {
             for (let i = 0; i < node.selectors.length; i++) {
                 let selector = node.selectors[i];
                 if (selector.fields) {
-                    Object.keys(selector.fields).forEach((k) => {
-                        if (data[k] === selector.fields[k].match) {
+                    for (let k in selector.fields) {
+                        if (data[k] == selector.fields[k].match) {
                             return selector.parser;
                         }
-                    });
+                    }
+                    ;
                 }
                 else if (selector.parser) {
                     return selector.parser;
