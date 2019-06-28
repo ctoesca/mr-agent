@@ -166,7 +166,7 @@ class Updater extends EventEmitter {
     stopApp(appDir, appUrl) {
         this.logger.info('Stopping... ');
         if (utils.isWin()) {
-            return ChildProcess_1.ChildProcess.execCmd(appDir + '/bin/agent.exe', ['stop', this.application.serviceName])
+            return ChildProcess_1.ChildProcess.execCmd('sc', ['stop', this.application.serviceName])
                 .then((result) => {
                 if (result.exitCode > 0) {
                     throw 'Failed to stop agent: ' + result.stderr;
@@ -193,7 +193,7 @@ class Updater extends EventEmitter {
             let args;
             this.logger.info('Starting agent ...');
             if (utils.isWin()) {
-                return ChildProcess_1.ChildProcess.execCmd(appDir + '/bin/agent.exe', ['start', this.application.serviceName]);
+                return ChildProcess_1.ChildProcess.execCmd('sc', ['start', this.application.serviceName]);
             }
             else {
                 cmd = appDir + '/bin/agent.sh';

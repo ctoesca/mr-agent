@@ -8,7 +8,7 @@ export class Tprocessor extends TbaseProcessor {
 
 	protected ipHash: Map<string, any> = new Map<string, any>()
 	protected IPmask: RegExp = /([\d]{1,3}\.[\d]{1,3}\.[\d]{1,3}\.[\d]{1,3})/g;
-	protected deniedMask: RegExp = /(Deny|denied)/g;
+	
 	protected levels: any = {
 		'debug': 'DEBUG',
 		'info': 'INFO',
@@ -82,12 +82,6 @@ export class Tprocessor extends TbaseProcessor {
 
 	public createMessage( data: any ): any {
 		let message = JSON.parse( data.message );
-		message.dst_port = null;
-		message.src_ip = null;
-		message.src_hostname = null;
-		message.dst_ip = null;
-		message.dst_hostname = null;
-
 		return message;
 	}
 
@@ -120,6 +114,20 @@ export class Tprocessor extends TbaseProcessor {
 		let message: any
 		return super.getMessage(data)
 		.then( (result: any) => {
+
+			/*{
+				"@timestamp":"2019-06-27T16:01:58+02:00",
+				"@version":"1",
+				"message":" Accepted password for deltat from 10.116.200.108 port 37818 ssh2",
+				"sysloghost":"xprodeltmetme2",
+				"syslogtag":"sshd[43088]:",
+				"severity":"info",
+				"facility":"authpriv",
+				"programname":"sshd",
+				"priority":"6",
+				"procid":"43088"
+			}*/
+
 			message = result
 			// message["@timestamp"] = moment(message["@timestamp"]).format("YYYY-MM-DDTHH:mm:ss.SSSZZ");
 
@@ -154,70 +162,13 @@ export class Tprocessor extends TbaseProcessor {
 
 		})
 		.then( (results: any[]) => {
-
-			message.hostnames = []
-
-			for (let i = 0; i < results.length; i++) {
-				let host = results[i]
-
-				message.hostnames.push( host )
-				// message.message = message.message.replace( new RegExp(host.ip, 'g'), host.ip+"("+host.hostname+")" )
-
-			}
+			message.hostnames = results	
 			return message
 		})
-
-		.then( (result: any) => {
-
-			let isDenied = result.message.match(this.deniedMask)
-			let hasSourcesDest = (isDenied !== null);
-
-			if (isDenied && (result.level === 'INFO')) {
-				// certains messages de rejet sont en INFO *: on remplace par WARNING
-				result.level = 'WARNING';
-			}
-
-			/* champs src_ip, dst_ip, src_hostname, dst_hostname */
-
-			// %ASA-4-106023: Deny tcp src ZC01FE:172.30.160.33/39589 dst lancristal:172.26.10.78/1556 by access-group "ZC01FE_access_in" [0x0, 0x0]
-			if (result.hostnames.length === 2) {
-				/* on a un message qui contient 2 IP: ces ip sont peut-etre des IP source/Destination */
-
-				if (!hasSourcesDest) {
-					// srcip=10.145.21.113, dstip=172.27.10.123,dstport=53
-					hasSourcesDest = result.message.match(/srcip=[\d]{1,3}\.[\d]{1,3}\.[\d]{1,3}\.[\d]{1,3}.*dstip=[\d]{1,3}\.[\d]{1,3}\.[\d]{1,3}\.[\d]{1,3}/)
-				}
-
-				if (hasSourcesDest) {
-					result.src_ip = result.hostnames[0].ip
-					result.src_hostname = result.hostnames[0].hostname
-
-					result.dst_ip = result.hostnames[1].ip
-					result.dst_hostname = result.hostnames[1].hostname
-
-
-					let dst_port = result.message.match(/dstport=([\d]*)/);
-
-					if (dst_port) {
-						result.dst_port = dst_port[1]
-					} else {
-						dst_port = result.message.match(new RegExp(result.dst_ip + '.([\\d]+)'));
-						if (dst_port) {
-							result.dst_port = dst_port[1]
-						}
-					}
-
-
-				}
-			}
-
-			result.hostnames = undefined
-
-			return result
-		})
+		
 	}
 
-	public getIndexName(message: any) {
+	public getIndexName(message: any): any {
 		return moment( message['@timestamp'] ).format('[rsyslog-]YYYY.MM.DD');
 	}
 

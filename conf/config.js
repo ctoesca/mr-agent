@@ -120,7 +120,7 @@ module.exports.getConfig = function () {
 				}
 			},
 			"http-proxy": {
-				"enabled": false,
+				"enabled": true,
 				"port": 9001
 			},
 			"dns": {

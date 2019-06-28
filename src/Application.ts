@@ -13,7 +13,7 @@ export interface ApplicationConstructor {
 
 export class Application extends EventEmitter {
 
-	public static version = '2.4.0'
+	public static version = '2.4.2'
 
 	public static applicationDirPath: string = __dirname;
 

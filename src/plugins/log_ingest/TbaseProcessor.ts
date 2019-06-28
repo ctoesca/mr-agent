@@ -3,6 +3,7 @@ import {Application} from '../../Application'
 import EventEmitter = require('events');
 import request = require('request');
 import bunyan = require('bunyan');
+import moment = require('moment')
 
 export class TbaseProcessor extends EventEmitter {
 	public name: string = null
@@ -60,7 +61,6 @@ export class TbaseProcessor extends EventEmitter {
 	// SYNC
 	public setCommonProperties(data: any, message: any) {
 
-
 		if (data.fields) {
 			/* origin */
 			/* env */
@@ -97,8 +97,15 @@ export class TbaseProcessor extends EventEmitter {
 			message.source = data.source;
 		}
 
-		message._indexName = this.getIndexName( message )
+		if (!message['@timestamp'])
+			message['@timestamp'] = data['@timestamp']
 
+		if (data.indexPrefix)
+			message._indexName = moment( message['@timestamp'] ).format('['+data.indexPrefix+'-]YYYY.MM.DD');
+		else
+			message._indexName = this.getIndexName( message )
+
+		message.indexPrefix = undefined
 		message.beat = undefined;
 		return message
 	}

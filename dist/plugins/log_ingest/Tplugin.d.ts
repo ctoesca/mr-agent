@@ -25,7 +25,7 @@ export declare class Tplugin extends ThttpPlugin {
     ingestData(req: express.Request, res: express.Response): void;
     remoteIngestData(url: string, req: express.Request, res: express.Response): Promise<unknown>;
     localIngestData(req: express.Request, res: express.Response): void;
-    processMessage(processor: TbaseProcessor, data: any): Promise<any>;
+    processMessage(processor: TbaseProcessor, data: any, index?: string): Promise<any>;
     bulk(body: any): Promise<unknown>;
     head(req: express.Request, res: express.Response): void;
 }

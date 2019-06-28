@@ -205,8 +205,10 @@ export class Tplugin extends ThttpPlugin {
 		for (let i = 0; i < lines.length; i++) {
 			if (lines[i] !== '') {
 				let isData = ( (i + 1) % 2 === 0);
+				
 
 				if (isData) {
+
 					dataCount ++;
 					let data: any
 
@@ -238,9 +240,9 @@ export class Tplugin extends ThttpPlugin {
 					} else {
 						promises.push( this.processMessage(this.processors[data.type], data) )
 					}
-				} else {
-					// console.log( lines[i] )
-				}
+				} /*else {
+					indexName = lines[i].index._index;
+				}*/
 			}
 		}
 
@@ -299,7 +301,7 @@ export class Tplugin extends ThttpPlugin {
 
 
 
-	public processMessage( processor: TbaseProcessor, data: any ): Promise<any> {
+	public processMessage( processor: TbaseProcessor, data: any, index: string = null): Promise<any> {
 
 		return processor.getMessage(data)
 		.catch( (err: any) => {
@@ -326,7 +328,7 @@ export class Tplugin extends ThttpPlugin {
 			if (data.source) {
 				logMessage += 'source=' + data.source + ' ';
 			}
-
+			
 			logMessage += 'message=' + data.message;
 
 			logMessage = 'Erreur processMessage ' + processor.name + ': ' + logMessage

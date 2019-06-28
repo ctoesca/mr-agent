@@ -224,7 +224,7 @@ export class Updater extends EventEmitter {
 		this.logger.info('Stopping... ')
 
 		if (utils.isWin()) {
-			return ChildProcess.execCmd(appDir + '/bin/agent.exe', ['stop', this.application.serviceName])
+			return ChildProcess.execCmd('sc', ['stop', this.application.serviceName])
 			.then( (result: any) => {
 				if (result.exitCode > 0) {
 					throw 'Failed to stop agent: ' + result.stderr
@@ -256,7 +256,7 @@ export class Updater extends EventEmitter {
 			this.logger.info('Starting agent ...')
 
 			if (utils.isWin()) {
-				return ChildProcess.execCmd(appDir + '/bin/agent.exe', ['start', this.application.serviceName]);
+				return ChildProcess.execCmd('sc', ['start', this.application.serviceName]);
 			} else {
 				cmd = appDir + '/bin/agent.sh';
 				args = ['start'];

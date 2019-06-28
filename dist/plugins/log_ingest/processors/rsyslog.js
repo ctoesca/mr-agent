@@ -8,7 +8,6 @@ class Tprocessor extends TbaseProcessor_1.TbaseProcessor {
         super(name, opt);
         this.ipHash = new Map();
         this.IPmask = /([\d]{1,3}\.[\d]{1,3}\.[\d]{1,3}\.[\d]{1,3})/g;
-        this.deniedMask = /(Deny|denied)/g;
         this.levels = {
             'debug': 'DEBUG',
             'info': 'INFO',
@@ -27,11 +26,6 @@ class Tprocessor extends TbaseProcessor_1.TbaseProcessor {
     }
     createMessage(data) {
         let message = JSON.parse(data.message);
-        message.dst_port = null;
-        message.src_ip = null;
-        message.src_hostname = null;
-        message.dst_ip = null;
-        message.dst_hostname = null;
         return message;
     }
     dnsReverse(ip) {
@@ -86,42 +80,8 @@ class Tprocessor extends TbaseProcessor_1.TbaseProcessor {
             }
         })
             .then((results) => {
-            message.hostnames = [];
-            for (let i = 0; i < results.length; i++) {
-                let host = results[i];
-                message.hostnames.push(host);
-            }
+            message.hostnames = results;
             return message;
-        })
-            .then((result) => {
-            let isDenied = result.message.match(this.deniedMask);
-            let hasSourcesDest = (isDenied !== null);
-            if (isDenied && (result.level === 'INFO')) {
-                result.level = 'WARNING';
-            }
-            if (result.hostnames.length === 2) {
-                if (!hasSourcesDest) {
-                    hasSourcesDest = result.message.match(/srcip=[\d]{1,3}\.[\d]{1,3}\.[\d]{1,3}\.[\d]{1,3}.*dstip=[\d]{1,3}\.[\d]{1,3}\.[\d]{1,3}\.[\d]{1,3}/);
-                }
-                if (hasSourcesDest) {
-                    result.src_ip = result.hostnames[0].ip;
-                    result.src_hostname = result.hostnames[0].hostname;
-                    result.dst_ip = result.hostnames[1].ip;
-                    result.dst_hostname = result.hostnames[1].hostname;
-                    let dst_port = result.message.match(/dstport=([\d]*)/);
-                    if (dst_port) {
-                        result.dst_port = dst_port[1];
-                    }
-                    else {
-                        dst_port = result.message.match(new RegExp(result.dst_ip + '.([\\d]+)'));
-                        if (dst_port) {
-                            result.dst_port = dst_port[1];
-                        }
-                    }
-                }
-            }
-            result.hostnames = undefined;
-            return result;
         });
     }
     getIndexName(message) {

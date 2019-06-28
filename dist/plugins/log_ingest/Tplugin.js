@@ -186,8 +186,6 @@ class Tplugin extends ThttpPlugin_js_1.ThttpPlugin {
                         promises.push(this.processMessage(this.processors[data.type], data));
                     }
                 }
-                else {
-                }
             }
         }
         Promise.all(promises)
@@ -228,7 +226,7 @@ class Tplugin extends ThttpPlugin_js_1.ThttpPlugin {
             res.status(500).send(err);
         });
     }
-    processMessage(processor, data) {
+    processMessage(processor, data, index = null) {
         return processor.getMessage(data)
             .catch((err) => {
             let logMessage = 'error=' + err + ' ';

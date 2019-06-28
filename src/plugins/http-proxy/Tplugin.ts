@@ -1,8 +1,8 @@
 
 
-import fs = require('fs')
+/*import fs = require('fs')
 import express = require('express')
-const hoxy = require('hoxy')
+const hoxy = require('hoxy')*/
 import {TbasePlugin} from '../TbasePlugin'
 import {WorkerApplication as Application}  from '../../WorkerApplication'
 
@@ -17,7 +17,8 @@ export class Tplugin extends TbasePlugin {
 	public install() {
 		super.install();
 
-		let proxy = hoxy.createServer({
+
+		/*let proxy = hoxy.createServer({
 			// slow:{
 				// 	latency : 500
 				// },
@@ -33,17 +34,14 @@ export class Tplugin extends TbasePlugin {
 				}).listen(this.config.port);
 		proxy.intercept('request', (req: express.Request, resp: express.Response, cycle: any) => {
 
-			/*var m = req.method+" "+req.protocol+"//"+req.hostname;
-			if (req.port)
-				m += ":"+req.port
-			m += req.url*/
+			//var m = req.method+" "+req.protocol+"//"+req.hostname;
+			//if (req.port)
+			//	m += ":"+req.port
+			//m += req.url
 
-		});
-
-
+		});*/
 
 	}
-
 
 
 }

@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const Application_1 = require("../../Application");
 const EventEmitter = require("events");
 const request = require("request");
+const moment = require("moment");
 class TbaseProcessor extends EventEmitter {
     constructor(name, opt) {
         super();
@@ -68,7 +69,13 @@ class TbaseProcessor extends EventEmitter {
         if (data.source) {
             message.source = data.source;
         }
-        message._indexName = this.getIndexName(message);
+        if (!message['@timestamp'])
+            message['@timestamp'] = data['@timestamp'];
+        if (data.indexPrefix)
+            message._indexName = moment(message['@timestamp']).format('[' + data.indexPrefix + '-]YYYY.MM.DD');
+        else
+            message._indexName = this.getIndexName(message);
+        message.indexPrefix = undefined;
         message.beat = undefined;
         return message;
     }
