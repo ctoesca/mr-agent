@@ -174,6 +174,12 @@ export class Tplugin extends ThttpPlugin {
 				headers : req.headers
 			}
 
+			if (!options.headers){
+				options.headers = {}
+			}
+
+			options.headers['user-agent'] = 'mr-agent'
+
 			request(
 				options,
 				(err: any, response: any, body: any) => {

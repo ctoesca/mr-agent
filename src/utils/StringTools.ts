@@ -5,6 +5,7 @@ interface String {
 	contains(it: string): boolean
 	leftOf(souschaine: string): string
 	removeEnd(s: string, caseInsensistive?: boolean): string
+	hashCode(): number
 }
 
 String.prototype.rightOf = function(search: string): string {
@@ -56,5 +57,18 @@ String.prototype.removeEnd = function(s: string, caseInsensistive = false): stri
 	} else {
 		return this.toString();
 	}
+
+};
+
+String.prototype.hashCode = function(): number {
+
+	var hash = 0, i, chr;
+	if (this.length === 0) return hash;
+	for (i = 0; i < this.length; i++) {
+		chr   = this.charCodeAt(i);
+		hash  = ((hash << 5) - hash) + chr;
+		hash |= 0; // Convert to 32bit integer
+	}
+	return hash;
 
 };

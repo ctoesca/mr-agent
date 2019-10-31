@@ -7,6 +7,7 @@ export default class Timer extends EventEmitter {
     count: number;
     protected intervalID: NodeJS.Timeout;
     constructor(args: any);
+    setInterval(i: number): void;
     destroy(): void;
     start(): void;
     reset(): void;

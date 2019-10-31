@@ -32,6 +32,9 @@ class Tplugin extends ThttpPlugin_js_1.ThttpPlugin {
         Object.keys(req.body).forEach((k) => {
             opt[k] = req.body[k];
         });
+        if (!opt.headers)
+            opt.headers = {};
+        opt.headers['user-agent'] = 'mr-agent';
         let startTime = new Date().getTime();
         this.runningRequestCount++;
         this.requestCount++;

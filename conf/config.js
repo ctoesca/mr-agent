@@ -11,7 +11,7 @@ module.exports.getConfig = function () {
 		},
 		
 		 //Nombre de processus à lancer
-		 //"numProcesses": "auto",
+		 "numProcesses": "4",
 		 
 
 		//Script exécuté au démarrage (utile sur windows pour monter des partages réseau)
@@ -46,12 +46,12 @@ module.exports.getConfig = function () {
 
 			"enabled": false,
 			//Si non défini (ou null), la clef et le certificat sont générés automatiquement avec openSsl.
-			"credentials" : {
+			/*"credentials" : {
 				//key: require("fs").readFileSync(__dirname+"/key.txt", 'utf8'),
 				//cert: require("fs").readFileSync(__dirname+"/cert.pem", 'utf8')
 				key: "-----BEGIN RSA PRIVATE KEY-----\nMIIEowIBAAKCAQEAvSsh7RbEnjssy3quk2yvsYxQd9d4ujMKe5meaOxcaHJfbZEJHbaB0M4idC1A/kvUH2fEIhUncxSSEAAH7XJXvrkO6EQ2lN9bY4CzsLVf+ilx+6+20i0icL+/M76xQFaAElB4HY5xDEMH6yIUCGrTZykBqd04JRsFUYum9v6+n9Jzsr7YnbKyw1KbCCVwz7YR6VbzBvRZAizdTWP5jc+o8o0RQqFlZ03cEemD4OY8+tbZRbXAdCnxOYpf9CjyBvEbFa+LBwL1++3rQbgEq0GClX1P8Fv625Wk9BHPzSN/C2wwa4H6E2KVOwmzrY6Elxy22m72mefbCQdjDGfbPcOqOQIDAQABAoIBAQCZbbl3leblO7OqWhfsRNP/moHNobsusqVG+KLuEP8mS9WwhVkye0uxMu/o8KdtWc1zp3MB/cxgX4fUaGIFqZ8XdvtrUaA/gSWbf9C+e22b9i+X5r3OnIL5ldwbuQgE2ePIdvHlbxmry1ZJ1PsQlKxgWHcb8exO1CqtKCrE3Ht6Hg9ES3aYnG2Nl0Bf1S0APUTj1KrdgrqtcgV+dIztYzlz5JOcD14it79nPBMdKtkOnQQHbLvv1azQnRbSPsyIJBjAF5GK7thyf8yjuDsK7F4VAIjnlQeUQSpE2DtfHfcukuCrl0P4/yOJHCK5gkN2cjgd3+MAD4dm2tj9i3o/QkUBAoGBAONkubSRE8s6aV0YkNtDIfMMhq5adPl8dxe+q41/va9OF76XHFR3e36EUAkqzWaSqnOKXXB2oXWke71BWhck4tj8DUMx+3waORDkuqJpzOzRcA94GmTLHvSDKMrbUQ0d0xrkHd7jU5Y88mSa33OR5n4IkzNIrk94BumtjGwPIBWhAoGBANT3XEPA28UCEOIqIwL5TQPVh2buDmpS8KxGhZ/y4yxMMYO7wAsQyKGq2G3QCCw30cPNeo7bZz0mU2XUuFTHZn1gNl4vozP28bzMq8kkMNd4W+FHZarr5qgDSJ4w/QrCf5YixzMbqW53ArOZ6lB4F4Q+ix9qd996+MdZ2xVvc52ZAoGAZd0DS54JzepWtLuCeJZ0KNqdopEnAXP+LYbedr6YjGVhQaGTsUrs6VoAOHsSFDbzYFrFTNH3til+vOL/poqBjE4s6sMDMy7UDXtJF+RpRlTz7BoTSL+tGD+BEI56mnOX094Ie4Y+NXkL5IF0Q+NB64eP2VNfsn3EKv3xf56u8sECgYAUGGM0YXZbWJ6POLqlBTEnM3bbV4s0rS7Ykq75MMoO3AGwFH9CjAridmSFuCONSJcaisENydYsBvnHmhLqrQYWvoVizcvwk1SsJAPxruCM9GZ3E22cezYAlI69npHB+ihf2lhBklKigchXeiaKAUr2x5AJHtrA07G13dy2YRXfwQKBgDzJQ/+Y2LvSOAEgInr/1+pROjxWi/8gTYsPRs6GjYMuJkLMtEJZEtT4eLx36wXa7tOLwBvnYrS+CRDqDyCAuGOL8XDMVYbMYZqJGlYi0aJaZ8Y/+PGF8r6Ec1fRwJ65p2jBYNpVJz7pFuKL1tYcqNDXL6jM1OszL9vPmDYDPKsE\n-----END RSA PRIVATE KEY-----",
 				cert: "-----BEGIN CERTIFICATE-----\nMIICpDCCAYwCCQCF6g9pAQ9CszANBgkqhkiG9w0BAQsFADAUMRIwEAYDVQQDEwlsb2NhbGhvc3QwHhcNMTcxMTA4MjIzMDU5WhcNMzEwNzE4MjIzMDU5WjAUMRIwEAYDVQQDEwlsb2NhbGhvc3QwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQC9KyHtFsSeOyzLeq6TbK+xjFB313i6Mwp7mZ5o7Fxocl9tkQkdtoHQziJ0LUD+S9QfZ8QiFSdzFJIQAAftcle+uQ7oRDaU31tjgLOwtV/6KXH7r7bSLSJwv78zvrFAVoASUHgdjnEMQwfrIhQIatNnKQGp3TglGwVRi6b2/r6f0nOyvtidsrLDUpsIJXDPthHpVvMG9FkCLN1NY/mNz6jyjRFCoWVnTdwR6YPg5jz61tlFtcB0KfE5il/0KPIG8RsVr4sHAvX77etBuASrQYKVfU/wW/rblaT0Ec/NI38LbDBrgfoTYpU7CbOtjoSXHLbabvaZ59sJB2MMZ9s9w6o5AgMBAAEwDQYJKoZIhvcNAQELBQADggEBAGAQ5y8ZztoJxi/8L9l8csnanQ8UGe4Mo782LiNUYsugmz+HNbBeQE+EwaPj8cr60rk4l86A9Kwcy4pvGecTvbsHnuJCJi+qqu913XGOVPkmblYHOeNyKRUg/evCQLG9t379ccz6qGD3kRE1mGDURroUmvKJ6CjAcJht5m+3sSk3exELZ9GuE7Yd9y12/rAx/oDGhMCm7dlmxhiqMk8gwwUfp+H2a9TbhfgdMyJF+X8A7DbZichnjqrg9SyLPh4wB2zKgMNfZIJ47QAyUIajLojlQ86TmpgMJWscDBGWvtaRbeDWgZjvo6aLDlagUh/0ei2i4P5ZqxLvC/+PO0nowM8=\n-----END CERTIFICATE-----"
-			}
+			}*/
 			//si non défini, openssl doit être dans le PATH de la machine.
 			//"pathOpenSSL": null,
 
@@ -129,7 +129,7 @@ module.exports.getConfig = function () {
 				],
 			},
 			"log_ingest": {
-				"enabled": true,
+				"enabled": false,
 
 				/*"loadbalance": [
 					"local",

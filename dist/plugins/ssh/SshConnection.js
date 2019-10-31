@@ -5,84 +5,132 @@ const fs = require("fs-extra");
 const Ssh2 = require("ssh2");
 const Promise = require("bluebird");
 const EventEmitter = require("events");
+require("../../utils/StringTools");
+const SftpError_1 = require("./SftpError");
+const HttpAgent_1 = require("./HttpAgent");
+const HttpsAgent_1 = require("./HttpsAgent");
 class SshConnection extends EventEmitter {
-    constructor(config) {
+    constructor(connectionParams, options) {
         super();
         this.conn = null;
         this.sshKeysDir = null;
-        this.defaultPort = 22;
         this.connectTimeout = 10000;
         this.logger = null;
-        this.logger = config.logger;
-        this.sshKeysDir = config.sshKeysDir;
-        this.defaultPort = config.defaultPort;
-        this.connectTimeout = config.connectTimeout;
+        this.connectionParams = null;
+        this.lastUse = new Date().getTime();
+        this.id = null;
+        this.httpsAgent = null;
+        this.httpAgent = null;
+        this.validSshOptions = null;
+        this.logger = options.logger;
+        this.sshKeysDir = options.sshKeysDir;
+        this.connectTimeout = options.connectTimeout;
+        this.connectionParams = connectionParams;
+        this.id = SshConnection.calcId(connectionParams);
+    }
+    toString() {
+        return this.connectionParams.username + "@" + this.connectionParams.host;
+    }
+    static calcId(params) {
+        let s = params.host + "_" + params.port + "_" + params.username + "_" + params.password + "_" + params.key + "_" + params.passphrase;
+        return s.hashCode().toString();
+    }
+    getHttpAgent(https = false) {
+        if (https) {
+            if (!this.httpsAgent) {
+                this.httpsAgent = new HttpsAgent_1.default(this.validSshOptions);
+            }
+            return this.httpsAgent;
+        }
+        else {
+            if (!this.httpAgent) {
+                this.httpAgent = new HttpAgent_1.default(this.validSshOptions);
+            }
+            return this.httpAgent;
+        }
     }
     getNewSshClient() {
         return new Ssh2.Client();
     }
+    destroy() {
+        this.close();
+        if (this.httpAgent)
+            this.httpAgent.destroy();
+        if (this.httpsAgent)
+            this.httpsAgent.destroy();
+        this.removeAllListeners();
+    }
     close() {
-        if (this.conn) {
-            try {
+        try {
+            if (this.conn) {
                 this.conn.end();
                 this.conn = null;
             }
-            catch (err) {
-                this.logger.warn('SshConnection.close(): ' + err.toString());
-            }
+            this.connectPromise = null;
+        }
+        catch (err) {
+            this.logger.warn('SshConnection.close(): ' + err.toString());
         }
     }
-    connect(params) {
+    isConnected() {
+        return (this.conn !== null);
+    }
+    connect() {
+        if (this.connectPromise)
+            return this.connectPromise;
         if (this.conn !== null) {
             this.close();
         }
-        let tryPassword = ((typeof params.password !== 'undefined') && (params.password !== null));
-        let tryKey = ((typeof params.key !== 'undefined') && (params.key !== null)) && !tryPassword;
+        let tryPassword = ((typeof this.connectionParams.password !== 'undefined') && (this.connectionParams.password !== '') && (this.connectionParams.password !== null));
+        let tryKey = ((typeof this.connectionParams.key !== 'undefined') && (this.connectionParams.key !== '') && (this.connectionParams.key !== null)) && !tryPassword;
         let tryAgentKey = !tryPassword && !tryKey;
         let promise;
+        let sshOptions = {
+            host: this.connectionParams.host,
+            port: this.connectionParams.port,
+            username: this.connectionParams.username,
+        };
         if (tryPassword) {
-            promise = this._connect({
-                host: params.host,
-                port: params.port,
-                username: params.username,
-                password: params.password
-            });
+            sshOptions.password = this.connectionParams.password;
+            promise = this._connect(sshOptions);
         }
         else if (tryKey) {
-            promise = this._connect({
-                host: params.host,
-                port: params.port,
-                username: params.username,
-                privateKey: params.key,
-                passphrase: params.passphrase
-            });
+            sshOptions.privateKey = this.connectionParams.key;
+            sshOptions.passphrase = this.connectionParams.passphrase;
+            promise = this._connect(sshOptions);
         }
         else if (tryAgentKey) {
-            let cacheKey = this.getSshKeyCache(params.host, params.port);
+            let cacheKey = this.getSshKeyCache(sshOptions.host, sshOptions.port);
             if (SshConnection.cachedKeys.has(cacheKey)) {
                 let key = SshConnection.cachedKeys.get(cacheKey);
-                promise = this._connect({
-                    host: params.host,
-                    port: params.port,
-                    username: params.username,
-                    privateKey: key,
-                    passphrase: params.passphrase
-                })
+                sshOptions.privateKey = key;
+                sshOptions.passphrase = this.connectionParams.passphrase;
+                promise = this._connect(sshOptions)
                     .catch((err) => {
                     this.logger.warn('Use key cache error', err.toString().trim());
-                    return this.findKeyConnection(params.host, params.port, params.username, params.passphrase);
+                    return this.findKeyConnection(sshOptions);
                 });
             }
             else {
-                promise = this.findKeyConnection(params.host, params.port, params.username, params.passphrase);
+                promise = this.findKeyConnection(sshOptions);
             }
         }
-        return promise.then((conn) => {
+        this.connectPromise = promise.then((conn) => {
             this.conn = conn;
+            this.connectPromise = null;
+            conn.on('end', () => {
+                this.conn = null;
+                this.emit('end');
+            });
             return conn;
+        })
+            .catch((err) => {
+            this.connectPromise = null;
+            throw err;
         });
+        return this.connectPromise;
     }
-    findKeyConnection(host, port, username, passphrase) {
+    findKeyConnection(sshOptions) {
         return new Promise((resolve, reject) => {
             if (fs.existsSync(this.sshKeysDir)) {
                 let promises = [];
@@ -90,13 +138,13 @@ class SshConnection extends EventEmitter {
                 for (let f of files) {
                     let keyPath = this.sshKeysDir + '/' + f;
                     if (fs.statSync(keyPath).isFile()) {
-                        promises.push(this.getKeyConnection(host, port, username, keyPath, passphrase));
+                        promises.push(this.getKeyConnection(sshOptions, keyPath));
                     }
                 }
                 if (promises.length > 0) {
                     Promise.any(promises)
-                        .then((conn) => {
-                        resolve(conn);
+                        .then((result) => {
+                        resolve(result);
                     })
                         .catch((error) => {
                         let level = error.level;
@@ -131,13 +179,13 @@ class SshConnection extends EventEmitter {
     getSshKeyCache(host, port) {
         return host + ':' + port;
     }
-    _connect(params) {
+    _connect(sshOptions) {
         let conn = this.getNewSshClient();
-        params.keepaliveCountMax = 10;
-        params.readyTimeout = this.connectTimeout;
+        sshOptions.keepaliveCountMax = 10;
+        sshOptions.readyTimeout = this.connectTimeout;
         return new Promise((resolve, reject) => {
             let timeout = setTimeout(() => {
-                let err = new SshError_1.SshError('connect timeout on ' + params.host + ':' + params.port + ' after ' + (this.connectTimeout + 5000) + ' ms', 'client-timeout');
+                let err = new SshError_1.SshError('connect timeout on ' + sshOptions.host + ':' + sshOptions.port + ' after ' + (this.connectTimeout + 5000) + ' ms', 'client-timeout');
                 try {
                     conn.end();
                 }
@@ -148,7 +196,7 @@ class SshConnection extends EventEmitter {
             }, this.connectTimeout + 5000);
             conn.on('error', (err) => {
                 clearTimeout(timeout);
-                this.logger.error(params.username + '@' + params.host + ': CONNECT ERROR.', 'level=' + err.level + ' ' + err.toString());
+                this.logger.error(sshOptions.username + '@' + sshOptions.host + ': CONNECT ERROR.', 'level=' + err.level + ' ' + err.toString());
                 let level = 'connect-error';
                 if ((typeof err === 'object') && err.level) {
                     level = err.level;
@@ -157,12 +205,13 @@ class SshConnection extends EventEmitter {
                 reject(sshError);
             });
             conn.on('ready', () => {
+                this.validSshOptions = sshOptions;
                 clearTimeout(timeout);
-                this.logger.info(params.username + '@' + params.host + ': CONNECT OK');
+                this.logger.info(sshOptions.username + '@' + sshOptions.host + ': CONNECT OK');
                 resolve(conn);
             });
             try {
-                conn.connect(params);
+                conn.connect(sshOptions);
             }
             catch (err) {
                 clearTimeout(timeout);
@@ -177,22 +226,173 @@ class SshConnection extends EventEmitter {
             }
         });
     }
-    getKeyConnection(host, port, username, keyPath, passphrase) {
+    getKeyConnection(sshOptions, keyPath) {
         let key = require('fs').readFileSync(keyPath);
-        return this._connect({
-            host: host,
-            port: port,
-            username: username,
-            privateKey: key,
-            passphrase: passphrase
-        })
+        sshOptions.privateKey = key;
+        return this._connect(sshOptions)
             .then(conn => {
-            let cacheKey = this.getSshKeyCache(host, port);
+            let cacheKey = this.getSshKeyCache(sshOptions.host, sshOptions.port);
             SshConnection.cachedKeys.set(cacheKey, key);
             return conn;
         });
     }
+    exec(opt) {
+        let r = {
+            host: opt.host,
+            stdout: '',
+            stderr: '',
+            exitCode: null,
+            isKilled: false
+        };
+        return new Promise((resolve, reject) => {
+            if (!this.isConnected()) {
+                reject('Non connecté');
+            }
+            else {
+                let onExec = (err, stream) => {
+                    if (err) {
+                        let sshError = new SshError_1.SshError(this.connectionParams.username + '@' + this.connectionParams.host + ' exec : ' + err.toString());
+                        sshError.connected = true;
+                        this.close();
+                        reject(sshError);
+                    }
+                    else {
+                        stream.on('exit', (code, signal) => {
+                            if ((signal === 'SIGTERM') || (signal == 'SIGKILL')) {
+                                r.isKilled = true;
+                            }
+                            if (code != null) {
+                                r.exitCode = code;
+                            }
+                            stream.close();
+                        });
+                        stream.on('close', (exitCode) => {
+                            if ((typeof exitCode != 'undefined') && (exitCode !== null)) {
+                                r.exitCode = exitCode;
+                            }
+                            if (r.exitCode === null) {
+                                let err;
+                                if (r.isKilled) {
+                                    err = new SshError_1.SshError('Process killed');
+                                }
+                                else {
+                                    err = new SshError_1.SshError('SSH stream closed');
+                                }
+                                err.connected = true;
+                                reject(err);
+                            }
+                            else {
+                                resolve(r);
+                            }
+                        });
+                        stream.on('data', (data) => {
+                            r.stdout += data;
+                        });
+                        stream.stderr.on('data', (data) => {
+                            this.logger.debug('ONDATA');
+                            r.stderr += data;
+                        });
+                    }
+                };
+                if (opt.pty) {
+                    this.conn.exec(opt.script, { pty: true }, onExec.bind(this));
+                }
+                else {
+                    this.conn.exec(opt.script, onExec.bind(this));
+                }
+            }
+        });
+    }
+    scpSend(localPath, remotePath, opt = {}) {
+        return new Promise((resolve, reject) => {
+            this.conn.sftp((err, sftp) => {
+                if (err) {
+                    let sshError = new SshError_1.SshError(this.connectionParams.username + '@' + this.connectionParams.host + ' scpSend : ' + err.toString());
+                    sshError.connected = true;
+                    reject(sshError);
+                    this.close();
+                }
+                else {
+                    sftp.fastPut(localPath, remotePath, (err2) => {
+                        if (err2) {
+                            let sshError = new SftpError_1.default(err2);
+                            sshError.connected = true;
+                            reject(sshError);
+                        }
+                        else {
+                            resolve({
+                                host: this.connectionParams.host,
+                                port: this.connectionParams.port,
+                                username: this.connectionParams.username,
+                                remotePath: remotePath,
+                                localPath: localPath
+                            });
+                        }
+                    });
+                }
+            });
+        });
+    }
+    scpGet(localPath, remotePath) {
+        return new Promise((resolve, reject) => {
+            this.conn.sftp((err, sftp) => {
+                if (err) {
+                    let sshError = new SshError_1.SshError(this.connectionParams.username + '@' + this.connectionParams.host + ' scpGet : ' + err.toString());
+                    sshError.connected = true;
+                    reject(sshError);
+                    this.close();
+                }
+                else {
+                    sftp.fastGet(remotePath, localPath, (err2) => {
+                        if (err2) {
+                            let sftpError = new SftpError_1.default(err2);
+                            reject(sftpError);
+                        }
+                        else {
+                            resolve({
+                                host: this.connectionParams.host,
+                                port: this.connectionParams.port,
+                                username: this.connectionParams.username,
+                                remotePath: remotePath,
+                                localPath: localPath
+                            });
+                        }
+                    });
+                }
+            });
+        });
+    }
+    sftpReaddir(path) {
+        return new Promise((resolve, reject) => {
+            this.conn.sftp((err, sftp) => {
+                if (err) {
+                    let sshError = new SshError_1.SshError(this.connectionParams.username + '@' + this.connectionParams.host + ' sftpReaddir : ' + err.toString());
+                    sshError.connected = true;
+                    reject(sshError);
+                    this.close();
+                }
+                else {
+                    sftp.readdir(path, (err2, r) => {
+                        if (err2) {
+                            let sftpError = new SftpError_1.default(err2);
+                            sftpError.connected = true;
+                            reject(sftpError);
+                        }
+                        else {
+                            resolve({
+                                result: r,
+                                host: this.connectionParams.host,
+                                port: this.connectionParams.port,
+                                username: this.connectionParams.username,
+                                path: path
+                            });
+                        }
+                    });
+                }
+            });
+        });
+    }
 }
-SshConnection.cachedKeys = new Map();
 exports.default = SshConnection;
+SshConnection.cachedKeys = new Map();
 //# sourceMappingURL=SshConnection.js.map

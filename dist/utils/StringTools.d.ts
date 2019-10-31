@@ -5,4 +5,5 @@ interface String {
     contains(it: string): boolean;
     leftOf(souschaine: string): string;
     removeEnd(s: string, caseInsensistive?: boolean): string;
+    hashCode(): number;
 }

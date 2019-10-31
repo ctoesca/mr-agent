@@ -5,6 +5,7 @@ class SshError extends Error {
         super(message);
         this.level = null;
         this.connected = false;
+        this.connectionID = null;
         if (typeof message === 'object') {
             this.message = message.toString();
             if (typeof message.level !== 'undefined') {
@@ -25,7 +26,8 @@ class SshError extends Error {
     getDetail() {
         return {
             connected: this.connected,
-            level: this.level
+            level: this.level,
+            connectionID: this.connectionID
         };
     }
 }

@@ -21,7 +21,13 @@ export default class Timer extends EventEmitter {
 		}
 		this.delay = args.delay;
 	}
-
+	public setInterval(i: number) {
+        let running = this.running;
+        this.stop();
+        this.delay = i;
+        if (running)
+            this.start();
+    }
 	public destroy() {
 		this.stop()
 		this.removeAllListeners(Timer.ON_TIMER)

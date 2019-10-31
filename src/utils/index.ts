@@ -5,9 +5,15 @@ import './StringTools';
 import * as Errors from '../Errors';
 
 function randomBetween(min: number, max: number) {
-	return Math.floor(Math.random() * max) + min;
+	return Math.floor(Math.random()*(max-min+1)+min);
 }
-
+function shuffleArray(arr: any[]){
+		for (let i = arr.length - 1; i > 0; i--) {
+	        const j = Math.floor(Math.random() * (i + 1));
+	        [arr[i], arr[j]] = [arr[j], arr[i]];
+	    }
+	    return arr;
+	}
 function isWin(): boolean {
 	return /^win/.test(process.platform);
 }
@@ -242,5 +248,6 @@ export {
 	replaceEnvVars,
 	array_replace_recursive,
 	isWin,
-	parseParams
+	parseParams,
+	shuffleArray
 };

@@ -47,6 +47,11 @@ export class Tplugin extends ThttpPlugin {
 			opt[k] = req.body[k]
 		})
 
+		if (!opt.headers)
+			opt.headers = {}
+
+		opt.headers['user-agent'] = 'mr-agent'
+		
 		let startTime: number = new Date().getTime()
 
 		this.runningRequestCount ++

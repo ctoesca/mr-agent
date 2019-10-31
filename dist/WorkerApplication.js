@@ -85,6 +85,24 @@ class WorkerApplication extends Application_1.Application {
         process.exit(98);
     }
     initRoutes() {
+        this.mainApi.get('/test', (req, res, next) => {
+            new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    resolve('OK1');
+                }, 1000);
+                setTimeout(() => {
+                    resolve('OK2');
+                }, 2000);
+            })
+                .then((r) => {
+                this.logger.error(r);
+                res.status(200).send(r);
+            })
+                .catch((err) => {
+                this.logger.error(err.toString());
+                next('Echec : ' + err.toString());
+            });
+        });
         this.mainApi.get('/checkAgent', (req, res) => {
             let result = {
                 status: 0,

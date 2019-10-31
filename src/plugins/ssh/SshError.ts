@@ -4,7 +4,7 @@ export class SshError extends Error {
 
 	public level: any = null
 	public connected = false
-
+	public connectionID: string = null
 	constructor(message: any, level: any = null) {
 
 
@@ -36,7 +36,8 @@ export class SshError extends Error {
 	public getDetail() {
 		return {
 			connected: this.connected,
-			level: this.level
+			level: this.level,
+			connectionID: this.connectionID
 		}
 	}
 

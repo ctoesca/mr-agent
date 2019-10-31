@@ -16,6 +16,13 @@ class Timer extends EventEmitter {
         }
         this.delay = args.delay;
     }
+    setInterval(i) {
+        let running = this.running;
+        this.stop();
+        this.delay = i;
+        if (running)
+            this.start();
+    }
     destroy() {
         this.stop();
         this.removeAllListeners(Timer.ON_TIMER);
@@ -51,6 +58,6 @@ class Timer extends EventEmitter {
         }
     }
 }
-Timer.ON_TIMER = 'ON_TIMER';
 exports.default = Timer;
+Timer.ON_TIMER = 'ON_TIMER';
 //# sourceMappingURL=Timer.js.map

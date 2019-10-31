@@ -6,9 +6,17 @@ exports.Timer = Timer_1.default;
 require("./StringTools");
 const Errors = require("../Errors");
 function randomBetween(min, max) {
-    return Math.floor(Math.random() * max) + min;
+    return Math.floor(Math.random() * (max - min + 1) + min);
 }
 exports.randomBetween = randomBetween;
+function shuffleArray(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+}
+exports.shuffleArray = shuffleArray;
 function isWin() {
     return /^win/.test(process.platform);
 }

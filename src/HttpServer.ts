@@ -30,7 +30,7 @@ export class HttpServer extends EventEmitter {
 	}
 	public requestTimeout = 0
 	public app: express.Application
-	protected apiServer: any
+	public server: any
 	protected mainApi: express.Application
 	protected logger: bunyan = null
 	// protected _onBeforeRequest: any[] = []
@@ -102,6 +102,9 @@ export class HttpServer extends EventEmitter {
 
 
 		this.app.use(this.authRequest.bind(this));
+
+
+		
 
 		this.logger.debug('HttpServer created');
 	}
@@ -214,13 +217,21 @@ export class HttpServer extends EventEmitter {
 
 		return r
 	}
+
 	public start() {
+		return this.createServer()
+		.then( () => {
+			this.server.setTimeout( this.requestTimeout * 1000 );
+			return this.listen();	
+		})
+	}
+
+	protected createServer(){
 
 		if (!this.httpsOptions.enabled) {
-			this.apiServer = http.createServer(this.app);
-			this.apiServer.timeout = this.requestTimeout;
-
-			return this.listen();
+			this.server = http.createServer(this.app)
+			
+					
 		} else {
 
 			this.logger.info('https Options=', this.httpsOptions)
@@ -233,43 +244,47 @@ export class HttpServer extends EventEmitter {
 
 			if (this.httpsOptions.credentials) {
 
-				this.apiServer = https.createServer(this.httpsOptions.credentials, this.app);
-				this.apiServer.timeout = this.requestTimeout;
-				return this.listen();
+				this.server = https.createServer(this.httpsOptions.credentials, this.app);
+				
+				
 			} else {
 
-				pem.createCertificate(this.httpsOptions, (err: any, keys: any) => {
+				return new Promise( (resolve: Function, reject: Function) => {
 
-					if (err) {
-						this.logger.error(err, 'createCertificate')
-						process.exit(1)
-					} else {
+					pem.createCertificate(this.httpsOptions, (err: any, keys: any) => {
 
-						let credentials = {key: keys.serviceKey, cert: keys.certificate};
+						if (err) {
+							this.logger.error(err, 'createCertificate')
+							process.exit(1)
+						} else {
 
-						require('fs').writeFileSync(this.config.tmpDir + '/key.txt',  keys.serviceKey)
-						require('fs').writeFileSync(this.config.tmpDir + '/cert.pem',  keys.certificate)
+							let credentials = {key: keys.serviceKey, cert: keys.certificate};
 
-						this.logger.debug(credentials.key)
-						this.logger.debug(credentials.cert)
+							require('fs').writeFileSync(this.config.tmpDir + '/key.txt',  keys.serviceKey)
+							require('fs').writeFileSync(this.config.tmpDir + '/cert.pem',  keys.certificate)
+							this.logger.info("Le certificat HTTPS a été généré")
+							//this.logger.debug(credentials.key)
+							//this.logger.debug(credentials.cert)
 
-						this.apiServer = https.createServer(credentials, this.app);
-						this.apiServer.timeout = this.requestTimeout;
-						return this.listen();
-					}
+							this.server = https.createServer(credentials, this.app);		
+							resolve(this.server)
+						}
 
-				});
+					});
+				})
 
 			}
 		}
 
-	}
+		
+		return Promise.resolve( this.server )
 
+	}
 	protected listen() {
 
 		return new Promise( (resolve, reject) => {
 
-			this.apiServer.on('error', (e: any) => {
+			this.server.on('error', (e: any) => {
 				if (e.code === 'EADDRINUSE') {
 					this.logger.error('Port ' + this.port + ' in use');
 					process.exit(1)
@@ -280,7 +295,7 @@ export class HttpServer extends EventEmitter {
 				}
 			});
 
-			this.apiServer.listen(this.port, this.bindAddress, () => {
+			this.server.listen(this.port, this.bindAddress, () => {
 				this.setErrorsHandlers()
 				this.logger.info('API Server started listening on ' + this.bindAddress + ':' + this.port);
 				resolve()

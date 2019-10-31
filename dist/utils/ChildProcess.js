@@ -35,16 +35,19 @@ class ChildProcess {
             if (args.length > 0) {
                 argsStr = '"' + args.join('" "') + '"';
             }
-            child_process.exec('"' + cmd + '"' + ' ' + argsStr, (error, stdout, stderr) => {
-                let exitCode = 0;
-                if (error) {
-                    exitCode = error.code;
-                }
-                let r = {
-                    exitCode: exitCode,
-                    stdout: stdout.replace(/\u0000/g, ''),
-                    stderr: stderr.replace(/\u0000/g, '')
-                };
+            let r = {
+                exitCode: null,
+                stdout: '',
+                stderr: ''
+            };
+            let child = child_process.exec('"' + cmd + '"' + ' ' + argsStr, (error, stdout, stderr) => {
+                r.stdout = stdout.replace(/\u0000/g, ''),
+                    r.stderr = stderr.replace(/\u0000/g, '');
+                if (error)
+                    reject(r);
+            });
+            child.on('exit', function (code, signal) {
+                r.exitCode = code;
                 resolve(r);
             });
         });

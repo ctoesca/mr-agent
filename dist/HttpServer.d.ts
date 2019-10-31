@@ -11,7 +11,7 @@ export declare class HttpServer extends EventEmitter {
     httpsOptions: any;
     requestTimeout: number;
     app: express.Application;
-    protected apiServer: any;
+    server: any;
     protected mainApi: express.Application;
     protected logger: bunyan;
     constructor(config: any);
@@ -21,5 +21,6 @@ export declare class HttpServer extends EventEmitter {
     authRequest(req: express.Request, res: express.Response, next: express.NextFunction): void;
     getUrl(): string;
     start(): Promise<unknown>;
+    protected createServer(): Promise<any>;
     protected listen(): Promise<unknown>;
 }

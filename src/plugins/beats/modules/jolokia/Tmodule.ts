@@ -128,7 +128,10 @@ export default class Tmodule extends TbaseModule implements IbaseModule {
 			method: 'POST',
 			url: url,
 			body: body,
-			json: true
+			json: true,
+			headers: {
+				'user-agent': 'mr-agent'
+			}
 		}
 		return request(opt)
 		.then((resp) => {

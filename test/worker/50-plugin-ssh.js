@@ -360,7 +360,57 @@ describe('/_plugin/ssh with password', function() {
 })
 
 
+describe('/_plugin/ssh sftpReaddir', function() {
+	describe('sftpReaddir', function() {
 
+		it('should return 200', function (done) {
+
+			let params = 'path=/tmp&host='+SSH_HOST+'&username='+SSH_HOST_USERNAME+'&password='+SSH_HOST_PASSWORD+'&port='+SSH_HOST_PORT
+			let opt = getHttpOptions('GET', '/_plugin/ssh/sftpReaddir?'+params)
+			    
+		    request( opt )
+			.then( (res) => {	
+				
+				assert.strictEqual(res.statusCode, 200, 'status is not 200');
+				assert.strictEqual(typeof res.body, 'object');
+				assert.strictEqual(typeof res.body.result, 'object', 'result is not object');
+
+				done();				
+			})
+			.catch( err => {
+				done(err)
+			})
+
+			
+		})
+	})
+
+	describe('sftpReadir with no path', function() {
+
+		it('should return 400', function (done) {
+
+			let params = 'host='+SSH_HOST+'&username='+SSH_HOST_USERNAME+'&password='+SSH_HOST_PASSWORD+'&port='+SSH_HOST_PORT
+
+			let opt = getHttpOptions('GET', '/_plugin/ssh/sftpReaddir?'+params)
+			
+		    execRequestExpectError(opt, done, 400)
+		   
+		})
+	})
+
+	describe('sftpReadir with incorrect path', function() {
+
+		it('should return 400', function (done) {
+
+			let params = 'path=/dfgdfsgfdsgdsfg&host='+SSH_HOST+'&username='+SSH_HOST_USERNAME+'&password='+SSH_HOST_PASSWORD+'&port='+SSH_HOST_PORT
+
+			let opt = getHttpOptions('GET', '/_plugin/ssh/sftpReaddir?'+params)
+			
+		    execRequestExpectError(opt, done, 400)
+		   
+		})
+	})
+})
 
 
 describe('/_plugin/ssh with remote key', function() {

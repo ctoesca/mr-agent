@@ -30,10 +30,7 @@ export default class SftpError extends SshError {
 	}
 
 	public getDetail() {
-		return {
-			connected: this.connected,
-			level: this.level
-		}
+		return super.getDetail()
 	}
 
 	public getHttpStatus() {

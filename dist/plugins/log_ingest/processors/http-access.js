@@ -16,7 +16,7 @@ class Tprocessor extends TbaseProcessor_1.TbaseProcessor {
         if (this.opt.remoteConfig) {
             this.loadRemoteConfig(this.opt.remoteConfig)
                 .then((result) => {
-                this.logger.info('Succès récupétation de la configuration depuis ' + this.opt.remoteConfig.url);
+                this.logger.info('Succès récupération de la configuration depuis ' + this.opt.remoteConfig.url);
                 this.opt = result;
                 this.parseConfig();
             })

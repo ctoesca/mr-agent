@@ -51,22 +51,26 @@ export class ChildProcess {
 				argsStr = '"' + args.join('" "') + '"'
 			}
 
-			child_process.exec('"' + cmd + '"' + ' ' + argsStr, (error, stdout, stderr) => {
+			let r: any = {
+				exitCode: null,
+				stdout: '',
+				stderr: ''
+			}
 
-				let exitCode = 0
-				if (error) {
-					exitCode = error.code
-				}
+			let child = child_process.exec('"' + cmd + '"' + ' ' + argsStr, (error, stdout, stderr) => {
 
-				let r = {
-					exitCode: exitCode,
-					stdout: stdout.replace(/\u0000/g, ''),
-					stderr: stderr.replace(/\u0000/g, '')
-				}
-
-				resolve(r)
+				r.stdout = stdout.replace(/\u0000/g, ''),
+				r.stderr = stderr.replace(/\u0000/g, '')
+				if (error)	
+					reject(r)
 
 			});
+
+			child.on('exit', function (code, signal) {
+			  	r.exitCode = code
+			  	resolve(r)
+			});
+
 
 		})
 	}

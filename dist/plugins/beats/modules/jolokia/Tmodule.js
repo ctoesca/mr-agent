@@ -83,7 +83,10 @@ class Tmodule extends TbaseModule_1.default {
             method: 'POST',
             url: url,
             body: body,
-            json: true
+            json: true,
+            headers: {
+                'user-agent': 'mr-agent'
+            }
         };
         return request(opt)
             .then((resp) => {

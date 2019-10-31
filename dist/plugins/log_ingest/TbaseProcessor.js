@@ -25,7 +25,10 @@ class TbaseProcessor extends EventEmitter {
                 url: data.url,
                 strictSSL: false,
                 json: true,
-                method: 'GET'
+                method: 'GET',
+                headers: {
+                    'user-agent': 'mr-agent'
+                }
             };
             if (data.auth) {
                 options.auth = data.auth;

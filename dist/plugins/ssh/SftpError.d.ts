@@ -5,6 +5,7 @@ export default class SftpError extends SshError {
     getDetail(): {
         connected: boolean;
         level: any;
+        connectionID: string;
     };
     getHttpStatus(): 400 | 500;
 }

@@ -5,6 +5,8 @@ import fs = require('fs-extra')
 import Timer from './utils/Timer'
 import {Application} from './Application'
 import child_process = require('child_process')
+import klaw = require('klaw')
+import p = require('path')
 
 export class MasterApplication extends Application {
 
@@ -13,8 +15,13 @@ export class MasterApplication extends Application {
 	protected workers: Map<number, any> = new Map<number, any>()
 	protected  workersArray: any[] = []
 	protected statTimer: Timer;
+	protected purgeTimer: Timer;
+	
 	protected  lastStat: Date = null
 	protected numProcesses: any = os.cpus().length
+	protected tmpFilesRetention = 12 //12 H
+	protected tmpPurgeInterval = 900*1000 //15 min
+
 	/*protected  currentSelectedWorker = 0;*/
 
 	constructor( configPath: string, opt: any = {} ) {
@@ -50,6 +57,12 @@ export class MasterApplication extends Application {
 		this.statTimer.on(Timer.ON_TIMER, this.onStatTimer.bind(this));
 		this.statTimer.start();
 
+
+		this.logger.info("Durée de rétention des fichiers temporaires: "+this.tmpFilesRetention+"H")
+
+		this.purgeTimer = new Timer({delay: this.tmpPurgeInterval}); //12h 60*60*12*1000
+		this.purgeTimer.on(Timer.ON_TIMER, this.onPurgeTimer.bind(this));
+		this.purgeTimer.start();
 	}
 
 	public execScript( script: string ) {
@@ -100,6 +113,38 @@ export class MasterApplication extends Application {
 
 
 		})
+	}
+
+	public onPurgeTimer() 
+	{
+		this.logger.info("Purge des fichiers temporaires en cours...")
+		let now: number =  new Date().getTime()
+		klaw(this.config.tmpDir)
+		.on('data', (item: any) => {
+		    if (item.stats.isFile()){
+	    		let filename: string = p.basename(item.path)
+	    		if (filename != 'PID.txt'){
+	    			let diffH: number = Math.round( 10*(now - item.stats.mtimeMs) / (1000*60*60) ) / 10//en H
+	    			if (diffH > this.tmpFilesRetention){
+	    				fs.remove(item.path)
+				    	.then(() => {
+				    		this.logger.info("Fichier temporaire supprimé: "+item.path)
+				    	})
+						.catch(err => {
+							this.logger.error("Purge : "+err.toString())
+						})
+	    			} 
+	    		}
+		    }
+		})
+		.on('end', () => {
+			this.logger.info("Purge des fichiers temporaires terminée.")
+		})
+	  	.on('error', (err: any, item: any) => {
+		    this.logger.error("Purge fichiers temporaires: ",err.message)
+		    this.logger.error("Purge fichiers temporaires: path="+item.path)
+		})
+
 	}
 
 	public onStatTimer() {

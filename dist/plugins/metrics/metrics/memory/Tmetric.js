@@ -15,8 +15,8 @@ class Tmetric extends TbaseMetric_1.default {
             let usedPercent = Math.round(100 * (usedMem / os.totalmem()));
             let r = {
                 usedPercent: usedPercent,
-                usedMem: this.convertBytesToGo(usedMem),
-                totalMem: this.convertBytesToGo(os.totalmem())
+                usedMem: usedMem,
+                totalMem: os.totalmem()
             };
             resolve(r);
         });
@@ -45,7 +45,7 @@ class Tmetric extends TbaseMetric_1.default {
             currentState = 2;
             state = 'CRITIC';
         }
-        let output = state + ' - Mémoire physique utilisée : ' + result.usedPercent + '% (' + result.usedMem + 'Go utilisés sur un total de ' + result.totalMem + 'Go)';
+        let output = state + ' - Mémoire physique utilisée : ' + result.usedPercent + '% (' + this.convertBytesToGo(result.usedMem) + 'Go utilisés sur un total de ' + this.convertBytesToGo(result.totalMem) + 'Go)';
         let perfdata = "'Physical Memory Used'=" + result.usedMem + "Bytes; 'Physical Memory Utilisation'=" + result.usedPercent + '%;' + params.warn + ';' + params.critic;
         return currentState + '|' + output + '|' + perfdata;
     }

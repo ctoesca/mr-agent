@@ -108,6 +108,40 @@ export class WorkerApplication extends Application {
 
 	public initRoutes() {
 
+		this.mainApi.get('/test', (req: express.Request, res: express.Response, next: express.NextFunction) => {
+
+			new Promise( (resolve: Function, reject: Function) => {
+				setTimeout( () => {
+					resolve('OK1')
+				}, 1000)
+				setTimeout( () => {
+					resolve('OK2')
+				}, 2000)
+			})
+			.then( (r) => {
+				this.logger.error(r)
+				res.status(200).send(  r );
+			})
+			.catch( (err: any) => {
+				this.logger.error(err.toString())
+				next('Echec : ' + err.toString())
+			})
+
+			/*return ChildProcess.execCmd('dir G:\\fsdfd', [])
+
+			.then( (result: any) => {
+				if (result.exitCode > 0) {
+					throw 'exitCode='+result.exitCode+' '+ result.stderr
+				} 
+			})
+			.delay( 5000)
+			.catch( (err: any) => {
+				next('Echec : ' + err.toString())
+			})*/
+			
+
+		});
+
 		this.mainApi.get('/checkAgent', (req: express.Request, res: express.Response) => {
 
 			let result: any = {

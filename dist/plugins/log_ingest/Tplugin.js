@@ -135,6 +135,10 @@ class Tplugin extends ThttpPlugin_js_1.ThttpPlugin {
                 body: req.body,
                 headers: req.headers
             };
+            if (!options.headers) {
+                options.headers = {};
+            }
+            options.headers['user-agent'] = 'mr-agent';
             request(options, (err, response, body) => {
                 if (!err && (response.statusCode >= 400)) {
                     err = body;

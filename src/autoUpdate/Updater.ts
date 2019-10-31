@@ -224,11 +224,14 @@ export class Updater extends EventEmitter {
 		this.logger.info('Stopping... ')
 
 		if (utils.isWin()) {
-			return ChildProcess.execCmd('sc', ['stop', this.application.serviceName])
+			return ChildProcess.execCmd('net', ['stop', this.application.serviceName])
 			.then( (result: any) => {
 				if (result.exitCode > 0) {
 					throw 'Failed to stop agent: ' + result.stderr
 				}
+			})
+			.catch( (err: any) => {
+				throw 'Echec stop' + err.toString()	
 			})
 		} else {
 			let cmd = appDir + '/bin/agent.sh';
@@ -248,30 +251,36 @@ export class Updater extends EventEmitter {
 	}
 	protected startApp(appDir: string): Bluebird<any> {
 
-		return new Bluebird( (resolve: Function, reject: Function) => {
+		let cmd: string
+		let args: string[]
 
-			let cmd: string
-			let args: string[]
+		this.logger.info('Starting agent ...')
 
-			this.logger.info('Starting agent ...')
+		if (utils.isWin()) {
+			return ChildProcess.execCmd('net', ['start', this.application.serviceName])
+			.then( (result: any) => {
+				if (result.exitCode > 0) {
+					throw 'Failed to start agent: ' + result.stderr
+				} else {
+					this.logger.info('Agent started.')
+				}
+			})
+			.catch( (err: any) => {
+				throw 'Echec start' + err.toString()	
+			})
+		} else {
+			cmd = appDir + '/bin/agent.sh';
+			args = ['start'];
+			let child = child_process.spawn(cmd, args, {
+				detached: true,
+				windowsVerbatimArguments : true,
+				stdio: 'ignore'
+			});
 
-			if (utils.isWin()) {
-				return ChildProcess.execCmd('sc', ['start', this.application.serviceName]);
-			} else {
-				cmd = appDir + '/bin/agent.sh';
-				args = ['start'];
-				let child = child_process.spawn(cmd, args, {
-					detached: true,
-					windowsVerbatimArguments : true,
-					stdio: 'ignore'
-				});
+			child.unref()
+			return Bluebird.resolve()
+		}
 
-				child.unref()
-				return Promise.resolve()
-			}
-
-
-		})
 	}
 
 
@@ -319,7 +328,7 @@ export class Updater extends EventEmitter {
 					filter: function(_src: string, _dest: string) {
 
 						if ( (file === 'bin') && (p.basename(_dest) === 'agent.exe')) {
-							this.logger.error('Non copié: ' + _dest)
+							this.logger.info('Non copié: ' + _dest)
 							return false
 						} else {
 							return true

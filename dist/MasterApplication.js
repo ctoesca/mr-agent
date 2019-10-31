@@ -6,6 +6,8 @@ const fs = require("fs-extra");
 const Timer_1 = require("./utils/Timer");
 const Application_1 = require("./Application");
 const child_process = require("child_process");
+const klaw = require("klaw");
+const p = require("path");
 class MasterApplication extends Application_1.Application {
     constructor(configPath, opt = {}) {
         super(configPath, opt);
@@ -14,6 +16,8 @@ class MasterApplication extends Application_1.Application {
         this.workersArray = [];
         this.lastStat = null;
         this.numProcesses = os.cpus().length;
+        this.tmpFilesRetention = 12;
+        this.tmpPurgeInterval = 900 * 1000;
         if (typeof this.config.numProcesses !== 'undefined') {
             if (this.config.numProcesses === 'auto') {
                 this.numProcesses = os.cpus().length;
@@ -37,6 +41,10 @@ class MasterApplication extends Application_1.Application {
         this.statTimer = new Timer_1.default({ delay: 20000 });
         this.statTimer.on(Timer_1.default.ON_TIMER, this.onStatTimer.bind(this));
         this.statTimer.start();
+        this.logger.info("Durée de rétention des fichiers temporaires: " + this.tmpFilesRetention + "H");
+        this.purgeTimer = new Timer_1.default({ delay: this.tmpPurgeInterval });
+        this.purgeTimer.on(Timer_1.default.ON_TIMER, this.onPurgeTimer.bind(this));
+        this.purgeTimer.start();
     }
     execScript(script) {
         return new Promise((resolve, reject) => {
@@ -73,6 +81,35 @@ class MasterApplication extends Application_1.Application {
             catch (err) {
                 reject(err);
             }
+        });
+    }
+    onPurgeTimer() {
+        this.logger.info("Purge des fichiers temporaires en cours...");
+        let now = new Date().getTime();
+        klaw(this.config.tmpDir)
+            .on('data', (item) => {
+            if (item.stats.isFile()) {
+                let filename = p.basename(item.path);
+                if (filename != 'PID.txt') {
+                    let diffH = Math.round(10 * (now - item.stats.mtimeMs) / (1000 * 60 * 60)) / 10;
+                    if (diffH > this.tmpFilesRetention) {
+                        fs.remove(item.path)
+                            .then(() => {
+                            this.logger.info("Fichier temporaire supprimé: " + item.path);
+                        })
+                            .catch(err => {
+                            this.logger.error("Purge : " + err.toString());
+                        });
+                    }
+                }
+            }
+        })
+            .on('end', () => {
+            this.logger.info("Purge des fichiers temporaires terminée.");
+        })
+            .on('error', (err, item) => {
+            this.logger.error("Purge fichiers temporaires: ", err.message);
+            this.logger.error("Purge fichiers temporaires: path=" + item.path);
         });
     }
     onStatTimer() {

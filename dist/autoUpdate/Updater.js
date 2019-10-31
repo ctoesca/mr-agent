@@ -166,11 +166,14 @@ class Updater extends EventEmitter {
     stopApp(appDir, appUrl) {
         this.logger.info('Stopping... ');
         if (utils.isWin()) {
-            return ChildProcess_1.ChildProcess.execCmd('sc', ['stop', this.application.serviceName])
+            return ChildProcess_1.ChildProcess.execCmd('net', ['stop', this.application.serviceName])
                 .then((result) => {
                 if (result.exitCode > 0) {
                     throw 'Failed to stop agent: ' + result.stderr;
                 }
+            })
+                .catch((err) => {
+                throw 'Echec stop' + err.toString();
             });
         }
         else {
@@ -188,25 +191,34 @@ class Updater extends EventEmitter {
         }
     }
     startApp(appDir) {
-        return new Bluebird((resolve, reject) => {
-            let cmd;
-            let args;
-            this.logger.info('Starting agent ...');
-            if (utils.isWin()) {
-                return ChildProcess_1.ChildProcess.execCmd('sc', ['start', this.application.serviceName]);
-            }
-            else {
-                cmd = appDir + '/bin/agent.sh';
-                args = ['start'];
-                let child = child_process.spawn(cmd, args, {
-                    detached: true,
-                    windowsVerbatimArguments: true,
-                    stdio: 'ignore'
-                });
-                child.unref();
-                return Promise.resolve();
-            }
-        });
+        let cmd;
+        let args;
+        this.logger.info('Starting agent ...');
+        if (utils.isWin()) {
+            return ChildProcess_1.ChildProcess.execCmd('net', ['start', this.application.serviceName])
+                .then((result) => {
+                if (result.exitCode > 0) {
+                    throw 'Failed to start agent: ' + result.stderr;
+                }
+                else {
+                    this.logger.info('Agent started.');
+                }
+            })
+                .catch((err) => {
+                throw 'Echec start' + err.toString();
+            });
+        }
+        else {
+            cmd = appDir + '/bin/agent.sh';
+            args = ['start'];
+            let child = child_process.spawn(cmd, args, {
+                detached: true,
+                windowsVerbatimArguments: true,
+                stdio: 'ignore'
+            });
+            child.unref();
+            return Bluebird.resolve();
+        }
     }
     remove(appDir) {
         try {
@@ -249,7 +261,7 @@ class Updater extends EventEmitter {
                 fs.copySync(source, dest, {
                     filter: function (_src, _dest) {
                         if ((file === 'bin') && (p.basename(_dest) === 'agent.exe')) {
-                            this.logger.error('Non copié: ' + _dest);
+                            this.logger.info('Non copié: ' + _dest);
                             return false;
                         }
                         else {
@@ -277,8 +289,8 @@ class Updater extends EventEmitter {
         }
     }
 }
+exports.Updater = Updater;
 Updater.updateIsRunning = false;
 Updater.excludedFromBackup = ['tmp', '.svn', 'logs', 'data', '.git', '.nyc_output', 'coverage', 'last_release'];
 Updater.excludedFromUpdate = ['tmp', 'conf', '.svn', 'logs', 'data', '.git', '.nyc_output', 'coverage'];
-exports.Updater = Updater;
 //# sourceMappingURL=Updater.js.map
