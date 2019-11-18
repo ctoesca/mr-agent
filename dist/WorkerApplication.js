@@ -15,7 +15,6 @@ const Errors = require("./Errors");
 const Updater_1 = require("./autoUpdate/Updater");
 const ChildProcess_1 = require("./utils/ChildProcess");
 const utils = require("./utils");
-const Bluebird = require("bluebird");
 class WorkerApplication extends Application_1.Application {
     constructor(configPath, opt = {}) {
         super(configPath, opt);
@@ -78,7 +77,6 @@ class WorkerApplication extends Application_1.Application {
         }
         else {
             process.exit(99);
-            return Bluebird.resolve();
         }
     }
     restart() {

@@ -98,7 +98,7 @@ export class WorkerApplication extends Application {
 			return ChildProcess.execCmd(__dirname + '/../bin/agent.exe', ['stop', this.serviceName])
 		} else {
 			process.exit(99);
-			return Bluebird.resolve()
+			//return Bluebird.resolve()
 		}
 	}
 

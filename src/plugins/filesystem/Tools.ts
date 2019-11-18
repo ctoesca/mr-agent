@@ -53,7 +53,24 @@ export class Tools {
 
 			if (!recursive) {
 				// NOT RECURSIVE
-				return this.listFiles(dir)
+	
+                return this.listFiles(dir)
+                .then( (results) => {
+
+                    if (filter !== '*') {
+                        let filteredResults = []
+
+                        for (let file of results.files){
+                            
+                            if (minimatch(file.name, filter, { matchBase: true }))
+                                filteredResults.push(file)
+                        }
+                        return filteredResults
+                    }
+                    else {
+                        return results
+                    }
+                })
 
 			} else {
 				// RECURSIVE

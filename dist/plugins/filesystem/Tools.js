@@ -41,7 +41,20 @@ class Tools {
                 throw new Error(dir + ' does not exist');
             }
             if (!recursive) {
-                return this.listFiles(dir);
+                return this.listFiles(dir)
+                    .then((results) => {
+                    if (filter !== '*') {
+                        let filteredResults = [];
+                        for (let file of results.files) {
+                            if (minimatch(file.name, filter, { matchBase: true }))
+                                filteredResults.push(file);
+                        }
+                        return filteredResults;
+                    }
+                    else {
+                        return results;
+                    }
+                });
             }
             else {
                 return new Promise((resolve, reject) => {
