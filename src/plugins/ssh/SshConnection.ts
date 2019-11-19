@@ -107,7 +107,9 @@ export default class SshConnection extends EventEmitter {
 		let tryAgentKey: boolean = !tryPassword && !tryKey
 
 		let promise : Promise<Ssh2.Client>
+
 		
+
 		let sshOptions : any = {
 			host: this.connectionParams.host,
 			port: this.connectionParams.port,
@@ -126,10 +128,12 @@ export default class SshConnection extends EventEmitter {
 		} else if (tryAgentKey) {
 
 			let cacheKey = this.getSshKeyCache( sshOptions.host,  sshOptions.port)
+			
+			this.logger.error( sshOptions )
 
 			if (SshConnection.cachedKeys.has(cacheKey)) {
-				let key = SshConnection.cachedKeys.get(cacheKey)
 
+				let key = SshConnection.cachedKeys.get(cacheKey)
 				sshOptions.privateKey = key
 				sshOptions.passphrase = this.connectionParams.passphrase
 
@@ -140,6 +144,8 @@ export default class SshConnection extends EventEmitter {
 				})
 
 			} else {
+				
+				sshOptions.passphrase = this.connectionParams.passphrase
 				promise = this.findKeyConnection( sshOptions )
 			}
 

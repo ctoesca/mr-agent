@@ -7,6 +7,7 @@ import klaw = require('klaw')
 import minimatch = require('minimatch')
 import {Files} from '../../utils/Files'
 import * as utils from '../../utils'
+import p = require('path')
 
 export class Tools {
 
@@ -19,7 +20,7 @@ export class Tools {
 		this.logger = Application.getLogger(this.constructor.name);
 	}
 
-	public listFiles(dir: string): Promise<any> {
+	protected listFiles(dir: string): Promise<any> {
 
 		return fs.readdir(dir)
 		.then( (files) => {
@@ -45,6 +46,8 @@ export class Tools {
 
 	public findFiles(dir: string, filter: string, recursive: boolean, maxResults: number): Promise<any> {
 
+		dir = p.normalize(dir)
+
 		return fs.pathExists(dir)
 		.then( exists => {
 			if (!exists) {
@@ -56,7 +59,7 @@ export class Tools {
 	
                 return this.listFiles(dir)
                 .then( (results) => {
-
+                	
                     if (filter !== '*') {
                         let filteredResults = []
 
@@ -65,7 +68,10 @@ export class Tools {
                             if (minimatch(file.name, filter, { matchBase: true }))
                                 filteredResults.push(file)
                         }
-                        return filteredResults
+                        return {
+                        	files: filteredResults,
+                        	total: filteredResults.length
+                        }
                     }
                     else {
                         return results

@@ -12,9 +12,9 @@ global.PORT= 3020
 global.HOST= "127.0.0.1"
 global.base = 'http://'+global.HOST+':'+global.PORT
 global.SSH_HOST = '185.212.226.228'
-global.SSH_HOST_PORT = 1973
+global.SSH_HOST_PORT = 22
 global.SSH_HOST_USERNAME = 'root'
-global.SSH_HOST_PASSWORD = 'JzE1wqSnM'
+global.SSH_HOST_PASSWORD = 'XerCePm'
 global.SSH_HOST_PASSPHRASE = 'toto'
 
 var testDir = __dirname

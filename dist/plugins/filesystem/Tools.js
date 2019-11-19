@@ -7,6 +7,7 @@ const klaw = require("klaw");
 const minimatch = require("minimatch");
 const Files_1 = require("../../utils/Files");
 const utils = require("../../utils");
+const p = require("path");
 class Tools {
     constructor(opt) {
         this.tmpDir = null;
@@ -35,6 +36,7 @@ class Tools {
         });
     }
     findFiles(dir, filter, recursive, maxResults) {
+        dir = p.normalize(dir);
         return fs.pathExists(dir)
             .then(exists => {
             if (!exists) {
@@ -49,7 +51,10 @@ class Tools {
                             if (minimatch(file.name, filter, { matchBase: true }))
                                 filteredResults.push(file);
                         }
-                        return filteredResults;
+                        return {
+                            files: filteredResults,
+                            total: filteredResults.length
+                        };
                     }
                     else {
                         return results;

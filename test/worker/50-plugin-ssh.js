@@ -456,10 +456,11 @@ describe('/_plugin/ssh with remote key', function() {
 				username: SSH_HOST_USERNAME,
 				passphrase: SSH_HOST_PASSPHRASE
 			}
-		    
+	    
+
 		    request( opt )
 			.then( (res) => {	
-				
+			
 				assert.strictEqual(res.statusCode, 200, 'status is not 200');
 				assert.strictEqual(res.body.stdout.trim(), SSH_HOST_USERNAME, 'stdout != '+SSH_HOST_USERNAME);
 				assert.strictEqual(res.body.stderr, '', 'stderr is not empty');

@@ -101,6 +101,7 @@ class SshConnection extends EventEmitter {
         }
         else if (tryAgentKey) {
             let cacheKey = this.getSshKeyCache(sshOptions.host, sshOptions.port);
+            this.logger.error(sshOptions);
             if (SshConnection.cachedKeys.has(cacheKey)) {
                 let key = SshConnection.cachedKeys.get(cacheKey);
                 sshOptions.privateKey = key;
@@ -112,6 +113,7 @@ class SshConnection extends EventEmitter {
                 });
             }
             else {
+                sshOptions.passphrase = this.connectionParams.passphrase;
                 promise = this.findKeyConnection(sshOptions);
             }
         }

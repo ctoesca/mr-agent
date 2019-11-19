@@ -78,7 +78,7 @@ class HttpServer extends EventEmitter {
             }
         }
         this.app.use(this.authRequest.bind(this));
-        this.logger.debug('HttpServer created');
+        this.createServer();
     }
     addExpressApplication(mounthPath, app) {
         this.app.use(mounthPath, app);
@@ -177,11 +177,8 @@ class HttpServer extends EventEmitter {
         return r;
     }
     start() {
-        return this.createServer()
-            .then(() => {
-            this.server.setTimeout(this.requestTimeout * 1000);
-            return this.listen();
-        });
+        this.server.setTimeout(this.requestTimeout * 1000);
+        return this.listen();
     }
     createServer() {
         if (!this.httpsOptions.enabled) {
@@ -224,7 +221,6 @@ class HttpServer extends EventEmitter {
                 if (e.code === 'EADDRINUSE') {
                     this.logger.error('Port ' + this.port + ' in use');
                     process.exit(1);
-                    reject('Port ' + this.port + ' in use');
                 }
                 else {
                     this.logger.error(e);
