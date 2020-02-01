@@ -3,6 +3,14 @@ import express = require('express')
 import Timer from './Timer'
 import './StringTools';
 import * as Errors from '../Errors';
+import crypto = require('crypto');
+
+
+
+function md5(s: string): string{
+	let md5sum = crypto.createHash('md5');
+	return md5sum.update(s).digest('hex');
+}
 
 function randomBetween(min: number, max: number) {
 	return Math.floor(Math.random()*(max-min+1)+min);
@@ -249,5 +257,6 @@ export {
 	array_replace_recursive,
 	isWin,
 	parseParams,
-	shuffleArray
+	shuffleArray,
+	md5
 };

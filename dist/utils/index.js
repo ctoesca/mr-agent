@@ -5,6 +5,12 @@ const Timer_1 = require("./Timer");
 exports.Timer = Timer_1.default;
 require("./StringTools");
 const Errors = require("../Errors");
+const crypto = require("crypto");
+function md5(s) {
+    let md5sum = crypto.createHash('md5');
+    return md5sum.update(s).digest('hex');
+}
+exports.md5 = md5;
 function randomBetween(min, max) {
     return Math.floor(Math.random() * (max - min + 1) + min);
 }

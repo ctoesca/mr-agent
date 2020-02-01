@@ -9,6 +9,7 @@ const p = require("path");
 const Errors = require("../../Errors");
 const Promise = require("bluebird");
 const SshConnection_1 = require("./SshConnection");
+const SshError_1 = require("./SshError");
 const bodyParser = require("body-parser");
 const ws = require("ws");
 const SshSession_1 = require("./SshSession");
@@ -16,6 +17,8 @@ const net = require("net");
 const Timer_1 = require("../../utils/Timer");
 const http = require("http");
 const https = require("https");
+const os = require("os");
+const genericPool = require("generic-pool");
 class Tplugin extends ThttpPlugin_1.ThttpPlugin {
     constructor(application, config) {
         super(application, config);
@@ -24,12 +27,24 @@ class Tplugin extends ThttpPlugin_1.ThttpPlugin {
         this.connectTimeout = 10000;
         this.sshSessions = new Map();
         this.connections = new Map();
-        this.cachedConnectionTimeout = 3600;
-        this.purgeConnectionsTimerInterval = 60;
+        this.statTimerInterval = 60;
         this.statInterval = 300;
         this.lastStatDate = new Date().getTime();
-        this.totalRequests = 0;
-        this.cacheHits = 0;
+        this.currentRequestsCount = 0;
+        this.poolCacheHits = 0;
+        this.connectCacheHits = 0;
+        this.createdPools = 0;
+        this.pools = new Map();
+        this.poolsOptions = {
+            acquireTimeoutMillis: 5000,
+            evictionRunIntervalMillis: 60 * 1000,
+            maxWaitingClients: 20,
+            idleTimeoutMillis: 3600 * 1000,
+            numTestsPerEvictionRun: 200,
+            max: 5,
+            min: 0,
+            Promise: Promise
+        };
         if (this.config.sshKeysDir) {
             this.sshKeysDir = this.config.sshKeysDir;
         }
@@ -37,33 +52,57 @@ class Tplugin extends ThttpPlugin_1.ThttpPlugin {
             this.sshKeysDir = WorkerApplication_1.WorkerApplication.getConfigDir() + '/sshKeys';
         }
     }
-    onPurgeConnectionsTimer() {
+    onStatTimer() {
         let nowTimestamp = new Date().getTime();
-        this.connections.forEach((connection, key) => {
-            let diffSec = (nowTimestamp - connection.lastUse) / 1000;
-            if (diffSec > this.cachedConnectionTimeout) {
-                let diffString = Math.round(diffSec / 60) + ' min';
-                this.logger.info("Destroy connection " + connection.toString() + ' (inactive depuis ' + diffString + ')');
-                this.destroyConnection(connection);
-            }
-        });
         let diffLastStat = (nowTimestamp - this.lastStatDate) / 1000;
-        if (diffLastStat > this.statInterval) {
-            let reqRate = Math.round(10 * this.totalRequests / diffLastStat) / 10;
-            let cacheHitRatio = 0;
-            if (this.totalRequests > 0)
-                cacheHitRatio = Math.round(1000 * this.cacheHits / this.totalRequests) / 10;
-            this.logger.info("Requests rate: " + reqRate + "/sec, cacheHitRatio: " + cacheHitRatio + "%, connexions SSH en cache: " + this.connections.size);
-            this.lastStatDate = new Date().getTime();
-            this.totalRequests = 0;
-            this.cacheHits = 0;
+        let reqRate = Math.round(10 * this.currentRequestsCount / diffLastStat) / 10;
+        let poolCacheHitRatio = 0;
+        let connectCacheHitRatio = 0;
+        if (this.currentRequestsCount > 0) {
+            poolCacheHitRatio = Math.round(1000 * this.poolCacheHits / this.currentRequestsCount) / 10;
+            connectCacheHitRatio = Math.round(1000 * this.connectCacheHits / this.currentRequestsCount) / 10;
         }
+        this.lastStatDate = new Date().getTime();
+        this.currentRequestsCount = 0;
+        this.poolCacheHits = 0;
+        this.connectCacheHits = 0;
+        SshConnection_1.default.stats.poolCacheHitsRatioPercent = poolCacheHitRatio;
+        SshConnection_1.default.stats.connectCacheHitsRatioPercent = connectCacheHitRatio;
+        SshConnection_1.default.stats.reqRatePerSec = reqRate;
+        if (diffLastStat >= 300) {
+            this.logger.info("Requests rate: " + reqRate + "/sec, poolCacheHitRatio: " + poolCacheHitRatio + "% connectCacheHitRatio: " + connectCacheHitRatio + "%");
+            this.getStats()
+                .then((stats) => {
+                this.logger.info('POOLS STATS pid ' + process.pid + ' => size: ' + stats.poolsStats.connectionsSize + ', available: ' + stats.poolsStats.connectionsAvailable + ', borrowed: ' + stats.poolsStats.connectionsBorrowed + ', pending: ' + stats.poolsStats.connectionsPending);
+            });
+        }
+    }
+    getStats() {
+        let r = {
+            pid: process.pid,
+            sshConnections: SshConnection_1.default.stats,
+            poolsStats: {
+                createdPools: this.createdPools,
+                poolsCount: this.pools.size,
+                connectionsBorrowed: 0,
+                connectionsPending: 0,
+                connectionsSize: 0,
+                connectionsAvailable: 0
+            }
+        };
+        this.pools.forEach((pool, id) => {
+            r.poolsStats.connectionsBorrowed += pool.borrowed;
+            r.poolsStats.connectionsPending += pool.pending;
+            r.poolsStats.connectionsSize += pool.size;
+            r.poolsStats.connectionsAvailable += pool.available;
+        });
+        return Promise.resolve(r);
     }
     install() {
         super.install();
-        this.purgeConnectionsTimer = new Timer_1.default({ delay: this.purgeConnectionsTimerInterval * 1000 });
-        this.purgeConnectionsTimer.on(Timer_1.default.ON_TIMER, this.onPurgeConnectionsTimer.bind(this));
-        this.purgeConnectionsTimer.start();
+        this.statTimer = new Timer_1.default({ delay: this.statTimerInterval * 1000 });
+        this.statTimer.on(Timer_1.default.ON_TIMER, this.onStatTimer.bind(this));
+        this.statTimer.start();
         this.app.use(bodyParser.json({
             limit: '500mb'
         }));
@@ -133,8 +172,10 @@ class Tplugin extends ThttpPlugin_1.ThttpPlugin {
         }
         else
             throw "url incorrecte: doit commencer par https:// ou http://";
+        let connection;
         this.getConnection(sshOptions)
-            .then((connection) => {
+            .then((result) => {
+            connection = result;
             let agent = connection.getHttpAgent(isHttps);
             let opt = {
                 agent: agent,
@@ -164,6 +205,10 @@ class Tplugin extends ThttpPlugin_1.ThttpPlugin {
         })
             .catch((err) => {
             next(err);
+        })
+            .finally(() => {
+            if (connection)
+                this.releaseSshConnection(connection);
         });
     }
     createTcpServer() {
@@ -222,12 +267,13 @@ class Tplugin extends ThttpPlugin_1.ThttpPlugin {
         done(true);
     }
     _stats(req, res, next) {
-        let r = {
-            connections: {
-                count: this.connections.size
-            }
-        };
-        res.json(r);
+        this.getStats()
+            .then((result) => {
+            res.json(result);
+        })
+            .catch((err) => {
+            next(err);
+        });
     }
     upload(req, res, next) {
         let params = HttpTools_1.HttpTools.getQueryParams(req, {
@@ -442,7 +488,6 @@ class Tplugin extends ThttpPlugin_1.ThttpPlugin {
             pty: params.pty
         })
             .then((result) => {
-            this.logger.info('Succès exec ssh sur ' + req.body.host + ' (username=' + req.body.username + ')');
             res.status(200).json(result);
         })
             .catch(err => {
@@ -474,8 +519,10 @@ class Tplugin extends ThttpPlugin_1.ThttpPlugin {
                 type: 'string'
             }
         });
-        this.getConnection(params, { closeConnection: true })
-            .then(() => {
+        let connection;
+        this.getConnection(params)
+            .then((result) => {
+            connection = result;
             this.logger.info('checkLogin ' + params.username + '@' + params.host + ': OK');
             res.status(200).json({ result: true });
         })
@@ -487,6 +534,10 @@ class Tplugin extends ThttpPlugin_1.ThttpPlugin {
             else {
                 next(new Errors.HttpError(error.toString()));
             }
+        })
+            .finally(() => {
+            if (connection)
+                this.releaseSshConnection(connection);
         });
     }
     checkLogins(req, res, next) {
@@ -600,8 +651,10 @@ class Tplugin extends ThttpPlugin_1.ThttpPlugin {
         });
     }
     checkConnection(params) {
-        return this.getConnection(params, { closeConnection: true })
-            .then((sshConnection) => {
+        let connection;
+        return this.getConnection(params)
+            .then((result) => {
+            connection = result;
             return { result: true, params: params, error: null };
         })
             .catch((err) => {
@@ -611,65 +664,11 @@ class Tplugin extends ThttpPlugin_1.ThttpPlugin {
             else {
                 throw err;
             }
+        })
+            .finally(() => {
+            if (connection)
+                this.releaseSshConnection(connection);
         });
-    }
-    destroyConnection(connection) {
-        connection.destroy();
-        this.connections.delete(connection.id);
-    }
-    getConnection(params, options = null) {
-        try {
-            this.totalRequests++;
-            if (!params.port)
-                params.port = this.defaultPort;
-            let connection;
-            let opt = {
-                closeConnection: false,
-                useCache: true
-            };
-            if (options) {
-                Object.keys(options).forEach((k) => {
-                    opt[k] = options[k];
-                });
-            }
-            let useCache = (opt.useCache && (opt.closeConnection === false));
-            let connectionId;
-            if (useCache)
-                connectionId = SshConnection_1.default.calcId(params);
-            if (useCache && this.connections.has(connectionId)) {
-                this.cacheHits++;
-                connection = this.connections.get(connectionId);
-                connection.lastUse = new Date().getTime();
-            }
-            else {
-                connection = new SshConnection_1.default(params, {
-                    logger: this.logger,
-                    sshKeysDir: this.sshKeysDir,
-                    connectTimeout: this.connectTimeout
-                });
-                if (useCache) {
-                    this.connections.set(connectionId, connection);
-                    connection.on('end', () => {
-                        this.destroyConnection(connection);
-                    });
-                }
-            }
-            if (connection.isConnected()) {
-                return Promise.resolve(connection);
-            }
-            else {
-                return connection.connect()
-                    .then((conn) => {
-                    if (opt.closeConnection) {
-                        this.destroyConnection(connection);
-                    }
-                    return connection;
-                });
-            }
-        }
-        catch (err) {
-            return Promise.reject(err);
-        }
     }
     _shell(req, res, next) {
         let params = HttpTools_1.HttpTools.getQueryParams(req, {
@@ -696,14 +695,18 @@ class Tplugin extends ThttpPlugin_1.ThttpPlugin {
                 type: 'string'
             }
         });
+        let connection;
         this.getConnection(params)
-            .then((connection) => {
+            .then((result) => {
+            connection = result;
             let conn = connection.conn;
             conn.shell((err, stream) => {
                 if (err)
                     throw err;
                 stream.on('close', function () {
                     console.log('Stream :: close');
+                    if (connection)
+                        this.releaseSshConnection(connection);
                 });
                 stream.on('data', function (data) {
                     r += data;
@@ -744,6 +747,8 @@ class Tplugin extends ThttpPlugin_1.ThttpPlugin {
                 opt[key] = defaultOpt[key];
             }
         });
+        let connection;
+        let start = new Date().getTime();
         return this.getConnection({
             host: opt.host,
             port: opt.port,
@@ -752,8 +757,18 @@ class Tplugin extends ThttpPlugin_1.ThttpPlugin {
             key: opt.key,
             passphrase: opt.passphrase
         })
-            .then((connection) => {
+            .then((result) => {
+            connection = result;
             return connection.exec(opt);
+        })
+            .then((result) => {
+            let executionTime = new Date().getTime() - start;
+            this.logger.info(connection.toString() + ' : Succès exec ssh (' + executionTime + ' ms)');
+            return result;
+        })
+            .finally(() => {
+            if (connection)
+                this.releaseSshConnection(connection);
         });
     }
     removeTempFileSync(path) {
@@ -825,16 +840,10 @@ class Tplugin extends ThttpPlugin_1.ThttpPlugin {
             next(err);
         })
             .finally(() => {
-            if (connection)
+            if (connection) {
                 connection.destroy();
+            }
         });
-    }
-    getConnectionById(id) {
-        let r = null;
-        if (this.connections.has(id)) {
-            r = this.connections.get(id);
-        }
-        return r;
     }
     scpSend(host, username, password, key, passphrase, localPath, remotePath, port, opt = {}) {
         let connection;
@@ -851,8 +860,9 @@ class Tplugin extends ThttpPlugin_1.ThttpPlugin {
             return connection.scpSend(localPath, remotePath);
         })
             .finally(() => {
-            if (connection)
+            if (connection) {
                 connection.destroy();
+            }
         });
     }
     scpGet(host, username, password, key, passphrase, localPath, remotePath, port) {
@@ -870,9 +880,110 @@ class Tplugin extends ThttpPlugin_1.ThttpPlugin {
             return connection.scpGet(localPath, remotePath);
         })
             .finally(() => {
-            if (connection)
+            if (connection) {
                 connection.destroy();
+            }
         });
+    }
+    getConnection(params, options = null) {
+        try {
+            this.currentRequestsCount++;
+            SshConnection_1.default.stats.totalRequestsCount++;
+            if (!params.port)
+                params.port = this.defaultPort;
+            let opt = {
+                useCache: true
+            };
+            if (options) {
+                Object.keys(options).forEach((k) => {
+                    opt[k] = options[k];
+                });
+            }
+            if (opt.useCache) {
+                let poolId = SshConnection_1.default.calcPoolId(params);
+                let pool = this.getConnectionPool(poolId, params);
+                let connection;
+                return pool.acquire()
+                    .then((result) => {
+                    connection = result;
+                    SshConnection_1.default.stats.acquiredCount++;
+                    if (!connection.isConnected()) {
+                        return connection.connect();
+                    }
+                    else {
+                        this.connectCacheHits++;
+                        return connection;
+                    }
+                })
+                    .catch((err) => {
+                    if (connection)
+                        this.releaseSshConnection(connection);
+                    if (!(err instanceof SshError_1.default)) {
+                        let message = 'Cannot acquire ssh connection on pool ' + poolId + ': ' + err.toString() + ' (host: ' + os.hostname() + ', worker: ' + process.pid + ')';
+                        throw new Error(message);
+                    }
+                    else {
+                        throw err;
+                    }
+                });
+            }
+            else {
+                let connection = new SshConnection_1.default(params, {
+                    logger: this.logger,
+                    sshKeysDir: this.sshKeysDir,
+                    connectTimeout: this.connectTimeout
+                });
+                return connection.connect();
+            }
+        }
+        catch (err) {
+            return Promise.reject(err);
+        }
+    }
+    getConnectionPool(poolId, params) {
+        if (this.pools.has(poolId)) {
+            this.poolCacheHits++;
+            return this.pools.get(poolId);
+        }
+        else {
+            let start = new Date().getTime();
+            this.logger.info("Creating ssh pool '" + poolId + "' (max size: " + this.poolsOptions.max + ')');
+            let factory = {
+                create: () => {
+                    let connection = new SshConnection_1.default(params, {
+                        poolId: poolId,
+                        logger: this.logger,
+                        sshKeysDir: this.sshKeysDir,
+                        connectTimeout: this.connectTimeout
+                    });
+                    return connection;
+                },
+                destroy: (connection) => {
+                    if (connection.destroy)
+                        connection.destroy();
+                    return Promise.resolve(connection);
+                }
+            };
+            let pool = genericPool.createPool(factory, this.poolsOptions);
+            this.pools.set(poolId, pool);
+            this.createdPools++;
+            let ellapsed = new Date().getTime() - start;
+            this.logger.info("Pool created in " + ellapsed + ' ms');
+            return pool;
+        }
+    }
+    releaseSshConnection(connection) {
+        if (!connection)
+            return;
+        if (this.pools.has(connection.poolId)) {
+            let pool = this.pools.get(connection.poolId);
+            if (pool.isBorrowedResource(connection)) {
+                pool.release(connection)
+                    .then(() => {
+                    SshConnection_1.default.stats.releasedCount++;
+                });
+            }
+        }
     }
 }
 exports.Tplugin = Tplugin;

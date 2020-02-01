@@ -15,6 +15,7 @@ import {Tplugin as TmetricsPlugin} from '../../plugins/metrics/Tplugin'
 import {WorkerApplication as Application}  from '../../WorkerApplication'
 import Promise = require('bluebird')
 import bodyParser = require('body-parser');
+import rimraf = require("rimraf");
 
 export class Tplugin extends ThttpPlugin {
 
@@ -290,8 +291,24 @@ export class Tplugin extends ThttpPlugin {
 			this.logger.warn('path=' + params.path + ' => fichier inexistant');
 			throw new Errors.NotFound("'" + params.path + '- does not exist')
 		} else {
-			fs.unlinkSync(params.path)
-			res.status(200).json( {result: true, filename: filename, path: params.path} );
+
+			let stat = Files.getFileStat(params.path, true);
+			if (stat.isDir) {
+				rimraf(params.path, (err) => {
+					if (err)
+						next(err)
+					else
+						res.status(200).json( {result: true, filename: filename, path: params.path} );
+				})
+			} else 
+			{
+				fs.unlink(params.path).then( () => {
+					res.status(200).json( {result: true, filename: filename, path: params.path} );
+				})
+				.catch( (err: any) => {
+					next(err)
+				})
+			}
 		}
 
 	}
@@ -318,12 +335,6 @@ export class Tplugin extends ThttpPlugin {
 			if (!pathExits) {
 				throw new Errors.HttpError(params.path + ' does not exist', 400)
 			}
-
-			let sourceStat = Files.getFileStat(params.path, false);
-			if (!sourceStat.isFile) {
-				throw new Errors.HttpError('source ' + params.path + ' is not a file', 400)
-			}
-
 			return fs.pathExists(params.dest)
 
 		})

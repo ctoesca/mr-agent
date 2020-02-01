@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const SshError_1 = require("./SshError");
 const Ssh2 = require("ssh2");
-class SftpError extends SshError_1.SshError {
+class SftpError extends SshError_1.default {
     constructor(err) {
         super(err.toString());
         this.sftpStatus = null;

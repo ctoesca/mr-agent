@@ -31,5 +31,5 @@ class SshError extends Error {
         };
     }
 }
-exports.SshError = SshError;
+exports.default = SshError;
 //# sourceMappingURL=SshError.js.map

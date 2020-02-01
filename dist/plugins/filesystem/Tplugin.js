@@ -13,6 +13,7 @@ require("../../utils/StringTools");
 const Errors = require("../../Errors");
 const Promise = require("bluebird");
 const bodyParser = require("body-parser");
+const rimraf = require("rimraf");
 class Tplugin extends ThttpPlugin_1.ThttpPlugin {
     constructor(application, config) {
         super(application, config);
@@ -231,8 +232,23 @@ class Tplugin extends ThttpPlugin_1.ThttpPlugin {
             throw new Errors.NotFound("'" + params.path + '- does not exist');
         }
         else {
-            fs.unlinkSync(params.path);
-            res.status(200).json({ result: true, filename: filename, path: params.path });
+            let stat = Files_1.Files.getFileStat(params.path, true);
+            if (stat.isDir) {
+                rimraf(params.path, (err) => {
+                    if (err)
+                        next(err);
+                    else
+                        res.status(200).json({ result: true, filename: filename, path: params.path });
+                });
+            }
+            else {
+                fs.unlink(params.path).then(() => {
+                    res.status(200).json({ result: true, filename: filename, path: params.path });
+                })
+                    .catch((err) => {
+                    next(err);
+                });
+            }
         }
     }
     moveFile(req, res, next) {
@@ -253,10 +269,6 @@ class Tplugin extends ThttpPlugin_1.ThttpPlugin {
             .then(pathExits => {
             if (!pathExits) {
                 throw new Errors.HttpError(params.path + ' does not exist', 400);
-            }
-            let sourceStat = Files_1.Files.getFileStat(params.path, false);
-            if (!sourceStat.isFile) {
-                throw new Errors.HttpError('source ' + params.path + ' is not a file', 400);
             }
             return fs.pathExists(params.dest);
         })

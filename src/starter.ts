@@ -23,7 +23,6 @@ if (args.c) {
 	configPath = args.c;
 }
 
-
 if (cluster.isMaster) {
 	let app = mrAgent.create( mrAgent.MasterApplication, configPath)
 	app.start()

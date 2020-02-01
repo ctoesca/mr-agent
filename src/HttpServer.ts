@@ -133,11 +133,11 @@ export class HttpServer extends EventEmitter {
 
 				if (err instanceof Errors.HttpError) {
 					status = err.code;
-				} else if (typeof err.getHttpStatus === 'function') {
-					status = err.getHttpStatus();
+				} else if (typeof err["getHttpStatus"] === 'function') {
+					status = err["getHttpStatus"]();
 				}
 
-				if (status >= 500) {
+				if (status >= 500) {					
 					this.logger.error('***** ' + status + ' : ' + req.method + ' ' + req.path, err.toString());
 				} else {
 					this.logger.warn('***** ' + status + ' : ' + req.method + ' ' + req.path, err.toString());
@@ -153,8 +153,8 @@ export class HttpServer extends EventEmitter {
 						errorClass: err.constructor.name,
 						stack: err.stack
 					}
-					if (typeof err.getDetail !== 'undefined') {
-						response.detail = err.getDetail()
+					if (typeof err["getDetail"] !== 'undefined') {
+						response.detail = err["getDetail"]()
 					}
 
 					res.status(status).send(response);
@@ -163,7 +163,7 @@ export class HttpServer extends EventEmitter {
 				}
 
 			} catch (err) {
-				this.logger.error('HttpServer.onError: ' + err.toString())
+				this.logger.error('HttpServer.onError: ' , err.toString())
 			}
 		}.bind(this));
 

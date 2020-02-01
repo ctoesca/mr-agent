@@ -107,7 +107,7 @@ describe('/_plugin/ssh/upload', function() {
 			.catch( err => {
 				done(err)
 			})
-		})
+		}).timeout(MOCHA_TIMEOUT)
 	})
 
 
@@ -134,7 +134,7 @@ describe('/_plugin/ssh/upload', function() {
 			execRequestExpectError( opt, done, 400 )
 
 
-		})
+		}).timeout(MOCHA_TIMEOUT)
 	})
 })
 	/*describe('upload no file', function() {
@@ -152,7 +152,7 @@ describe('/_plugin/ssh/upload', function() {
 		    },
 					
 			execRequestExpectError(opt, done, 400)
-		})
+		}).timeout(MOCHA_TIMEOUT)
 	})
 
 	describe('upload file - dest is directory', function() {
@@ -177,7 +177,7 @@ describe('/_plugin/ssh/upload', function() {
 		    },
 					
 			execRequestExpectError(opt, done, 400)
-		})
+		}).timeout(MOCHA_TIMEOUT)
 	})
 
 	describe('upload file - dest directory does not exist', function() {
@@ -202,7 +202,7 @@ describe('/_plugin/ssh/upload', function() {
 		    },
 					
 			execRequestExpectError(opt, done, 400)
-		})
+		}).timeout(MOCHA_TIMEOUT)
 	})
 
 
@@ -227,7 +227,7 @@ describe('/_plugin/ssh/upload', function() {
 		    },
 					
 			execRequestExpectError(opt, done, 400)
-		})
+		}).timeout(MOCHA_TIMEOUT)
 	})*/
 
 
@@ -263,7 +263,7 @@ describe('/_plugin/ssh with password', function() {
 			.catch( err => {
 				done(err)
 			})
-		})
+		}).timeout(MOCHA_TIMEOUT)
 	})
 
 	describe('exec script with incorrect password', function() {
@@ -290,7 +290,7 @@ describe('/_plugin/ssh with password', function() {
 			.catch( err => {
 				done(err)
 			})
-		})
+		}).timeout(MOCHA_TIMEOUT)
 	})
 
 	describe('exec script', function() {
@@ -322,7 +322,7 @@ describe('/_plugin/ssh with password', function() {
 			})
 
 			
-		})
+		}).timeout(MOCHA_TIMEOUT)
 	})
 
 
@@ -355,7 +355,7 @@ describe('/_plugin/ssh with password', function() {
 			})
 
 			
-		})
+		}).timeout(MOCHA_TIMEOUT)
 	})
 })
 
@@ -382,7 +382,7 @@ describe('/_plugin/ssh sftpReaddir', function() {
 			})
 
 			
-		})
+		}).timeout(MOCHA_TIMEOUT)
 	})
 
 	describe('sftpReadir with no path', function() {
@@ -395,7 +395,7 @@ describe('/_plugin/ssh sftpReaddir', function() {
 			
 		    execRequestExpectError(opt, done, 400)
 		   
-		})
+		}).timeout(MOCHA_TIMEOUT)
 	})
 
 	describe('sftpReadir with incorrect path', function() {
@@ -408,7 +408,7 @@ describe('/_plugin/ssh sftpReaddir', function() {
 			
 		    execRequestExpectError(opt, done, 400)
 		   
-		})
+		}).timeout(MOCHA_TIMEOUT)
 	})
 })
 
@@ -440,7 +440,7 @@ describe('/_plugin/ssh with remote key', function() {
 			.catch( err => {
 				done(err)
 			})
-		})
+		}).timeout(MOCHA_TIMEOUT)
 	})
 
 	describe('exec script', function() {
@@ -473,7 +473,7 @@ describe('/_plugin/ssh with remote key', function() {
 			})
 
 			
-		})
+		}).timeout(MOCHA_TIMEOUT)
 	})
 
 
@@ -506,7 +506,7 @@ describe('/_plugin/ssh with remote key', function() {
 			})
 
 			
-		})
+		}).timeout(MOCHA_TIMEOUT)
 	})
 })
 
@@ -540,7 +540,7 @@ describe('/_plugin/ssh/download', function() {
 				done(err)
 			})
 
-		})
+		}).timeout(MOCHA_TIMEOUT)
 	})
 
 	describe('download not existing file', function() {
@@ -551,7 +551,7 @@ describe('/_plugin/ssh/download', function() {
 			
 			execRequestExpectError(opt, done, 400)
 
-		})
+		}).timeout(MOCHA_TIMEOUT)
 	})
 
 
@@ -563,6 +563,6 @@ describe('/_plugin/ssh/download', function() {
 			
 			execRequestExpectError(opt, done, 500)
 
-		})
+		}).timeout(MOCHA_TIMEOUT)
 	})
 })

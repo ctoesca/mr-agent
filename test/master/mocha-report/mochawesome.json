@@ -5,9 +5,9 @@
     "passes": 4,
     "pending": 0,
     "failures": 0,
-    "start": "2019-11-18T21:53:21.154Z",
-    "end": "2019-11-18T21:53:22.186Z",
-    "duration": 1032,
+    "start": "2020-02-01T15:31:44.254Z",
+    "end": "2020-02-01T15:31:45.285Z",
+    "duration": 1031,
     "testsRegistered": 4,
     "passPercent": 100,
     "pendingPercent": 0,
@@ -19,7 +19,7 @@
     "pendingPercentClass": "danger"
   },
   "suites": {
-    "uuid": "c58fcfa5-4596-4d12-8ab4-a9d6d768fefa",
+    "uuid": "8978f5ae-553a-4d33-ad6b-c07b76950c66",
     "title": "",
     "fullFile": "",
     "file": "",
@@ -28,7 +28,7 @@
     "tests": [],
     "suites": [
       {
-        "uuid": "65f127ac-3ca2-4ff1-9be9-991fa8661484",
+        "uuid": "d0193fd6-e94e-4cbf-833d-f34a0701508f",
         "title": "MASTER",
         "fullFile": "D:\\projets\\mr-agent\\test\\master\\10-master.js",
         "file": "D:\\projets\\mr-agent\\test\\master\\10-master.js",
@@ -37,7 +37,7 @@
         "tests": [],
         "suites": [
           {
-            "uuid": "bc8d3095-7288-4d44-af47-c97088e40a2b",
+            "uuid": "4259a7f0-d0d7-4d18-9caf-2b6d0245df67",
             "title": "execScript",
             "fullFile": "D:\\projets\\mr-agent\\test\\master\\10-master.js",
             "file": "D:\\projets\\mr-agent\\test\\master\\10-master.js",
@@ -48,7 +48,7 @@
                 "title": "should return exitCode 0",
                 "fullTitle": "MASTER execScript should return exitCode 0",
                 "timedOut": false,
-                "duration": 11,
+                "duration": 12,
                 "state": "passed",
                 "speed": "fast",
                 "pass": true,
@@ -57,25 +57,25 @@
                 "code": "app.execScript('dir')\n\t\t\t.then( (result) => {\t\t\t\n\t\t\t\tif (result.exitCode != 0) {\n\t\t\t\t\tdone('Failed to execute script')\n\t\t\t\t}else{\n\t\t\t\t\tdone();\t\t\t\t\t\n\t\t\t\t}\n\t\t\t})\n\t\t\t.catch( err => {\n\t\t\t\tdone(err)\n\t\t\t})",
                 "err": {},
                 "isRoot": false,
-                "uuid": "8488e1dd-12c9-425c-9235-841198e0f68c",
+                "uuid": "9912ddc4-f29f-4a01-ade9-d81182049ba7",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "8488e1dd-12c9-425c-9235-841198e0f68c"
+              "9912ddc4-f29f-4a01-ade9-d81182049ba7"
             ],
             "failures": [],
             "pending": [],
             "skipped": [],
-            "duration": 11,
+            "duration": 12,
             "root": false,
             "rootEmpty": false,
             "_timeout": 2000
           },
           {
-            "uuid": "e794cc45-a20e-4faa-b2f5-e4d8889ebc08",
+            "uuid": "f556bb4b-bd8d-4b11-8853-42bf458ba8d8",
             "title": "execScript",
             "fullFile": "D:\\projets\\mr-agent\\test\\master\\10-master.js",
             "file": "D:\\projets\\mr-agent\\test\\master\\10-master.js",
@@ -86,7 +86,7 @@
                 "title": "should return exitCode 1",
                 "fullTitle": "MASTER execScript should return exitCode 1",
                 "timedOut": false,
-                "duration": 13,
+                "duration": 12,
                 "state": "passed",
                 "speed": "fast",
                 "pass": true,
@@ -95,25 +95,25 @@
                 "code": "app.execScript('dir blablabla')\n\t\t\t.then( (result) => {\t\t\t\n\t\t\t\tif (result.exitCode !== 1) {\n\t\t\t\t\tdone('Failed to execute script')\n\t\t\t\t}else{\n\t\t\t\t\tdone();\t\t\t\t\t\n\t\t\t\t}\n\t\t\t})\n\t\t\t.catch( err => {\n\t\t\t\tdone(err)\n\t\t\t})",
                 "err": {},
                 "isRoot": false,
-                "uuid": "a3348206-f98e-4060-aa9c-668291058682",
+                "uuid": "7abbb2b5-46df-4bcb-93c2-83f802b5353f",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "a3348206-f98e-4060-aa9c-668291058682"
+              "7abbb2b5-46df-4bcb-93c2-83f802b5353f"
             ],
             "failures": [],
             "pending": [],
             "skipped": [],
-            "duration": 13,
+            "duration": 12,
             "root": false,
             "rootEmpty": false,
             "_timeout": 2000
           },
           {
-            "uuid": "797dd3be-40db-488c-a081-0891b66163fd",
+            "uuid": "8b822221-ac2e-4a8c-b49d-c8b73bce479c",
             "title": "send logIngestStats",
             "fullFile": "D:\\projets\\mr-agent\\test\\master\\10-master.js",
             "file": "D:\\projets\\mr-agent\\test\\master\\10-master.js",
@@ -133,14 +133,14 @@
                 "code": "app.onWorkerMessage({\n\t\t\t\tlogIngestStats: {\n\t\t\t\t\ttotalCreated: 5,\n\t\t\t\t\ttotalInput: 5,\n\t\t\t\t}\n\t\t\t})\n\t\t\tapp.onWorkerMessage({\n\t\t\t\tlogIngestStats: {\n\t\t\t\t\ttotalCreated: 5,\n\t\t\t\t\ttotalInput: 6,\n\t\t\t\t}\n\t\t\t})\n\t\t\tdone()",
                 "err": {},
                 "isRoot": false,
-                "uuid": "9904566a-1578-4bc9-bb22-6884f12e3917",
+                "uuid": "29ef8005-b297-45f0-9036-bf9e6c366f33",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "9904566a-1578-4bc9-bb22-6884f12e3917"
+              "29ef8005-b297-45f0-9036-bf9e6c366f33"
             ],
             "failures": [],
             "pending": [],
@@ -151,7 +151,7 @@
             "_timeout": 2000
           },
           {
-            "uuid": "8911ec72-d53d-46e4-accf-1a9f3698f1d3",
+            "uuid": "ab4bda41-5969-45bd-aedb-76a25c98fac0",
             "title": "get logIngestStats",
             "fullFile": "D:\\projets\\mr-agent\\test\\master\\10-master.js",
             "file": "D:\\projets\\mr-agent\\test\\master\\10-master.js",
@@ -171,14 +171,14 @@
                 "code": "console.log(app.workersStats)\napp.onStatTimer()\nsetTimeout( () => {\n\tapp.onStatTimer()\n\tdone()\n}, 1000)",
                 "err": {},
                 "isRoot": false,
-                "uuid": "88873cd1-6e7b-48da-9029-fae6c84cc991",
+                "uuid": "a017140e-613a-4fb7-b621-7fa5ce24e50a",
                 "isHook": false,
                 "skipped": false
               }
             ],
             "suites": [],
             "passes": [
-              "88873cd1-6e7b-48da-9029-fae6c84cc991"
+              "a017140e-613a-4fb7-b621-7fa5ce24e50a"
             ],
             "failures": [],
             "pending": [],
@@ -208,5 +208,5 @@
     "rootEmpty": true,
     "_timeout": 2000
   },
-  "copyrightYear": 2019
+  "copyrightYear": 2020
 }

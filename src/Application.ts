@@ -13,7 +13,11 @@ export interface ApplicationConstructor {
 
 export class Application extends EventEmitter {
 
-	public static version = '2.5.4'
+	/* 2.6.2 : 
+	- fs.deleteFiles peut supprimer des repertoires 
+	- moveFile peut deplacer un repertoires
+	*/
+	public static version = '2.6.2'
 
 	public static applicationDirPath: string = __dirname;
 
@@ -30,7 +34,7 @@ export class Application extends EventEmitter {
 	constructor(configPath: string, opt: any = {}) {
 
 		super();
-
+		
 		if (arguments.length > 0) {
 			if (typeof configPath === 'object') {
 				opt = configPath

@@ -1,6 +1,6 @@
 
-
-export class SshError extends Error {
+ 
+export default class SshError extends Error {
 
 	public level: any = null
 	public connected = false

@@ -8,14 +8,15 @@ const assert = require('assert');
 const request = require('request-promise')
 const portscanner = require('portscanner');
 
-global.PORT= 3020
+global.PORT= 3001
 global.HOST= "127.0.0.1"
 global.base = 'http://'+global.HOST+':'+global.PORT
-global.SSH_HOST = '185.212.226.228'
-global.SSH_HOST_PORT = 22
+global.SSH_HOST = '185.212.226.34'
+global.SSH_HOST_PORT = 1973
 global.SSH_HOST_USERNAME = 'root'
-global.SSH_HOST_PASSWORD = 'XerCePm'
+global.SSH_HOST_PASSWORD = 'bo1yPel'
 global.SSH_HOST_PASSPHRASE = 'toto'
+global.MOCHA_TIMEOUT=40000
 
 var testDir = __dirname
 

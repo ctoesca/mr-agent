@@ -1,5 +1,5 @@
 
-import {SshError} from './SshError'
+import SshError from './SshError'
 import Ssh2 = require('ssh2')
 
 export default class SftpError extends SshError {

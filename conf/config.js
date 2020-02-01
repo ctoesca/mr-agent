@@ -11,7 +11,7 @@ module.exports.getConfig = function () {
 		},
 		
 		 //Nombre de processus à lancer
-		 "numProcesses": "4",
+		 "numProcesses": "1",
 		 
 
 		//Script exécuté au démarrage (utile sur windows pour monter des partages réseau)

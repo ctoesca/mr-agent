@@ -9,6 +9,7 @@ require("../../utils/StringTools");
 const SftpError_1 = require("./SftpError");
 const HttpAgent_1 = require("./HttpAgent");
 const HttpsAgent_1 = require("./HttpsAgent");
+const utils = require("../../utils");
 class SshConnection extends EventEmitter {
     constructor(connectionParams, options) {
         super();
@@ -26,14 +27,23 @@ class SshConnection extends EventEmitter {
         this.sshKeysDir = options.sshKeysDir;
         this.connectTimeout = options.connectTimeout;
         this.connectionParams = connectionParams;
-        this.id = SshConnection.calcId(connectionParams);
+        this.id = this.calcId(connectionParams);
+        if (!options.poolId)
+            this.poolId = SshConnection.calcPoolId(connectionParams);
+        else
+            this.poolId = options.poolId;
+        SshConnection.stats.createdCount++;
     }
     toString() {
         return this.connectionParams.username + "@" + this.connectionParams.host;
     }
-    static calcId(params) {
-        let s = params.host + "_" + params.port + "_" + params.username + "_" + params.password + "_" + params.key + "_" + params.passphrase;
-        return s.hashCode().toString();
+    calcId(params) {
+        return this.connectionParams.username + '@' + this.connectionParams.host + ":" + this.connectionParams.port + "_" + Math.random() * 10E6;
+    }
+    static calcPoolId(params) {
+        let hash = utils.md5(params.password + params.key + params.passphrase);
+        let s = params.username + '@' + params.host + ":" + params.port + '_' + hash;
+        return s;
     }
     getHttpAgent(https = false) {
         if (https) {
@@ -59,27 +69,38 @@ class SshConnection extends EventEmitter {
         if (this.httpsAgent)
             this.httpsAgent.destroy();
         this.removeAllListeners();
+        this.logger.info(this.toString() + ' : Connection destroyed');
+        this.logger = null;
+        SshConnection.stats.destroyedCount++;
+    }
+    onClosed() {
+        if (this.conn) {
+            this.conn.removeAllListeners();
+            this.conn.destroy();
+            this.conn = null;
+            this.emit('end');
+        }
     }
     close() {
         try {
             if (this.conn) {
                 this.conn.end();
+                this.conn.removeAllListeners();
+                this.conn.destroy();
                 this.conn = null;
             }
-            this.connectPromise = null;
         }
         catch (err) {
-            this.logger.warn('SshConnection.close(): ' + err.toString());
+            this.conn = null;
+            this.logger.warn(this.toString() + ' : SshConnection.close(): ' + err.toString());
         }
     }
     isConnected() {
         return (this.conn !== null);
     }
     connect() {
-        if (this.connectPromise)
-            return this.connectPromise;
         if (this.conn !== null) {
-            this.close();
+            return Promise.reject(new Error("Echec appel connect('" + this.connectionParams.username + "@" + this.connectionParams.host + "'): Déjà connecté"));
         }
         let tryPassword = ((typeof this.connectionParams.password !== 'undefined') && (this.connectionParams.password !== '') && (this.connectionParams.password !== null));
         let tryKey = ((typeof this.connectionParams.key !== 'undefined') && (this.connectionParams.key !== '') && (this.connectionParams.key !== null)) && !tryPassword;
@@ -101,36 +122,31 @@ class SshConnection extends EventEmitter {
         }
         else if (tryAgentKey) {
             let cacheKey = this.getSshKeyCache(sshOptions.host, sshOptions.port);
-            this.logger.error(sshOptions);
+            sshOptions.passphrase = this.connectionParams.passphrase;
             if (SshConnection.cachedKeys.has(cacheKey)) {
-                let key = SshConnection.cachedKeys.get(cacheKey);
-                sshOptions.privateKey = key;
-                sshOptions.passphrase = this.connectionParams.passphrase;
+                sshOptions.privateKey = SshConnection.cachedKeys.get(cacheKey);
                 promise = this._connect(sshOptions)
                     .catch((err) => {
-                    this.logger.warn('Use key cache error', err.toString().trim());
+                    this.logger.warn(this.toString() + ': Use key cache error', err.toString().trim());
                     return this.findKeyConnection(sshOptions);
                 });
             }
             else {
-                sshOptions.passphrase = this.connectionParams.passphrase;
                 promise = this.findKeyConnection(sshOptions);
             }
         }
-        this.connectPromise = promise.then((conn) => {
+        return promise.then((conn) => {
             this.conn = conn;
-            this.connectPromise = null;
             conn.on('end', () => {
-                this.conn = null;
-                this.emit('end');
+                this.logger.info(this.toString() + " : Connection end");
+                this.onClosed();
             });
-            return conn;
-        })
-            .catch((err) => {
-            this.connectPromise = null;
-            throw err;
+            conn.on('close', () => {
+                this.logger.info(this.toString() + " : Connection closed");
+                this.onClosed();
+            });
+            return this;
         });
-        return this.connectPromise;
     }
     findKeyConnection(sshOptions) {
         return new Promise((resolve, reject) => {
@@ -163,17 +179,17 @@ class SshConnection extends EventEmitter {
                                 }
                             }
                         }
-                        let err = new SshError_1.SshError(error.toString(), level);
+                        let err = new SshError_1.default(error.toString(), level);
                         reject(err);
                     });
                 }
                 else {
-                    let err = new SshError_1.SshError('No valid key found', 'client-authentication');
+                    let err = new SshError_1.default('No valid key found', 'client-authentication');
                     reject(err);
                 }
             }
             else {
-                let err = new SshError_1.SshError("SSH keys directory does not exists: '" + this.sshKeysDir + "'", 'client-authentication');
+                let err = new SshError_1.default("SSH keys directory does not exists: '" + this.sshKeysDir + "'", 'client-authentication');
                 reject(err);
             }
         });
@@ -182,34 +198,47 @@ class SshConnection extends EventEmitter {
         return host + ':' + port;
     }
     _connect(sshOptions) {
+        let start = new Date().getTime();
         let conn = this.getNewSshClient();
         sshOptions.keepaliveCountMax = 10;
         sshOptions.readyTimeout = this.connectTimeout;
         return new Promise((resolve, reject) => {
             let timeout = setTimeout(() => {
-                let err = new SshError_1.SshError('connect timeout on ' + sshOptions.host + ':' + sshOptions.port + ' after ' + (this.connectTimeout + 5000) + ' ms', 'client-timeout');
+                let ellapsed = new Date().getTime() - start;
+                let errorMessage = 'CONNECT TIMEOUT on after ' + ellapsed + ' ms. ';
+                let err = new SshError_1.default(errorMessage, 'client-timeout');
+                this.logger.error(this.toString() + ' : ' + errorMessage);
                 try {
                     conn.end();
                 }
                 catch (err) {
-                    this.logger.warn('getConnection: conn.end(): ' + err.toString());
+                    this.logger.warn(this.toString() + ' : getConnection: conn.end(): ' + err.toString());
                 }
                 reject(err);
             }, this.connectTimeout + 5000);
             conn.on('error', (err) => {
+                let ellapsed = new Date().getTime() - start;
                 clearTimeout(timeout);
-                this.logger.error(sshOptions.username + '@' + sshOptions.host + ': CONNECT ERROR.', 'level=' + err.level + ' ' + err.toString());
+                try {
+                    conn.end();
+                }
+                catch (err) {
+                    this.logger.warn(this.toString() + ' : getConnection: conn.end(): ' + err.toString());
+                }
+                let errorMessage = 'CONNECT ERROR after ' + ellapsed + ' ms. level=' + err.level + ' ' + err.toString();
+                this.logger.error(this.toString() + ' : ' + errorMessage);
                 let level = 'connect-error';
                 if ((typeof err === 'object') && err.level) {
                     level = err.level;
                 }
-                let sshError = new SshError_1.SshError(err, level);
+                let sshError = new SshError_1.default(errorMessage, level);
                 reject(sshError);
             });
             conn.on('ready', () => {
+                let ellapsed = new Date().getTime() - start;
                 this.validSshOptions = sshOptions;
                 clearTimeout(timeout);
-                this.logger.info(sshOptions.username + '@' + sshOptions.host + ': CONNECT OK');
+                this.logger.info(this.toString() + ' : CONNECT OK in ' + ellapsed + ' ms');
                 resolve(conn);
             });
             try {
@@ -219,12 +248,12 @@ class SshConnection extends EventEmitter {
                 clearTimeout(timeout);
                 let sshError;
                 if (err.level) {
-                    sshError = new SshError_1.SshError(err, err.level);
+                    sshError = new SshError_1.default(err, err.level);
                 }
                 else {
-                    sshError = new SshError_1.SshError(err, 'client-authentication');
+                    sshError = new SshError_1.default(err, 'client-authentication');
                 }
-                throw sshError;
+                reject(sshError);
             }
         });
     }
@@ -246,6 +275,7 @@ class SshConnection extends EventEmitter {
             exitCode: null,
             isKilled: false
         };
+        this.lastUse = new Date().getTime();
         return new Promise((resolve, reject) => {
             if (!this.isConnected()) {
                 reject('Non connecté');
@@ -253,7 +283,9 @@ class SshConnection extends EventEmitter {
             else {
                 let onExec = (err, stream) => {
                     if (err) {
-                        let sshError = new SshError_1.SshError(this.connectionParams.username + '@' + this.connectionParams.host + ' exec : ' + err.toString());
+                        let errorMessage = 'exec : ' + err.toString();
+                        this.logger.error(this.toString() + ' : ' + errorMessage);
+                        let sshError = new SshError_1.default(errorMessage);
                         sshError.connected = true;
                         this.close();
                         reject(sshError);
@@ -275,10 +307,10 @@ class SshConnection extends EventEmitter {
                             if (r.exitCode === null) {
                                 let err;
                                 if (r.isKilled) {
-                                    err = new SshError_1.SshError('Process killed');
+                                    err = new SshError_1.default('Process killed');
                                 }
                                 else {
-                                    err = new SshError_1.SshError('SSH stream closed');
+                                    err = new SshError_1.default('SSH stream closed');
                                 }
                                 err.connected = true;
                                 reject(err);
@@ -291,25 +323,23 @@ class SshConnection extends EventEmitter {
                             r.stdout += data;
                         });
                         stream.stderr.on('data', (data) => {
-                            this.logger.debug('ONDATA');
                             r.stderr += data;
                         });
                     }
                 };
-                if (opt.pty) {
-                    this.conn.exec(opt.script, { pty: true }, onExec.bind(this));
-                }
-                else {
-                    this.conn.exec(opt.script, onExec.bind(this));
-                }
+                let pty = (opt.pty === true);
+                this.conn.exec(opt.script, { pty: pty }, onExec.bind(this));
             }
         });
     }
     scpSend(localPath, remotePath, opt = {}) {
+        this.lastUse = new Date().getTime();
         return new Promise((resolve, reject) => {
             this.conn.sftp((err, sftp) => {
                 if (err) {
-                    let sshError = new SshError_1.SshError(this.connectionParams.username + '@' + this.connectionParams.host + ' scpSend : ' + err.toString());
+                    let errorMessage = 'scpSend : ' + err.toString();
+                    this.logger.error(this.toString() + ' : ' + errorMessage);
+                    let sshError = new SshError_1.default(errorMessage);
                     sshError.connected = true;
                     reject(sshError);
                     this.close();
@@ -336,10 +366,13 @@ class SshConnection extends EventEmitter {
         });
     }
     scpGet(localPath, remotePath) {
+        this.lastUse = new Date().getTime();
         return new Promise((resolve, reject) => {
             this.conn.sftp((err, sftp) => {
                 if (err) {
-                    let sshError = new SshError_1.SshError(this.connectionParams.username + '@' + this.connectionParams.host + ' scpGet : ' + err.toString());
+                    let errorMessage = 'scpGet : ' + err.toString();
+                    this.logger.error(this.toString() + ' : ' + errorMessage);
+                    let sshError = new SshError_1.default(errorMessage);
                     sshError.connected = true;
                     reject(sshError);
                     this.close();
@@ -365,10 +398,13 @@ class SshConnection extends EventEmitter {
         });
     }
     sftpReaddir(path) {
+        this.lastUse = new Date().getTime();
         return new Promise((resolve, reject) => {
             this.conn.sftp((err, sftp) => {
                 if (err) {
-                    let sshError = new SshError_1.SshError(this.connectionParams.username + '@' + this.connectionParams.host + ' sftpReaddir : ' + err.toString());
+                    let errorMessage = 'sftpReaddir : ' + err.toString();
+                    this.logger.error(this.toString() + ' : ' + errorMessage);
+                    let sshError = new SshError_1.default(errorMessage);
                     sshError.connected = true;
                     reject(sshError);
                     this.close();
@@ -397,4 +433,14 @@ class SshConnection extends EventEmitter {
 }
 exports.default = SshConnection;
 SshConnection.cachedKeys = new Map();
+SshConnection.stats = {
+    createdCount: 0,
+    destroyedCount: 0,
+    acquiredCount: 0,
+    releasedCount: 0,
+    totalRequestsCount: 0,
+    poolCacheHitsRatioPercent: null,
+    connectCacheHitsRatioPercent: null,
+    reqRatePerSec: null
+};
 //# sourceMappingURL=SshConnection.js.map

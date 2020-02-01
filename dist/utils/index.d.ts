@@ -1,6 +1,7 @@
 import express = require('express');
 import Timer from './Timer';
 import './StringTools';
+declare function md5(s: string): string;
 declare function randomBetween(min: number, max: number): number;
 declare function shuffleArray(arr: any[]): any[];
 declare function isWin(): boolean;
@@ -13,4 +14,4 @@ declare function array_replace_recursive(arr1: any, arr2: any): any;
 declare function getDateFromTimestamp(d: Date): string;
 declare function parseParams(params: any, fields: any, isBodyParams?: boolean): any;
 declare function round(v: number, digits?: number): number;
-export { round, getDateFromTimestamp, isInt, isFloat, Timer, randomBetween, getIpClient, decodeBase64, replaceEnvVars, array_replace_recursive, isWin, parseParams, shuffleArray };
+export { round, getDateFromTimestamp, isInt, isFloat, Timer, randomBetween, getIpClient, decodeBase64, replaceEnvVars, array_replace_recursive, isWin, parseParams, shuffleArray, md5 };

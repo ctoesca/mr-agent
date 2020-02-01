@@ -27,7 +27,7 @@ export class WorkerApplication extends Application {
 	constructor(configPath: string, opt: any = {}) {
 
 		super(configPath, opt)
-
+	
 	}
 
 	public start(): Promise<any> {
