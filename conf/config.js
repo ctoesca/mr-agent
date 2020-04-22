@@ -3,7 +3,7 @@ module.exports.getConfig = function () {
 	
 	var cmdb_api_username = "ctop-agent"
 	var cmdb_api_password = "s3#cr3ts"
-	var url_cmdb = "http://127.0.0.1:82"
+	var url_cmdb = "https://localhost:82"
  
 	var conf = {
 		"update": {
@@ -90,7 +90,6 @@ module.exports.getConfig = function () {
 					  "type": "rotating-file",
 					  "period": "1d",
 					  "count": 7,
-					  "level": "info", 
 					  "path": __dirname+"/../logs/log.json"
 					}
 				]				
@@ -129,7 +128,7 @@ module.exports.getConfig = function () {
 				],
 			},
 			"log_ingest": {
-				"enabled": false,
+				"enabled": true,
 
 				/*"loadbalance": [
 					"local",

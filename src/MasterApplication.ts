@@ -20,7 +20,8 @@ export class MasterApplication extends Application {
 	protected  lastStat: Date = null
 	protected numProcesses: any = os.cpus().length
 	protected tmpFilesRetention = 12 //12 H
-	protected tmpPurgeInterval = 900*1000 //15 min
+	protected tmpPurgeInterval = 3600*1000 //60 min
+	protected purgeIsRunning = false
 
 	/*protected  currentSelectedWorker = 0;*/
 
@@ -60,11 +61,17 @@ export class MasterApplication extends Application {
 
 		this.logger.info("Durée de rétention des fichiers temporaires: "+this.tmpFilesRetention+"H")
 
+		let purgeFlagFile = this.getPurgeFlagFilePath()
+		if (fs.existsSync(purgeFlagFile))
+			fs.removeSync(purgeFlagFile)
+
 		this.purgeTimer = new Timer({delay: this.tmpPurgeInterval}); //12h 60*60*12*1000
 		this.purgeTimer.on(Timer.ON_TIMER, this.onPurgeTimer.bind(this));
 		this.purgeTimer.start();
 	}
-
+	public getPurgeFlagFilePath(){
+		return this.config.tmpDir+"/purgeIsRunning"
+	}
 	public execScript( script: string ) {
 
 		return new Promise( (resolve, reject) => {
@@ -117,33 +124,52 @@ export class MasterApplication extends Application {
 
 	public onPurgeTimer() 
 	{
-		this.logger.info("Purge des fichiers temporaires en cours...")
-		let now: number =  new Date().getTime()
-		klaw(this.config.tmpDir)
-		.on('data', (item: any) => {
-		    if (item.stats.isFile()){
-	    		let filename: string = p.basename(item.path)
-	    		if (filename != 'PID.txt'){
-	    			let diffH: number = Math.round( 10*(now - item.stats.mtimeMs) / (1000*60*60) ) / 10//en H
-	    			if (diffH > this.tmpFilesRetention){
-	    				fs.remove(item.path)
-				    	.then(() => {
-				    		this.logger.info("Fichier temporaire supprimé: "+item.path)
-				    	})
-						.catch(err => {
-							this.logger.error("Purge : "+err.toString())
-						})
-	    			} 
-	    		}
-		    }
-		})
-		.on('end', () => {
-			this.logger.info("Purge des fichiers temporaires terminée.")
-		})
-	  	.on('error', (err: any, item: any) => {
-		    this.logger.error("Purge fichiers temporaires: ",err.message)
-		    this.logger.error("Purge fichiers temporaires: path="+item.path)
-		})
+		/* 
+		quand une mise à jour a lieu, le worker doit attendre la fin de la purge 
+		*/
+		let purgeFlagFile = this.getPurgeFlagFilePath()
+				
+		try{
+			fs.writeFileSync(purgeFlagFile, 1)
+			
+			this.purgeIsRunning = true;
+
+			this.logger.info("Purge des fichiers temporaires en cours...")
+			let now: number =  new Date().getTime()
+			klaw(this.config.tmpDir)
+			.on('data', (item: any) => {
+			    if (item.stats.isFile()){
+		    		let filename: string = p.basename(item.path)
+		    		if (filename != 'PID.txt'){
+		    			let diffH: number = Math.round( 10*(now - item.stats.mtimeMs) / (1000*60*60) ) / 10//en H
+		    			if (diffH > this.tmpFilesRetention){
+		    				fs.remove(item.path)
+					    	.then(() => {
+					    		this.logger.info("Fichier temporaire supprimé: "+item.path)
+					    	})
+							.catch(err => {
+								this.logger.error("Purge : "+err.toString())
+							})
+		    			} 
+		    		}
+			    }
+			})
+			.on('end', () => {
+				this.logger.info("Purge des fichiers temporaires terminée.")
+				this.purgeIsRunning = false
+				fs.removeSync(purgeFlagFile)
+			})
+		  	.on('error', (err: any, item: any) => {
+			    this.logger.error("Purge fichiers temporaires: ",err.message)
+			    this.logger.error("Purge fichiers temporaires: path="+item.path)
+			    this.purgeIsRunning = false
+			    fs.removeSync(purgeFlagFile)
+			})
+		}catch(err){
+			this.logger.error("Purge fichiers temporaires: ",err)
+			this.purgeIsRunning = false
+			fs.removeSync(purgeFlagFile)
+		}
 
 	}
 
@@ -224,6 +250,10 @@ export class MasterApplication extends Application {
 					this.workersStats.logIngest[k] += msg.logIngestStats[k]
 				});
 			}
+		} else if (msg.event && (msg.event.name == 'UPDATE_STARTED')) 
+		{
+			this.logger.info("Event UPDATE_STARTED received: purgeTimer stopped")
+			this.purgeTimer.stop();
 		}
 	}
 

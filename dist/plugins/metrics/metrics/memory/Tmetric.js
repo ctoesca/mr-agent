@@ -1,24 +1,45 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const os = require("os");
 const utils = require("../../../../utils");
 const TbaseMetric_1 = require("../../TbaseMetric");
 const Errors = require("../../../../Errors");
-const Promise = require("bluebird");
+const si = require("systeminformation");
 class Tmetric extends TbaseMetric_1.default {
     constructor(expressApp, config) {
         super(expressApp, config);
     }
     get(args = null) {
-        return new Promise((resolve, reject) => {
-            let usedMem = os.totalmem() - os.freemem();
-            let usedPercent = Math.round(100 * (usedMem / os.totalmem()));
+        return si.mem()
+            .then(result => {
             let r = {
-                usedPercent: usedPercent,
-                usedMem: usedMem,
-                totalMem: os.totalmem()
+                memory: {
+                    free: result.free,
+                    total: result.total,
+                    actual: {
+                        free: result.available,
+                        used: {
+                            'pct': null,
+                            'bytes': result.active
+                        }
+                    },
+                    swap: {
+                        total: result.swaptotal,
+                        used: {
+                            pct: null,
+                            bytes: result.swapused
+                        },
+                        free: result.swapfree
+                    },
+                    used: {
+                        bytes: result.used,
+                        pct: null
+                    }
+                }
             };
-            resolve(r);
+            r.memory.swap.used.pct = utils.round(r.memory.swap.used.bytes / r.memory.swap.total, 4);
+            r.memory.used.pct = utils.round(r.memory.used.bytes / r.total, 4);
+            r.memory.actual.used.pct = utils.round(r.memory.actual.used.bytes / r.total, 4);
+            return r;
         });
     }
     format(format, params, result) {

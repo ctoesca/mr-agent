@@ -4,6 +4,7 @@ const url = require("url");
 const fs = require("fs-extra");
 const WorkerApplication_1 = require("../../WorkerApplication");
 const Promise = require("bluebird");
+const os = require("os");
 class TbaseMetric {
     constructor(expressApp, config) {
         this.name = null;
@@ -37,6 +38,7 @@ class TbaseMetric {
                 res.send(this.format('nagios', u.query, r));
             }
             else {
+                r.host = os.hostname();
                 res.json(r);
             }
         })

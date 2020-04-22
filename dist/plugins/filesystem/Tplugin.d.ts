@@ -14,8 +14,10 @@ export declare class Tplugin extends ThttpPlugin {
     upload(req: express.Request, res: express.Response, next: express.NextFunction): void;
     download(req: express.Request, res: express.Response, next: express.NextFunction): void;
     deleteFiles(req: express.Request, res: express.Response, next: express.NextFunction): void;
+    createDir(req: express.Request, res: express.Response, next: express.NextFunction): void;
     moveFile(req: express.Request, res: express.Response, next: express.NextFunction): void;
     copyFile(req: express.Request, res: express.Response, next: express.NextFunction): void;
+    uncompressFile(req: express.Request, res: express.Response, next: express.NextFunction): void;
     fileinfo(req: express.Request, res: express.Response, next: express.NextFunction): void;
     fileExists(req: express.Request, res: express.Response, next: express.NextFunction): void;
     list(req: express.Request, res: express.Response, next: express.NextFunction): void;

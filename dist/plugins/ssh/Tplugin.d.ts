@@ -13,7 +13,7 @@ export declare class Tplugin extends ThttpPlugin {
     protected connectTimeout: number;
     protected websocketDataServer: ws.Server;
     protected sshSessions: Map<string, SshSession>;
-    protected connections: Map<string, SshConnection>;
+    protected pooledConnections: Map<string, SshConnection>;
     protected statTimer: Timer;
     protected statTimerInterval: number;
     protected statInterval: number;
@@ -26,6 +26,9 @@ export declare class Tplugin extends ThttpPlugin {
     poolsOptions: any;
     constructor(application: Application, config: any);
     protected onStatTimer(): void;
+    razCache(): Promise<{
+        result: boolean;
+    }>;
     getStats(): Promise<any>;
     install(): void;
     httpForward(req: express.Request, res: express.Response, next: express.NextFunction): void;
@@ -33,6 +36,7 @@ export declare class Tplugin extends ThttpPlugin {
     onDataConnection(conn: ws, req: any): void;
     verifyClient(info: any, done: Function): void;
     _stats(req: express.Request, res: express.Response, next: express.NextFunction): void;
+    _razCache(req: express.Request, res: express.Response, next: express.NextFunction): void;
     upload(req: express.Request, res: express.Response, next: express.NextFunction): void;
     remoteFileExists(host: string, username: string, password: string, key: string, passphrase: string, remotePath: string, port: number): Promise<boolean>;
     download(req: express.Request, res: express.Response, next: express.NextFunction): void;

@@ -147,7 +147,11 @@ export class WorkerApplication extends Application {
 			let result: any = {
 				status: 0,
 				version: Application.version,
-				startDate: this.startDate
+				startDate: this.startDate,
+				userInfo: os.userInfo(),
+				hostname: os.hostname(),
+				platform: os.platform(),
+				release: os.release()
 			};
 
 			res.status(200).send( result );

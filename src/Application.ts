@@ -17,7 +17,7 @@ export class Application extends EventEmitter {
 	- fs.deleteFiles peut supprimer des repertoires 
 	- moveFile peut deplacer un repertoires
 	*/
-	public static version = '2.6.2'
+	public static version = '2.6.10'
 
 	public static applicationDirPath: string = __dirname;
 
@@ -142,19 +142,17 @@ export class Application extends EventEmitter {
 				}
 			},
 			'logger': {
-
 				'level': 'info',
-
 				'streams': [
-				{
-					'stream': process.stdout
-				},
-				{
-					'type': 'rotating-file',
-					'period': '1d',
-					'count': 7,
-					'path': __dirname + '/../logs/log.json'
-				}
+					{
+						'stream': process.stdout
+					},
+					{
+						'type': 'rotating-file',
+						'period': '1d',
+						'count': 7,
+						'path': __dirname + '/../logs/log.json'
+					}
 				]
 			}
 		}

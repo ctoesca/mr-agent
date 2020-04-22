@@ -10,7 +10,9 @@ export declare class MasterApplication extends Application {
     protected numProcesses: any;
     protected tmpFilesRetention: number;
     protected tmpPurgeInterval: number;
+    protected purgeIsRunning: boolean;
     constructor(configPath: string, opt?: any);
+    getPurgeFlagFilePath(): string;
     execScript(script: string): Promise<unknown>;
     onPurgeTimer(): void;
     onStatTimer(): void;

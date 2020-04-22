@@ -2,22 +2,27 @@
 import  {ThttpPlugin } from '../ThttpPlugin.js'
 import '../../utils/StringTools'
 import {WorkerApplication as Application}  from '../../WorkerApplication'
-import Timer from '../../utils/Timer'
+import * as utils from '../../utils'
 import request = require('request')
 import express = require('express')
+//import fs = require('fs')
 import bodyParser = require('body-parser');
+import Timer from '../../utils/Timer'
 
 export class Tplugin extends ThttpPlugin {
 
-	protected runningRequestCount = 0
-	protected requestCount = 0
+	protected runningRequests = 0
+	protected totalRequests = 0
+	protected totalRequestsInIterval = 0
+	protected statInterval = 5000
+	protected requestsPerSec = 0
 	protected statTimer: Timer
 
 	constructor(application: Application, config: any) {
 
 		super(application, config);
 
-		this.statTimer = new Timer({delay: 2000});
+		this.statTimer = new Timer({delay: this.statInterval});
 		this.statTimer.on(Timer.ON_TIMER, this.onStatTimer.bind(this));
 		this.statTimer.start()
 	}
@@ -30,61 +35,139 @@ export class Tplugin extends ThttpPlugin {
 		}));
 
 		this.app.post('/request', this.request.bind(this));
+		this.app.get('/stats', this._stats.bind(this));
 	}
 
 	public onStatTimer() {
-		this.logger.debug('runningRequestCount : ' + this.runningRequestCount + ', total=' + this.requestCount)
+		this.requestsPerSec = utils.round( this.totalRequestsInIterval / (this.statInterval/1000), 1)
+		this.totalRequestsInIterval = 0
+		this.logger.debug('runningRequests : ' + this.runningRequests + ', requestsPerSec=' + this.requestsPerSec)
+	}
+
+	public _stats(req: express.Request, res: express.Response, next: express.NextFunction) {
+    	
+    	this.getStats()
+    	.then( (result: any) => {
+    		res.json(result)		    		
+    	})
+    	.catch( (err: any) => {
+    		next(err)
+    	})
+
+    }
+    getStats(){
+
+		let r: any = {	
+			pid: process.pid,
+			runningRequests: this.runningRequests,
+			totalRequests: this.totalRequests,
+			requestsPerSec: this.requestsPerSec		
+		}		
+
+		return Promise.resolve(r)
 	}
 
 	public request(req: express.Request, res: express.Response) {
 
+		
+		if (!req.body.headers)
+			req.body.headers = {}
 
-		let opt: any = {
-			strictSSL: false,
-			timeout: 5000
-		}
-		Object.keys(req.body).forEach( (k) => {
-			opt[k] = req.body[k]
-		})
-
-		if (!opt.headers)
-			opt.headers = {}
-
-		opt.headers['user-agent'] = 'mr-agent'
+		req.body.headers['user-agent'] = 'mr-agent'
 		
 		let startTime: number = new Date().getTime()
 
-		this.runningRequestCount ++
-		this.requestCount ++
+		this.runningRequests ++
+		this.totalRequests ++
+		this.totalRequestsInIterval ++
 
-		request(opt, (err: any, response: any, body: any) => {
+		if (req.body.pipeResponse) {
+            this.logger.info("HTTP(s) PIPED REQUEST : " + req.body.method + " " + req.body.url);
+            //request(req.body).pipe(res);
+            req.pipe( request(req.body) ).pipe(res)
+        } else {
 
-				this.runningRequestCount --
-				let xTime: number = new Date().getTime() - startTime;
+        	let data: any[] = []
+        	let response: any
+
+			request(req.body /*, (err: any, response: any, body: any) => {
+
+					this.runningRequests --
+					let xTime: number = new Date().getTime() - startTime;
+					
+					if (err){
+						this.logger.error("HTTP(s) REQUEST : "+req.body.method+" "+req.body.url+' '+err.toString())
+						let message = err.toString()
+						err = JSON.parse(JSON.stringify(err))
+						err.message = message
+					} else {
+						this.logger.info("HTTP(s) REQUEST : "+req.body.method+" "+req.body.url)
+					}
+
+					let r = {
+	                    err: err,
+	                    response: response,
+	                    body: body,
+	                    xTime: xTime,
+	                    bodyIsBase64: false
+	                };
+	                
+	                if (req.body.encodeBodyToBase64){
+						r.body = Buffer.from(body).toString('base64')
+						r.bodyIsBase64 = true
+					}
+
+					res.status(200).json(r)
+
+			}*/)
+			.on('data', function(chunk: Buffer) {
+			 	data.push(chunk)
+  			})
+			.on('response', function(resp) {
+				response = resp
+				
+		    	//response.on('data', function(data) {
+		      		//console.log('received ' + data.length + ' bytes of compressed data')
+		    	//})
+		  	})
+		  	.on('error', (err) => {
+
+		  		this.runningRequests --
+		  		let xTime: number = new Date().getTime() - startTime;
+				this.logger.error("HTTP(s) REQUEST : "+req.body.method+" "+req.body.url+' '+err.toString())
+
+				let message = err.toString()
+				err = JSON.parse(JSON.stringify(err))
+				err.message = message
 
 				let r: any = {
-					isError: true,
-					error: null,
-					rawError: null,
-					body: null,
-					status: null,
-					xTime: xTime,
-					headers: null
-				}
+	                err: err,
+	                xTime: xTime
+	            };
+	            res.status(200).json(r)
+			})
+			.on('end', () => {
+				
+				this.logger.info("HTTP(s) REQUEST : "+req.body.method+" "+req.body.url)
 
-				if (err) {
-					r.isError = true;
-					r.error = err.toString()
-					r.rawError = err
-				} else {
-					r.isError = false
-					r.body = body
-					r.status = response.statusCode
-					r.headers = response.headers
-				}
-				res.status(200).json(r)
+				this.runningRequests --
+				let xTime: number = new Date().getTime() - startTime;
+				let dataBuffer = Buffer.concat(data)
 
-		})
+				let r: any = {
+	                response: response,
+	                bodyIsBase64: true,
+	                body: dataBuffer.toString('base64'),
+	                xTime: xTime
+	            };
+
+	            res.status(200).json(r)
+			});
+
+			///.pipe( fs.createWriteStream('D:/tmp/out.crl'))
+
+		}
+
 
 
 	}

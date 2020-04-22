@@ -41,7 +41,7 @@ export class Tmetric extends TbaseMetric implements IbaseMetric {
 	}
 
 	/* check sur 5 secondes */
-	public cpu( interval = 1000 ) {
+	public cpu( interval = 5000 ) {
 
 		let oldMeasure = this.cpuAverage();
 		let endMeasure = null;

@@ -105,7 +105,11 @@ class WorkerApplication extends Application_1.Application {
             let result = {
                 status: 0,
                 version: Application_1.Application.version,
-                startDate: this.startDate
+                startDate: this.startDate,
+                userInfo: os.userInfo(),
+                hostname: os.hostname(),
+                platform: os.platform(),
+                release: os.release()
             };
             res.status(200).send(result);
         });

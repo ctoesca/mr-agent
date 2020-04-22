@@ -143,6 +143,8 @@ export class HttpServer extends EventEmitter {
 					this.logger.warn('***** ' + status + ' : ' + req.method + ' ' + req.path, err.toString());
 				}
 
+				this.logger.debug('***** ' + status + ' : ' + req.method + ' ' + req.path, err);
+
 				if (!res.headersSent) {
 
 					let response: any = {
@@ -224,7 +226,7 @@ export class HttpServer extends EventEmitter {
 
 		if (!this.httpsOptions.enabled) {
 			this.server = http.createServer(this.app)
-			
+			this.server.keepAliveTimeout = 0
 					
 		} else {
 
@@ -239,7 +241,7 @@ export class HttpServer extends EventEmitter {
 			if (this.httpsOptions.credentials) {
 
 				this.server = https.createServer(this.httpsOptions.credentials, this.app);
-				
+				this.server.keepAliveTimeout = 0
 				
 			} else {
 

@@ -24,12 +24,37 @@ export class Updater extends EventEmitter {
 	protected static excludedFromUpdate = ['tmp', 'conf', '.svn', 'logs', 'data', '.git', '.nyc_output', 'coverage']
 	public application: WorkerApplication = null
 	public logger: bunyan = null;
+	
 
 	constructor(application: WorkerApplication) {
 
 		super()
 		this.application = application
 		this.logger = this.application.getLogger(this.constructor.name)
+
+	}
+	protected waitPurgeCompleted( waitPurgeCompletedStartDate = new Date().getTime()): any {
+
+		let waitingTime: number = (new Date().getTime() -  waitPurgeCompletedStartDate ) / 1000 //sec
+		let maxWait = 300
+
+		if (waitingTime > maxWait) {
+			return Promise.reject("Purge is running from "+maxWait+" sec.")
+		} else {
+
+			let purgeFlagFile = this.application.config.tmpDir+"/purgeIsRunning"
+			if (fs.existsSync(purgeFlagFile)) {
+				this.logger.warn("UPDATE: une purge est en cours: attente ...")
+				
+				return Bluebird.delay(5000)
+				.then(() => {
+					return this.waitPurgeCompleted(waitPurgeCompletedStartDate)
+				})
+
+			} else {
+				return Promise.resolve()
+			}
+		}
 
 	}
 
@@ -39,10 +64,18 @@ export class Updater extends EventEmitter {
 			throw new Errors.HttpError("Une mise à jour est déjà en cours d'exécution", 403);
 		}
 
-		this.logger.info('UPDATE...');
-		Updater.updateIsRunning = true; // !! updateIsRunning is not shared between workers !
+		process.send({
+			event: {
+				name: 'UPDATE_STARTED'
+			}
+		});
 
-		HttpTools.saveUploadedFile(req, res, next)
+		this.waitPurgeCompleted()
+		.then( () => {
+			this.logger.info('UPDATE...');
+			Updater.updateIsRunning = true; // !! updateIsRunning is not shared between workers !
+			return HttpTools.saveUploadedFile(req, res, next)
+		})
 		.then( (result: any) => {
 
 			if (result.files.length === 0) {
@@ -64,6 +97,7 @@ export class Updater extends EventEmitter {
 			this.logger.error('onUpdateRequest', err.toString())
 			next( new Errors.HttpError(err.toString(), 500) )
 		})
+		
 	}
 
 	public execUpdate(zipPath: string) {
@@ -75,16 +109,22 @@ export class Updater extends EventEmitter {
 		this.logger.info('Updating - step-1...')
 
 		this.uncompressPackage(zipPath, newVersionCopyDir)
-		fs.removeSync(zipPath)
+		//fs.removeSync(zipPath)
 
 		this.backup(backupDir)
 		this.logger.info(zipPath + ' removed')
 
 
-		let nodePath = backupDir + '/node/node';
+		let backupNodePath: string
 
 		if (utils.isWin()) {
-			nodePath = backupDir + '/node/node.exe';
+			backupNodePath = backupDir + '/node/node.exe';
+		} else {
+			backupNodePath = backupDir + '/node/node';
+		}
+		if (!fs.pathExistsSync(backupNodePath)) {
+			this.logger.error('execUpdate: ' + backupNodePath + ' does not exists')
+			throw 'Cannot exec step2: node path does not exists. Update failed'
 		}
 
 		let args = [ p.normalize(backupDir + '/dist/autoUpdate/update-step2'), '--updateDir', updateTmpDir, '--appDir', this.getAppDir(), '--appUrl', this.application.getUrl() ]
@@ -94,17 +134,13 @@ export class Updater extends EventEmitter {
 			args.push(thisProcessArgs.c)
 		}
 
-		fs.writeFileSync(updateTmpDir + '/step2.bat', nodePath + ' ' + args.join(' ') + ' 1>' + this.getAppDir() + '/logs/step2.out 2>' + this.getAppDir() + '/logs/step2.err')
+		fs.writeFileSync(updateTmpDir + '/step2.bat', backupNodePath + ' ' + args.join(' ') + ' 1>' + this.getAppDir() + '/logs/step2.out 2>' + this.getAppDir() + '/logs/step2.err')
 		if (!utils.isWin()) {
 			child_process.execSync('chmod 755 ' + updateTmpDir + '/step2.bat')
 		}
 
-		this.logger.info('EXECUTING step2: ' + nodePath + ' ' + args.join(' '))
+		this.logger.info('EXECUTING step2: ' + backupNodePath + ' ' + args.join(' '))
 
-		if (!fs.pathExistsSync(nodePath)) {
-			this.logger.error('execUpdate: ' + nodePath + ' does not exists')
-			throw 'Cannot exec step2: node path does not exists. Update failed'
-		}
 
 		this.logger.info('Starting - step-2... application will stop')
 		let child = child_process.spawn(updateTmpDir + '/step2.bat', [], {
@@ -120,7 +156,7 @@ export class Updater extends EventEmitter {
 
 		return this.stopApp(appDir, appUrl)
 
-		.then( (result) => {
+		.then( () => {
 			return this.remove(appDir)
 		})
 
@@ -230,6 +266,7 @@ export class Updater extends EventEmitter {
 					throw 'Failed to stop agent: ' + result.stderr
 				}
 			})
+			.delay(10000)
 			.catch( (err: any) => {
 				throw 'Echec stop' + err.toString()	
 			})
@@ -243,9 +280,9 @@ export class Updater extends EventEmitter {
 			});
 
 			child.unref()
-			return Bluebird.resolve({
-				exitCode: 0
-			});
+			return Bluebird
+			.delay(10000)
+						
 		}
 
 	}
@@ -296,10 +333,11 @@ export class Updater extends EventEmitter {
 				let path = appDir + '/' + file
 				this.logger.info('removing ' + path + ' ...')
 				try {
+					// agent.exe genere une erreur (not permitted) mais ce n'est pas grave
 					fs.removeSync(path)
 				} catch (err) {
 					errors ++
-					this.logger.error(err.toString())
+					this.logger.error("Echec suppression "+path+" : "+err.toString())
 				}
 			});
 			if (errors === 0) {
@@ -328,7 +366,6 @@ export class Updater extends EventEmitter {
 					filter: function(_src: string, _dest: string) {
 
 						if ( (file === 'bin') && (p.basename(_dest) === 'agent.exe')) {
-							this.logger.info('Non copié: ' + _dest)
 							return false
 						} else {
 							return true

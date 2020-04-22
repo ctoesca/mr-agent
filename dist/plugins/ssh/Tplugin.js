@@ -26,7 +26,7 @@ class Tplugin extends ThttpPlugin_1.ThttpPlugin {
         this.defaultPort = 22;
         this.connectTimeout = 10000;
         this.sshSessions = new Map();
-        this.connections = new Map();
+        this.pooledConnections = new Map();
         this.statTimerInterval = 60;
         this.statInterval = 300;
         this.lastStatDate = new Date().getTime();
@@ -77,6 +77,17 @@ class Tplugin extends ThttpPlugin_1.ThttpPlugin {
             });
         }
     }
+    razCache() {
+        this.logger.info("RAZ Cache ...");
+        this.pooledConnections.forEach((connection, id) => {
+            connection.destroy();
+            this.pooledConnections.delete(id);
+        });
+        this.pools.clear();
+        return Promise.resolve({
+            result: true
+        });
+    }
     getStats() {
         let r = {
             pid: process.pid,
@@ -115,6 +126,7 @@ class Tplugin extends ThttpPlugin_1.ThttpPlugin {
         this.app.post('/upload', this.upload.bind(this));
         this.app.post('/checkLogin', this.checkLogin.bind(this));
         this.app.post('/checkLogins', this.checkLogins.bind(this));
+        this.app.post('/razCache', this._razCache.bind(this));
         this.app.get('/httpForward', this.httpForward.bind(this));
         this.websocketDataServer = new ws.Server({
             server: this.application.httpServer.server,
@@ -207,8 +219,7 @@ class Tplugin extends ThttpPlugin_1.ThttpPlugin {
             next(err);
         })
             .finally(() => {
-            if (connection)
-                this.releaseSshConnection(connection);
+            this.releaseSshConnection(connection);
         });
     }
     createTcpServer() {
@@ -268,6 +279,15 @@ class Tplugin extends ThttpPlugin_1.ThttpPlugin {
     }
     _stats(req, res, next) {
         this.getStats()
+            .then((result) => {
+            res.json(result);
+        })
+            .catch((err) => {
+            next(err);
+        });
+    }
+    _razCache(req, res, next) {
+        this.razCache()
             .then((result) => {
             res.json(result);
         })
@@ -475,18 +495,13 @@ class Tplugin extends ThttpPlugin_1.ThttpPlugin {
             },
             script: {
                 type: 'string'
+            },
+            useCachedConnection: {
+                type: 'boolean',
+                default: true
             }
         });
-        this._exec({
-            host: params.host,
-            username: params.username,
-            password: params.password,
-            key: params.key,
-            passphrase: params.passphrase,
-            script: params.script,
-            port: params.port,
-            pty: params.pty
-        })
+        this._exec(params)
             .then((result) => {
             res.status(200).json(result);
         })
@@ -536,8 +551,7 @@ class Tplugin extends ThttpPlugin_1.ThttpPlugin {
             }
         })
             .finally(() => {
-            if (connection)
-                this.releaseSshConnection(connection);
+            this.releaseSshConnection(connection);
         });
     }
     checkLogins(req, res, next) {
@@ -666,8 +680,7 @@ class Tplugin extends ThttpPlugin_1.ThttpPlugin {
             }
         })
             .finally(() => {
-            if (connection)
-                this.releaseSshConnection(connection);
+            this.releaseSshConnection(connection);
         });
     }
     _shell(req, res, next) {
@@ -740,7 +753,8 @@ class Tplugin extends ThttpPlugin_1.ThttpPlugin {
             username: null,
             password: null,
             key: null,
-            passphrase: null
+            passphrase: null,
+            useCachedConnection: true
         };
         Object.keys(defaultOpt).forEach(key => {
             if (typeof opt[key] === 'undefined') {
@@ -756,7 +770,7 @@ class Tplugin extends ThttpPlugin_1.ThttpPlugin {
             password: opt.password,
             key: opt.key,
             passphrase: opt.passphrase
-        })
+        }, { useCache: opt.useCachedConnection })
             .then((result) => {
             connection = result;
             return connection.exec(opt);
@@ -767,8 +781,7 @@ class Tplugin extends ThttpPlugin_1.ThttpPlugin {
             return result;
         })
             .finally(() => {
-            if (connection)
-                this.releaseSshConnection(connection);
+            this.releaseSshConnection(connection);
         });
     }
     removeTempFileSync(path) {
@@ -840,9 +853,7 @@ class Tplugin extends ThttpPlugin_1.ThttpPlugin {
             next(err);
         })
             .finally(() => {
-            if (connection) {
-                connection.destroy();
-            }
+            this.releaseSshConnection(connection);
         });
     }
     scpSend(host, username, password, key, passphrase, localPath, remotePath, port, opt = {}) {
@@ -860,9 +871,7 @@ class Tplugin extends ThttpPlugin_1.ThttpPlugin {
             return connection.scpSend(localPath, remotePath);
         })
             .finally(() => {
-            if (connection) {
-                connection.destroy();
-            }
+            this.releaseSshConnection(connection);
         });
     }
     scpGet(host, username, password, key, passphrase, localPath, remotePath, port) {
@@ -880,9 +889,7 @@ class Tplugin extends ThttpPlugin_1.ThttpPlugin {
             return connection.scpGet(localPath, remotePath);
         })
             .finally(() => {
-            if (connection) {
-                connection.destroy();
-            }
+            this.releaseSshConnection(connection);
         });
     }
     getConnection(params, options = null) {
@@ -933,6 +940,7 @@ class Tplugin extends ThttpPlugin_1.ThttpPlugin {
                     sshKeysDir: this.sshKeysDir,
                     connectTimeout: this.connectTimeout
                 });
+                connection.isInCache = false;
                 return connection.connect();
             }
         }
@@ -956,11 +964,15 @@ class Tplugin extends ThttpPlugin_1.ThttpPlugin {
                         sshKeysDir: this.sshKeysDir,
                         connectTimeout: this.connectTimeout
                     });
+                    this.pooledConnections.set(poolId + "_" + connection.id, connection);
+                    connection.isInCache = true;
                     return connection;
                 },
                 destroy: (connection) => {
-                    if (connection.destroy)
+                    if (connection.destroy) {
                         connection.destroy();
+                        this.pooledConnections.delete(connection.id);
+                    }
                     return Promise.resolve(connection);
                 }
             };
@@ -975,14 +987,19 @@ class Tplugin extends ThttpPlugin_1.ThttpPlugin {
     releaseSshConnection(connection) {
         if (!connection)
             return;
-        if (this.pools.has(connection.poolId)) {
-            let pool = this.pools.get(connection.poolId);
-            if (pool.isBorrowedResource(connection)) {
-                pool.release(connection)
-                    .then(() => {
-                    SshConnection_1.default.stats.releasedCount++;
-                });
+        if (connection.isInCache) {
+            if (this.pools.has(connection.poolId)) {
+                let pool = this.pools.get(connection.poolId);
+                if (pool.isBorrowedResource(connection)) {
+                    pool.release(connection)
+                        .then(() => {
+                        SshConnection_1.default.stats.releasedCount++;
+                    });
+                }
             }
+        }
+        else {
+            connection.destroy();
         }
     }
 }

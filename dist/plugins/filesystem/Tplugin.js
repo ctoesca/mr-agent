@@ -14,6 +14,7 @@ const Errors = require("../../Errors");
 const Promise = require("bluebird");
 const bodyParser = require("body-parser");
 const rimraf = require("rimraf");
+const streamZip = require('node-stream-zip');
 class Tplugin extends ThttpPlugin_1.ThttpPlugin {
     constructor(application, config) {
         super(application, config);
@@ -43,6 +44,8 @@ class Tplugin extends ThttpPlugin_1.ThttpPlugin {
         this.app.post('/moveFile', this.moveFile.bind(this));
         this.app.get('/fileExists', this.fileExists.bind(this));
         this.app.post('/copyFile', this.copyFile.bind(this));
+        this.app.post('/uncompressFile', this.uncompressFile.bind(this));
+        this.app.post('/createDir', this.createDir.bind(this));
     }
     writeTextFile(req, res, next) {
         let params = HttpTools_1.HttpTools.getBodyParams(req, {
@@ -56,7 +59,6 @@ class Tplugin extends ThttpPlugin_1.ThttpPlugin {
         fs.writeFile(params.path, params.content)
             .then(() => {
             let r = {
-                result: true,
                 path: params.path,
                 fileinfo: null
             };
@@ -173,7 +175,6 @@ class Tplugin extends ThttpPlugin_1.ThttpPlugin {
             .then(result => {
             this.logger.info('Succes upload ' + params.path + ', overwrite = ' + params.overwrite);
             let r = {
-                result: true,
                 path: params.path,
                 file: Files_1.Files.getFileStat(params.path, true)
             };
@@ -238,18 +239,58 @@ class Tplugin extends ThttpPlugin_1.ThttpPlugin {
                     if (err)
                         next(err);
                     else
-                        res.status(200).json({ result: true, filename: filename, path: params.path });
+                        res.status(200).json({ filename: filename, path: params.path });
                 });
             }
             else {
                 fs.unlink(params.path).then(() => {
-                    res.status(200).json({ result: true, filename: filename, path: params.path });
+                    res.status(200).json({ filename: filename, path: params.path });
                 })
                     .catch((err) => {
                     next(err);
                 });
             }
         }
+    }
+    createDir(req, res, next) {
+        let params = HttpTools_1.HttpTools.getBodyParams(req, {
+            parentDir: {
+                type: 'string'
+            },
+            name: {
+                type: 'string',
+                default: null
+            }
+        });
+        this.logger.info('createDir parentDir=' + params.parentDir);
+        let fullPath;
+        if (!params.name) {
+            params.name = "nouveau_dossier";
+            let index = 0;
+            while (fs.existsSync(params.parentDir + "/" + params.name)) {
+                index++;
+                params.name = "nouveau_dossier_" + index;
+            }
+        }
+        fullPath = p.normalize(params.parentDir + "/" + params.name);
+        fs.pathExists(fullPath)
+            .then(pathExits => {
+            if (pathExits) {
+                throw new Errors.HttpError(fullPath + ' already exists', 400);
+            }
+            return fs.ensureDir(fullPath);
+        })
+            .then(() => {
+            let r = {
+                path: fullPath,
+                name: params.name
+            };
+            r.fileinfo = Files_1.Files.getFileStat(fullPath, true);
+            res.status(200).json(r);
+        })
+            .catch(err => {
+            next(err);
+        });
     }
     moveFile(req, res, next) {
         let params = HttpTools_1.HttpTools.getBodyParams(req, {
@@ -283,7 +324,7 @@ class Tplugin extends ThttpPlugin_1.ThttpPlugin {
             return fs.move(params.path, params.dest, { overwrite: params.overwrite });
         })
             .then(() => {
-            res.status(200).json({ result: true, path: params.path, dest: params.dest });
+            res.status(200).json({ path: params.path, dest: params.dest });
         })
             .catch(err => {
             next(err);
@@ -324,9 +365,82 @@ class Tplugin extends ThttpPlugin_1.ThttpPlugin {
             return fs.copy(params.path, params.dest, { errorOnExist: true, overwrite: true });
         })
             .then(() => {
-            res.status(200).json({ result: true, path: params.path, dest: params.dest });
+            res.status(200).json({ path: params.path, dest: params.dest });
         })
             .catch(err => {
+            next(err);
+        });
+    }
+    uncompressFile(req, res, next) {
+        let params = HttpTools_1.HttpTools.getBodyParams(req, {
+            path: {
+                type: 'string'
+            },
+            destDir: {
+                type: 'string',
+                default: null
+            }
+        });
+        let destDir = params.destDir;
+        if (!destDir)
+            destDir = p.dirname(params.path);
+        destDir = p.normalize(destDir);
+        this.logger.info('uncompressFile path=' + params.path + ', destDir=' + destDir);
+        fs.pathExists(params.path)
+            .then(pathExits => {
+            if (!pathExits) {
+                throw new Errors.HttpError(params.path + ' does not exist', 400);
+            }
+            let sourceStat = Files_1.Files.getFileStat(params.path, false);
+            if (!sourceStat.isFile) {
+                throw new Errors.HttpError(params.path + ' is not a file', 400);
+            }
+            if (!sourceStat.name.endsWith('.zip'))
+                throw new Errors.HttpError(params.path + ' is not a zip file', 400);
+            return fs.pathExists(destDir);
+        })
+            .then(destExists => {
+            if (destExists) {
+                let destStat = Files_1.Files.getFileStat(destDir, false);
+                if (!destStat.isDir) {
+                    throw new Errors.HttpError('Destination ' + destDir + ' is not a directory', 400);
+                }
+            }
+            else {
+                throw new Errors.HttpError("Destination directory '" + destDir + "' does not exist", 400);
+            }
+            try {
+                let zip = new streamZip({
+                    file: params.path
+                });
+                zip.on('ready', () => {
+                    zip.extract(null, destDir, (err) => {
+                        if (err) {
+                            this.logger.error("uncompressFile " + params.path, err);
+                            next(err);
+                        }
+                        else {
+                            let r = {
+                                path: params.path,
+                                destDir: destDir
+                            };
+                            res.status(200).json(r);
+                        }
+                        zip.close();
+                    });
+                });
+                zip.on('error', (err) => {
+                    this.logger.error("uncompressFile " + params.path, err);
+                    next(err);
+                });
+            }
+            catch (err) {
+                this.logger.error("uncompressFile " + params.path, err);
+                next(err);
+            }
+        })
+            .catch(err => {
+            this.logger.error("uncompressFile " + params.path, err);
             next(err);
         });
     }

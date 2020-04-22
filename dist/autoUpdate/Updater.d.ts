@@ -11,6 +11,7 @@ export declare class Updater extends EventEmitter {
     application: WorkerApplication;
     logger: bunyan;
     constructor(application: WorkerApplication);
+    protected waitPurgeCompleted(waitPurgeCompletedStartDate?: number): any;
     onUpdateRequest(req: express.Request, res: express.Response, next: express.NextFunction): void;
     execUpdate(zipPath: string): void;
     execUpdateStep2(appDir: string, updateDir: string, appUrl: string): Bluebird<void>;

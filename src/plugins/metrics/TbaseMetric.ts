@@ -6,6 +6,7 @@ import fs = require('fs-extra')
 import bunyan = require('bunyan')
 import {WorkerApplication as Application} from '../../WorkerApplication'
 import Promise = require('bluebird')
+import os = require('os');
 
 export default class TbaseMetric implements IbaseMetric {
 	public name: any = null;
@@ -51,6 +52,7 @@ export default class TbaseMetric implements IbaseMetric {
 				res.contentType('text/plain')
 				res.send(this.format('nagios', u.query, r))
 			} else {
+				r.host = os.hostname()
 				res.json(r)
 			}
 		})

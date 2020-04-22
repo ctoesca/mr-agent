@@ -24,28 +24,28 @@ export declare class Application extends EventEmitter {
     getLogger(name?: string): bunyan;
     getDefaultLogConfig(): {
         'http-access-log': {
-            'enabled': boolean;
+            enabled: boolean;
             'log-name': string;
             'log-dir': string;
-            'options': {
-                'size': string;
-                'maxFiles': number;
+            options: {
+                size: string;
+                maxFiles: number;
             };
         };
-        'logger': {
-            'level': string;
-            'streams': ({
-                'stream': NodeJS.WriteStream;
-                'type'?: undefined;
-                'period'?: undefined;
-                'count'?: undefined;
-                'path'?: undefined;
+        logger: {
+            level: string;
+            streams: ({
+                stream: NodeJS.WriteStream;
+                type?: undefined;
+                period?: undefined;
+                count?: undefined;
+                path?: undefined;
             } | {
-                'type': string;
-                'period': string;
-                'count': number;
-                'path': string;
-                'stream'?: undefined;
+                type: string;
+                period: string;
+                count: number;
+                path: string;
+                stream?: undefined;
             })[];
         };
     };

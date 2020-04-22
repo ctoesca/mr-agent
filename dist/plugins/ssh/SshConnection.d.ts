@@ -19,8 +19,10 @@ export default class SshConnection extends EventEmitter {
     httpsAgent: HttpsAgent;
     httpAgent: HttpAgent;
     validSshOptions: any;
+    isInCache: boolean;
     poolId: string;
     constructor(connectionParams: any, options: any);
+    static initStats(): void;
     toString(): string;
     calcId(params: any): string;
     static calcPoolId(params: any): string;

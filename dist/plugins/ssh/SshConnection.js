@@ -23,6 +23,7 @@ class SshConnection extends EventEmitter {
         this.httpsAgent = null;
         this.httpAgent = null;
         this.validSshOptions = null;
+        this.isInCache = false;
         this.logger = options.logger;
         this.sshKeysDir = options.sshKeysDir;
         this.connectTimeout = options.connectTimeout;
@@ -33,6 +34,19 @@ class SshConnection extends EventEmitter {
         else
             this.poolId = options.poolId;
         SshConnection.stats.createdCount++;
+        this.logger.info(this.toString() + " : ssh connection created");
+    }
+    static initStats() {
+        SshConnection.stats = {
+            createdCount: 0,
+            destroyedCount: 0,
+            acquiredCount: 0,
+            releasedCount: 0,
+            totalRequestsCount: 0,
+            poolCacheHitsRatioPercent: null,
+            connectCacheHitsRatioPercent: null,
+            reqRatePerSec: null
+        };
     }
     toString() {
         return this.connectionParams.username + "@" + this.connectionParams.host;
@@ -41,7 +55,7 @@ class SshConnection extends EventEmitter {
         return this.connectionParams.username + '@' + this.connectionParams.host + ":" + this.connectionParams.port + "_" + Math.random() * 10E6;
     }
     static calcPoolId(params) {
-        let hash = utils.md5(params.password + params.key + params.passphrase);
+        let hash = utils.md5((params.password + params.key + params.passphrase).toString());
         let s = params.username + '@' + params.host + ":" + params.port + '_' + hash;
         return s;
     }
@@ -69,8 +83,8 @@ class SshConnection extends EventEmitter {
         if (this.httpsAgent)
             this.httpsAgent.destroy();
         this.removeAllListeners();
-        this.logger.info(this.toString() + ' : Connection destroyed');
-        this.logger = null;
+        if (this.logger)
+            this.logger.info(this.toString() + ' : Connection destroyed');
         SshConnection.stats.destroyedCount++;
     }
     onClosed() {
@@ -337,8 +351,8 @@ class SshConnection extends EventEmitter {
         return new Promise((resolve, reject) => {
             this.conn.sftp((err, sftp) => {
                 if (err) {
-                    let errorMessage = 'scpSend : ' + err.toString();
-                    this.logger.error(this.toString() + ' : ' + errorMessage);
+                    let errorMessage = 'scpSend ' + localPath + ' -> ' + this.toString() + ":" + remotePath + ': ' + err.toString();
+                    this.logger.error(errorMessage);
                     let sshError = new SshError_1.default(errorMessage);
                     sshError.connected = true;
                     reject(sshError);
@@ -370,8 +384,8 @@ class SshConnection extends EventEmitter {
         return new Promise((resolve, reject) => {
             this.conn.sftp((err, sftp) => {
                 if (err) {
-                    let errorMessage = 'scpGet : ' + err.toString();
-                    this.logger.error(this.toString() + ' : ' + errorMessage);
+                    let errorMessage = 'scpGet ' + remotePath + ' -> ' + this.toString() + ":" + localPath + ': ' + err.toString();
+                    this.logger.error(errorMessage);
                     let sshError = new SshError_1.default(errorMessage);
                     sshError.connected = true;
                     reject(sshError);
@@ -433,14 +447,5 @@ class SshConnection extends EventEmitter {
 }
 exports.default = SshConnection;
 SshConnection.cachedKeys = new Map();
-SshConnection.stats = {
-    createdCount: 0,
-    destroyedCount: 0,
-    acquiredCount: 0,
-    releasedCount: 0,
-    totalRequestsCount: 0,
-    poolCacheHitsRatioPercent: null,
-    connectCacheHitsRatioPercent: null,
-    reqRatePerSec: null
-};
+SshConnection.initStats();
 //# sourceMappingURL=SshConnection.js.map

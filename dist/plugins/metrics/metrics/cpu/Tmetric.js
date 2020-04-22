@@ -31,7 +31,7 @@ class Tmetric extends TbaseMetric_1.default {
         let r = { ellapsed: timeDiff, percentageCPU: percentageCPU };
         return r;
     }
-    cpu(interval = 1000) {
+    cpu(interval = 5000) {
         let oldMeasure = this.cpuAverage();
         let endMeasure = null;
         return Promise.delay(interval)

@@ -16,16 +16,7 @@ import * as utils from '../../utils'
 export default class SshConnection extends EventEmitter {
 	protected static cachedKeys: Map<string, string> = new Map<string, string>()
 	
-	public static stats: any = {
-		createdCount: 0,
-		destroyedCount: 0,
-		acquiredCount: 0,
-		releasedCount: 0,
-		totalRequestsCount: 0,
-		poolCacheHitsRatioPercent: null,
-		connectCacheHitsRatioPercent: null,
-		reqRatePerSec: null
-	}
+	public static stats: any 
 
 	public conn: Ssh2.Client = null
 
@@ -38,7 +29,8 @@ export default class SshConnection extends EventEmitter {
 	public httpsAgent: HttpsAgent = null;
 	public httpAgent: HttpAgent = null;
 	public validSshOptions: any = null
-
+	public isInCache: boolean = false
+	
 	public poolId: string
 	
 	constructor(connectionParams: any, options: any) {
@@ -60,7 +52,22 @@ export default class SshConnection extends EventEmitter {
 			this.poolId = options.poolId
 
 		SshConnection.stats.createdCount ++;
+
+		this.logger.info(this.toString()+" : ssh connection created")
 		
+	}
+
+	public static initStats(){
+		SshConnection.stats = {
+			createdCount: 0,
+			destroyedCount: 0,
+			acquiredCount: 0,
+			releasedCount: 0,
+			totalRequestsCount: 0,
+			poolCacheHitsRatioPercent: null,
+			connectCacheHitsRatioPercent: null,
+			reqRatePerSec: null
+		}
 	}
 
 	public toString(){
@@ -72,7 +79,7 @@ export default class SshConnection extends EventEmitter {
 	}
 
 	public static calcPoolId( params: any ): string{
-		let hash: string = utils.md5(params.password+params.key+params.passphrase)
+		let hash: string = utils.md5( (params.password+params.key+params.passphrase).toString() )
 		let s = params.username+'@'+params.host+":"+params.port+'_'+hash
 		return s
 	}
@@ -108,8 +115,10 @@ export default class SshConnection extends EventEmitter {
 
 		this.removeAllListeners()
 
-		this.logger.info(this.toString()+' : Connection destroyed')
-		this.logger = null
+		if (this.logger)
+			this.logger.info(this.toString()+' : Connection destroyed')
+
+		//this.logger = null
 		
 		SshConnection.stats.destroyedCount ++;
 	}
@@ -497,8 +506,8 @@ export default class SshConnection extends EventEmitter {
 				
 				if (err) {
 				
-					let errorMessage = 'scpSend : '+err.toString()
-					this.logger.error(this.toString()+' : '+errorMessage)
+					let errorMessage = 'scpSend '+localPath+' -> '+this.toString()+":"+remotePath+': '+err.toString()
+					this.logger.error(errorMessage)
 
 					let sshError: SshError = new SshError( errorMessage )
 					sshError.connected = true
@@ -540,8 +549,8 @@ export default class SshConnection extends EventEmitter {
 
 				if (err) {
 
-					let errorMessage = 'scpGet : '+err.toString() 
-					this.logger.error(this.toString()+' : '+errorMessage)
+					let errorMessage = 'scpGet '+remotePath+' -> '+this.toString()+":"+localPath+': '+err.toString()
+					this.logger.error(errorMessage)
 
 					let sshError: SshError = new SshError( errorMessage )
 					sshError.connected = true
@@ -615,3 +624,5 @@ export default class SshConnection extends EventEmitter {
 	}
 
 }
+
+SshConnection.initStats()

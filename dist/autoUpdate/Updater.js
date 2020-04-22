@@ -20,13 +20,41 @@ class Updater extends EventEmitter {
         this.application = application;
         this.logger = this.application.getLogger(this.constructor.name);
     }
+    waitPurgeCompleted(waitPurgeCompletedStartDate = new Date().getTime()) {
+        let waitingTime = (new Date().getTime() - waitPurgeCompletedStartDate) / 1000;
+        let maxWait = 300;
+        if (waitingTime > maxWait) {
+            return Promise.reject("Purge is running from " + maxWait + " sec.");
+        }
+        else {
+            let purgeFlagFile = this.application.config.tmpDir + "/purgeIsRunning";
+            if (fs.existsSync(purgeFlagFile)) {
+                this.logger.warn("UPDATE: une purge est en cours: attente ...");
+                return Bluebird.delay(5000)
+                    .then(() => {
+                    return this.waitPurgeCompleted(waitPurgeCompletedStartDate);
+                });
+            }
+            else {
+                return Promise.resolve();
+            }
+        }
+    }
     onUpdateRequest(req, res, next) {
         if (Updater.updateIsRunning) {
             throw new Errors.HttpError("Une mise à jour est déjà en cours d'exécution", 403);
         }
-        this.logger.info('UPDATE...');
-        Updater.updateIsRunning = true;
-        HttpTools_1.HttpTools.saveUploadedFile(req, res, next)
+        process.send({
+            event: {
+                name: 'UPDATE_STARTED'
+            }
+        });
+        this.waitPurgeCompleted()
+            .then(() => {
+            this.logger.info('UPDATE...');
+            Updater.updateIsRunning = true;
+            return HttpTools_1.HttpTools.saveUploadedFile(req, res, next);
+        })
             .then((result) => {
             if (result.files.length === 0) {
                 throw new Errors.HttpError('Uploaded file expected');
@@ -55,12 +83,18 @@ class Updater extends EventEmitter {
         let backupDir = p.normalize(updateTmpDir + '/backup');
         this.logger.info('Updating - step-1...');
         this.uncompressPackage(zipPath, newVersionCopyDir);
-        fs.removeSync(zipPath);
         this.backup(backupDir);
         this.logger.info(zipPath + ' removed');
-        let nodePath = backupDir + '/node/node';
+        let backupNodePath;
         if (utils.isWin()) {
-            nodePath = backupDir + '/node/node.exe';
+            backupNodePath = backupDir + '/node/node.exe';
+        }
+        else {
+            backupNodePath = backupDir + '/node/node';
+        }
+        if (!fs.pathExistsSync(backupNodePath)) {
+            this.logger.error('execUpdate: ' + backupNodePath + ' does not exists');
+            throw 'Cannot exec step2: node path does not exists. Update failed';
         }
         let args = [p.normalize(backupDir + '/dist/autoUpdate/update-step2'), '--updateDir', updateTmpDir, '--appDir', this.getAppDir(), '--appUrl', this.application.getUrl()];
         let thisProcessArgs = parseArgs(process.argv.slice(2));
@@ -68,15 +102,11 @@ class Updater extends EventEmitter {
             args.push('-c');
             args.push(thisProcessArgs.c);
         }
-        fs.writeFileSync(updateTmpDir + '/step2.bat', nodePath + ' ' + args.join(' ') + ' 1>' + this.getAppDir() + '/logs/step2.out 2>' + this.getAppDir() + '/logs/step2.err');
+        fs.writeFileSync(updateTmpDir + '/step2.bat', backupNodePath + ' ' + args.join(' ') + ' 1>' + this.getAppDir() + '/logs/step2.out 2>' + this.getAppDir() + '/logs/step2.err');
         if (!utils.isWin()) {
             child_process.execSync('chmod 755 ' + updateTmpDir + '/step2.bat');
         }
-        this.logger.info('EXECUTING step2: ' + nodePath + ' ' + args.join(' '));
-        if (!fs.pathExistsSync(nodePath)) {
-            this.logger.error('execUpdate: ' + nodePath + ' does not exists');
-            throw 'Cannot exec step2: node path does not exists. Update failed';
-        }
+        this.logger.info('EXECUTING step2: ' + backupNodePath + ' ' + args.join(' '));
         this.logger.info('Starting - step-2... application will stop');
         let child = child_process.spawn(updateTmpDir + '/step2.bat', [], {
             detached: true,
@@ -86,7 +116,7 @@ class Updater extends EventEmitter {
     }
     execUpdateStep2(appDir, updateDir, appUrl) {
         return this.stopApp(appDir, appUrl)
-            .then((result) => {
+            .then(() => {
             return this.remove(appDir);
         })
             .then(result => {
@@ -172,6 +202,7 @@ class Updater extends EventEmitter {
                     throw 'Failed to stop agent: ' + result.stderr;
                 }
             })
+                .delay(10000)
                 .catch((err) => {
                 throw 'Echec stop' + err.toString();
             });
@@ -185,9 +216,8 @@ class Updater extends EventEmitter {
                 stdio: 'ignore'
             });
             child.unref();
-            return Bluebird.resolve({
-                exitCode: 0
-            });
+            return Bluebird
+                .delay(10000);
         }
     }
     startApp(appDir) {
@@ -234,7 +264,7 @@ class Updater extends EventEmitter {
                 }
                 catch (err) {
                     errors++;
-                    this.logger.error(err.toString());
+                    this.logger.error("Echec suppression " + path + " : " + err.toString());
                 }
             });
             if (errors === 0) {
@@ -261,7 +291,6 @@ class Updater extends EventEmitter {
                 fs.copySync(source, dest, {
                     filter: function (_src, _dest) {
                         if ((file === 'bin') && (p.basename(_dest) === 'agent.exe')) {
-                            this.logger.info('Non copié: ' + _dest);
                             return false;
                         }
                         else {
