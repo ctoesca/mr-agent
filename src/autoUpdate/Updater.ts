@@ -78,6 +78,7 @@ export class Updater extends EventEmitter {
 		})
 		.then( (result: any) => {
 
+
 			if (result.files.length === 0) {
 				throw new Errors.HttpError('Uploaded file expected');
 			} else {

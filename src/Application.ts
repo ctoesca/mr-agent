@@ -17,7 +17,7 @@ export class Application extends EventEmitter {
 	- fs.deleteFiles peut supprimer des repertoires 
 	- moveFile peut deplacer un repertoires
 	*/
-	public static version = '2.6.10'
+	public static version = '2.7.0'
 
 	public static applicationDirPath: string = __dirname;
 

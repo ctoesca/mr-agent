@@ -8,6 +8,7 @@ import minimatch = require('minimatch')
 import {Files} from '../../utils/Files'
 import * as utils from '../../utils'
 import p = require('path')
+import * as Errors from '../../Errors'
 
 export class Tools {
 
@@ -44,14 +45,14 @@ export class Tools {
 		})
 	}
 
-	public findFiles(dir: string, filter: string, recursive: boolean, maxResults: number): Promise<any> {
+	public findFiles(dir: string, filter: string, recursive: boolean, maxResults: number = null): Promise<any> {
 
 		dir = p.normalize(dir)
 
 		return fs.pathExists(dir)
 		.then( exists => {
 			if (!exists) {
-				throw new Error(dir + ' does not exist')
+				throw new Errors.BadRequest(dir + ' does not exist')
 			}
 
 			if (!recursive) {
@@ -179,7 +180,7 @@ export class Tools {
 
 
 
-	protected processKlawResults(items: any[], filter: string, maxResults: number) {
+	protected processKlawResults(items: any[], filter: string, maxResults: number = null) {
 		let r: any = {
 			files: [],
 			total: 0
@@ -191,7 +192,7 @@ export class Tools {
 
 		r.total = items.length;
 
-		if (items.length > maxResults) {
+		if ((maxResults !== null) && (items.length > maxResults)) {
 			items.splice(maxResults , items.length )
 		}
 

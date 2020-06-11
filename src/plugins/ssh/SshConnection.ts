@@ -12,7 +12,6 @@ import HttpAgent from './HttpAgent'
 import HttpsAgent from './HttpsAgent'
 import * as utils from '../../utils'
 
-
 export default class SshConnection extends EventEmitter {
 	protected static cachedKeys: Map<string, string> = new Map<string, string>()
 	
@@ -502,36 +501,74 @@ export default class SshConnection extends EventEmitter {
 		this.lastUse = new Date().getTime()
 		return new Promise((resolve, reject) => {
 			
-			this.conn.sftp((err: any, sftp: any) => {
+			this.conn.sftp((err: any, sftp: Ssh2.SFTPWrapper) => {
 				
 				if (err) {
-				
-					let errorMessage = 'scpSend '+localPath+' -> '+this.toString()+":"+remotePath+': '+err.toString()
+					let errorMessage = 'scpSend '+this.toString()+": "+localPath+' -> '+this.toString()+":"+remotePath+': '+err.toString()
 					this.logger.error(errorMessage)
-
-					let sshError: SshError = new SshError( errorMessage )
+					let sshError: SftpError = new SftpError( err )
 					sshError.connected = true
 					reject(sshError);
 					this.close()
 				} else {
-					sftp.fastPut(localPath, remotePath, (err2: any) => {
-					
-						if (err2) {
-							let sshError = new SftpError(err2)
-							sshError.connected = true
-							reject(sshError);
-						} else {
 
-							resolve({
-								host: this.connectionParams.host,
-								port: this.connectionParams.port,
-								username: this.connectionParams.username,
-								remotePath: remotePath,
-								localPath: localPath
-							});
+					let isPartialUpload = (typeof opt.start !== "undefined") && (opt.start !== null)
+
+					if (isPartialUpload){
+						
+						try{	
+				
+							let streamOpt: any = {
+								flags: 'r+',
+								start: opt.start
+							}
+
+							let stream: any = sftp.createWriteStream(remotePath, streamOpt)								
+							let fileStream = fs.createReadStream(localPath)
+							
+							stream.on('error', (err: any) => {
+								let sshError = new SftpError(err)
+								sshError.connected = true
+								reject(sshError);
+							})
+
+							fileStream.on('end', () => {
+								resolve({
+									host: this.connectionParams.host,
+									port: this.connectionParams.port,
+									username: this.connectionParams.username,
+									remotePath: remotePath,
+									localPath: localPath
+								});
+							})
+
+							fileStream.pipe( stream )	
+
+						}catch(err){
+							reject(err)
 						}
-	
-					});
+
+					} else 
+					{
+						sftp.fastPut(localPath, remotePath, (err2: any) => {
+						
+							if (err2) {
+								let sshError = new SftpError(err2)
+								sshError.connected = true
+								reject(sshError);
+							} else {
+
+								resolve({
+									host: this.connectionParams.host,
+									port: this.connectionParams.port,
+									username: this.connectionParams.username,
+									remotePath: remotePath,
+									localPath: localPath
+								});
+							}
+		
+						});
+					}
 				}
 			})
 		})
@@ -539,41 +576,61 @@ export default class SshConnection extends EventEmitter {
 	}
 
 
-	public scpGet( localPath: string, remotePath: string) {
+	public scpGet( localPath: string, remotePath: string, opt: any = {}) {
 
 		this.lastUse = new Date().getTime()
 
 		return new Promise((resolve, reject) => {
 
-			this.conn.sftp((err: any, sftp: any) => {
+			this.conn.sftp((err: any, sftp: Ssh2.SFTPWrapper) => {
 
 				if (err) {
 
-					let errorMessage = 'scpGet '+remotePath+' -> '+this.toString()+":"+localPath+': '+err.toString()
+					let errorMessage = 'scpGet '+this.toString()+" "+remotePath+' -> '+this.toString()+":"+localPath+': '+err.toString()
 					this.logger.error(errorMessage)
-
-					let sshError: SshError = new SshError( errorMessage )
+					let sshError: SftpError = new SftpError( err )
 					sshError.connected = true
 					reject(sshError);
 					this.close()
 				} else {
-					sftp.fastGet(remotePath, localPath, (err2: any) => {
-						
-						if (err2) {
-							let sftpError: SftpError = new SftpError(err2)
-							reject(sftpError);
-						} else {
+					let isPartialDownload = (typeof opt.start !== "undefined") && (typeof opt.end !== "undefined") && (opt.start !== null) && (opt.end !== null)
 
-							resolve({
-								host: this.connectionParams.host,
-								port: this.connectionParams.port,
-								username: this.connectionParams.username,
-								remotePath: remotePath,
-								localPath: localPath
-							});
+					if (isPartialDownload){
+						
+						try{
+							let stream: any = sftp.createReadStream(remotePath, {
+								start: opt.start,
+								end: opt.end
+							})								
+
+							resolve(stream)
+
+						}catch(err){
+							reject(err)
 						}
-				
-					});
+
+					} else 
+					{
+
+						sftp.fastGet(remotePath, localPath, (err2: any) => {
+							
+							if (err2) {
+								let sftpError: SftpError = new SftpError(err2)
+								sftpError.connected = true
+								reject(sftpError);
+							} else {
+
+								resolve({
+									host: this.connectionParams.host,
+									port: this.connectionParams.port,
+									username: this.connectionParams.username,
+									remotePath: remotePath,
+									localPath: localPath
+								});
+							}
+					
+						});
+					}
 				}
 			})
 		})
@@ -589,11 +646,9 @@ export default class SshConnection extends EventEmitter {
 			this.conn.sftp((err: any, sftp: any) => {
 
 				if (err) {
-
-					let errorMessage = 'sftpReaddir : '+err.toString()
-					this.logger.error(this.toString()+' : '+errorMessage)
-					
-					let sshError: SshError = new SshError( errorMessage )
+					let errorMessage = 'sftpReaddir : '+err.toString()+' '+path
+					this.logger.error(errorMessage)
+					let sshError: SftpError = new SftpError( err )
 					sshError.connected = true
 					reject(sshError);
 					this.close()

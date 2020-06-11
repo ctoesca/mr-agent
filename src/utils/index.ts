@@ -26,39 +26,21 @@ function isWin(): boolean {
 	return /^win/.test(process.platform);
 }
 
-/**
- * Detect the argument is a int
- *
- * @param {string} value
- * @return {boolean} Whether the value is a int
- * @example
- * ```js
- * > isInt('123')
- * true
- * > isInt('123.3')
- * false
- * > isInt('1x')
- * false
- * > isInt(123)
- * true
- * > isInt(true)
- * false
- * ```
- * @private
- */
 function isInt(value: any): boolean {
-	let x = parseFloat(value)
-	return !isNaN(value) && (x | 0) === x
+	return (value.toString().match(/^[0-9]+$/) !== null)
 }
 
-/*function isInt(n){
-	return Number(n) === n && n % 1 === 0;
-}*/
 function isFloat(n: any): boolean {
 	let x = parseFloat(n)
 	return !isNaN(x) ;
 }
+function isEmpty(object: any) {
+  for (var prop in object) {
+    if (object.hasOwnProperty(prop)) return false;
+  }
 
+  return true;
+}
 
 function getIpClient(req: express.Request): string {
 	let ip = req.header('X-Forwarded-For');
@@ -191,18 +173,18 @@ function parseParams(params: any, fields: any, isBodyParams = true) {
 				if (field.type === 'boolean') {
 
 					if (['true', 'false', '1', '0', true, false].indexOf( value ) === -1) {
-						throw new Errors.BadRequest('wrong value for ' + fieldName + ': boolean expected (1, 0, true, false)');
+						throw new Errors.BadRequest('wrong value \''+value+'\' for ' + fieldName + ': boolean expected (1, 0, true, false)');
 					}
 					r[fieldName] = ((value === '1') || (value === 'true') || (value === true))
 
 				} else if (field.type === 'integer') {
 					if (!isInt(value)) {
-						throw new Errors.BadRequest('wrong value for \'' + fieldName + '\' param: integer expected');
+						throw new Errors.BadRequest('wrong value \''+value+'\' for \'' + fieldName + '\' param: integer expected');
 					}
 					r[fieldName] = parseInt(value, 10)
 				} else if (field.type === 'float') {
 					if (!isFloat(value)) {
-						throw new Errors.BadRequest('wrong value for \'' + fieldName + '\' param: float expected');
+						throw new Errors.BadRequest('wrong value \''+value+'\' for \'' + fieldName + '\' param: float expected');
 					}
 					r[fieldName] = parseFloat(value)
 				} else if (field.type === 'array') {
@@ -214,7 +196,7 @@ function parseParams(params: any, fields: any, isBodyParams = true) {
 						throw new Errors.BadRequest(err.toString())
 					}
 					if (!_.isArray(value)) {
-						throw new Errors.BadRequest('wrong value for \'' + fieldName + '\' param: array expected');
+						throw new Errors.BadRequest('wrong value \''+value+'\' for \'' + fieldName + '\' param: array expected');
 					}
 					r[fieldName] = value
 				} else if (field.type === 'object') {
@@ -226,7 +208,7 @@ function parseParams(params: any, fields: any, isBodyParams = true) {
 						throw new Errors.BadRequest(err.toString())
 					}
 					if ((typeof value !== 'object') || _.isArray(value)) {
-						throw new Errors.BadRequest('wrong value for \'' + fieldName + '\' param: object expected');
+						throw new Errors.BadRequest('wrong value \''+value+'\' for \'' + fieldName + '\' param: object expected');
 					}
 					r[fieldName] = value
 				} else {
@@ -258,5 +240,6 @@ export {
 	isWin,
 	parseParams,
 	shuffleArray,
-	md5
+	md5,
+	isEmpty
 };

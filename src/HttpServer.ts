@@ -103,7 +103,33 @@ export class HttpServer extends EventEmitter {
 
 		this.app.use(this.authRequest.bind(this));
         
+        /* curl PHP envoi parfois le header 'Expect: 100-continue' (sur post, qd la requete depasse une certaine taille, sur header multipart - upload etc)
+        Dans ce cas, nodejs envoie writeContinue(), mais si on envoie la réponse immédiatement (avevc res.json(...) par exemple,  curl PHP ne 'reçoit jamais la réponse'.
+  		en cas de 100-continue, on met une tempo avant de traiter la requete.
+  		note: le fait de mettre 'Expect:' dans curl Php ne change rien.
+
+  		Mais si on renvoie pas une reponse dans le callback express directement, ça fonctionne. 
+        */
+        /*this.app.use( (req: express.Request, res: express.Response, next: express.NextFunction)=>{
+			if (req.headers["expect"] === '100-continue'){
+				//res.writeContinue() // par défaut, nodejs renvoie déjà 100-continue
+				setTimeout( ()=>{
+					next()
+				}, 200)
+			} else {
+				next()
+			}
+		})*/
+
         this.createServer()
+        /*.then((server) => {
+			
+        	server.on('checkContinue', (req: express.Request, res: express.Response) => {
+        		// la requete n'est pas traitée si on passe ici - https://nodejs.org/api/http.html#http_event_checkcontinue
+        		this.logger.error("CHECK CONTINUE")
+        		res.writeContinue()
+        	})
+        })*/
 	}
 
 	public addExpressApplication(mounthPath: string, app: express.Application) {
@@ -126,10 +152,10 @@ export class HttpServer extends EventEmitter {
 		});
 
 		this.app.use(function (err: Error, req: express.Request, res: express.Response, next: express.NextFunction) {
+			let response: any
+			let status = 500;
 
 			try {
-
-				let status = 500;
 
 				if (err instanceof Errors.HttpError) {
 					status = err.code;
@@ -138,16 +164,17 @@ export class HttpServer extends EventEmitter {
 				}
 
 				if (status >= 500) {					
-					this.logger.error('***** ' + status + ' : ' + req.method + ' ' + req.path, err.toString());
+					this.logger.error('***** ' + status + ' : ' + req.method + ' ' + req.path, err);
 				} else {
 					this.logger.warn('***** ' + status + ' : ' + req.method + ' ' + req.path, err.toString());
 				}
 
 				this.logger.debug('***** ' + status + ' : ' + req.method + ' ' + req.path, err);
+				
 
-				if (!res.headersSent) {
-
-					let response: any = {
+				if (!res.headersSent) 
+				{
+					response = {
 						error: true,
 						errorMessage: err.toString(),
 						code: status,
@@ -158,14 +185,20 @@ export class HttpServer extends EventEmitter {
 					if (typeof err["getDetail"] !== 'undefined') {
 						response.detail = err["getDetail"]()
 					}
+					res.set('x-error', err.toString())
+					res.status(status)	
+					res.send(response)
 
-					res.status(status).send(response);
 				} else {
 					this.logger.warn('***** ErrorHandler: Cannot set headers after they are sent to the client.')
 				}
-
 			} catch (err) {
-				this.logger.error('HttpServer.onError: ' , err.toString())
+				this.logger.error('HttpServer.onError: ' , err)
+				if (!res.headersSent && response) 
+				{
+					res.status(status)	
+					res.send(response)
+				}
 			}
 		}.bind(this));
 
@@ -227,7 +260,7 @@ export class HttpServer extends EventEmitter {
 		if (!this.httpsOptions.enabled) {
 			this.server = http.createServer(this.app)
 			this.server.keepAliveTimeout = 0
-					
+			return Promise.resolve(this.server)		
 		} else {
 
 			this.logger.info('https Options=', this.httpsOptions)
@@ -242,7 +275,7 @@ export class HttpServer extends EventEmitter {
 
 				this.server = https.createServer(this.httpsOptions.credentials, this.app);
 				this.server.keepAliveTimeout = 0
-				
+				return Promise.resolve(this.server)		
 			} else {
 
 				return new Promise( (resolve: Function, reject: Function) => {
@@ -271,9 +304,6 @@ export class HttpServer extends EventEmitter {
 
 			}
 		}
-
-		
-		return Promise.resolve( this.server )
 
 	}
 	protected listen() {
