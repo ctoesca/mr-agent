@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.WorkerApplication = void 0;
 const Application_1 = require("./Application");
 const HttpServer_1 = require("./HttpServer");
 const ThttpPlugin_1 = require("./plugins/ThttpPlugin");

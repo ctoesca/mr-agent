@@ -451,14 +451,14 @@ export class Tplugin extends ThttpPlugin {
 			this.logger.warn('download path=' + params.path + ': fichier inexistant');
 			throw new Errors.NotFound('Le fichier ' + params.path + ' n\'existe pas');
 		} else {
-			this.logger.info('download path=' + params.path+' ...');
+			
 			let stat = Files.getFileStat(params.path, false);
 			if (stat.isDir) {
 				params.compress = true;
 			}
 		}
 
-		this.logger.info('download path=' + params.path + ',compress=' + params.compress);
+		this.logger.info('download path=' + params.path + ',compress=' + params.compress+" ...");
 
 		if (params.compress) {
 

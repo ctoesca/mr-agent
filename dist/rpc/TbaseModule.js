@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.TbaseModule = void 0;
 const EventEmitter = require("events");
 class TbaseModule extends EventEmitter {
     constructor(opt) {

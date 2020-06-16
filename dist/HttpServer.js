@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.HttpServer = void 0;
 const Application_1 = require("./Application");
 const Errors = require("./Errors");
 const utils = require("./utils");
@@ -97,8 +98,9 @@ class HttpServer extends EventEmitter {
             next(err);
         });
         this.app.use(function (err, req, res, next) {
+            let response;
+            let status = 500;
             try {
-                let status = 500;
                 if (err instanceof Errors.HttpError) {
                     status = err.code;
                 }
@@ -106,14 +108,14 @@ class HttpServer extends EventEmitter {
                     status = err["getHttpStatus"]();
                 }
                 if (status >= 500) {
-                    this.logger.error('***** ' + status + ' : ' + req.method + ' ' + req.path, err.toString());
+                    this.logger.error('***** ' + status + ' : ' + req.method + ' ' + req.path, err);
                 }
                 else {
                     this.logger.warn('***** ' + status + ' : ' + req.method + ' ' + req.path, err.toString());
                 }
                 this.logger.debug('***** ' + status + ' : ' + req.method + ' ' + req.path, err);
                 if (!res.headersSent) {
-                    let response = {
+                    response = {
                         error: true,
                         errorMessage: err.toString(),
                         code: status,
@@ -124,14 +126,20 @@ class HttpServer extends EventEmitter {
                     if (typeof err["getDetail"] !== 'undefined') {
                         response.detail = err["getDetail"]();
                     }
-                    res.status(status).send(response);
+                    res.set('x-error', err.toString());
+                    res.status(status);
+                    res.send(response);
                 }
                 else {
                     this.logger.warn('***** ErrorHandler: Cannot set headers after they are sent to the client.');
                 }
             }
             catch (err) {
-                this.logger.error('HttpServer.onError: ', err.toString());
+                this.logger.error('HttpServer.onError: ', err);
+                if (!res.headersSent && response) {
+                    res.status(status);
+                    res.send(response);
+                }
             }
         }.bind(this));
     }
@@ -185,6 +193,7 @@ class HttpServer extends EventEmitter {
         if (!this.httpsOptions.enabled) {
             this.server = http.createServer(this.app);
             this.server.keepAliveTimeout = 0;
+            return Promise.resolve(this.server);
         }
         else {
             this.logger.info('https Options=', this.httpsOptions);
@@ -196,6 +205,7 @@ class HttpServer extends EventEmitter {
             if (this.httpsOptions.credentials) {
                 this.server = https.createServer(this.httpsOptions.credentials, this.app);
                 this.server.keepAliveTimeout = 0;
+                return Promise.resolve(this.server);
             }
             else {
                 return new Promise((resolve, reject) => {
@@ -216,7 +226,6 @@ class HttpServer extends EventEmitter {
                 });
             }
         }
-        return Promise.resolve(this.server);
     }
     listen() {
         return new Promise((resolve, reject) => {

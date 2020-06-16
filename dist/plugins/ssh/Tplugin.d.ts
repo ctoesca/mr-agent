@@ -37,9 +37,12 @@ export declare class Tplugin extends ThttpPlugin {
     verifyClient(info: any, done: Function): void;
     _stats(req: express.Request, res: express.Response, next: express.NextFunction): void;
     _razCache(req: express.Request, res: express.Response, next: express.NextFunction): void;
-    upload(req: express.Request, res: express.Response, next: express.NextFunction): void;
+    upload(req: express.Request, res: express.Response, next: express.NextFunction): Promise<void>;
+    fileinfo(opt: any): Promise<any>;
+    protected getFileObjectFromLsLineResult(line: string, regexp?: any): any;
     remoteFileExists(host: string, username: string, password: string, key: string, passphrase: string, remotePath: string, port: number): Promise<boolean>;
     download(req: express.Request, res: express.Response, next: express.NextFunction): void;
+    fileinfoRequest(req: express.Request, res: express.Response, next: express.NextFunction): void;
     exec(req: express.Request, res: express.Response, next: express.NextFunction): void;
     checkLogin(req: express.Request, res: express.Response, next: express.NextFunction): void;
     checkLogins(req: express.Request, res: express.Response, next: express.NextFunction): void;
@@ -56,7 +59,7 @@ export declare class Tplugin extends ThttpPlugin {
     protected removeTempDir(dir: string): void;
     sftpReaddir(req: express.Request, res: express.Response, next: express.NextFunction): void;
     scpSend(host: string, username: string, password: string, key: string, passphrase: string, localPath: string, remotePath: string, port: number, opt?: any): Promise<unknown>;
-    scpGet(host: string, username: string, password: string, key: string, passphrase: string, localPath: string, remotePath: string, port: number): Promise<unknown>;
+    scpGet(host: string, username: string, password: string, key: string, passphrase: string, localPath: string, remotePath: string, port: number, opt?: any): Promise<unknown>;
     getConnection(params: any, options?: any): Promise<SshConnection>;
     getConnectionPool(poolId: string, params: any): genericPool.Pool<SshConnection>;
     releaseSshConnection(connection: SshConnection): void;

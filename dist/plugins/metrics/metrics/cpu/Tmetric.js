@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Tmetric = void 0;
 const fs = require("fs");
 const os = require("os");
 const TbaseMetric_1 = require("../../TbaseMetric");

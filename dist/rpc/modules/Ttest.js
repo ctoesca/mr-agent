@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Ttest = void 0;
 const TbaseModule_1 = require("../TbaseModule");
 const Application_1 = require("../../Application");
 const Ttest2_1 = require("./Ttest2");

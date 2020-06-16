@@ -39,6 +39,6 @@ export default class SshConnection extends EventEmitter {
     protected getKeyConnection(sshOptions: any, keyPath: string): Promise<Ssh2.Client>;
     exec(opt: any): Promise<unknown>;
     scpSend(localPath: string, remotePath: string, opt?: any): Promise<unknown>;
-    scpGet(localPath: string, remotePath: string): Promise<unknown>;
+    scpGet(localPath: string, remotePath: string, opt?: any): Promise<unknown>;
     sftpReaddir(path: string): Promise<unknown>;
 }

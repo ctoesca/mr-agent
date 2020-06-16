@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Tplugin = void 0;
 const ThttpPlugin_js_1 = require("../ThttpPlugin.js");
 require("../../utils/StringTools");
 const Errors = require("../../Errors");

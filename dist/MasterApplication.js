@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.MasterApplication = void 0;
 const cluster = require("cluster");
 const os = require("os");
 const fs = require("fs-extra");

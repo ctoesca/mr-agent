@@ -4,7 +4,7 @@ export declare class Tools {
     protected logger: bunyan;
     constructor(opt: any);
     protected listFiles(dir: string): Promise<any>;
-    findFiles(dir: string, filter: string, recursive: boolean, maxResults: number): Promise<any>;
+    findFiles(dir: string, filter: string, recursive: boolean, maxResults?: number): Promise<any>;
     execScript(script: string, args?: any): Promise<any>;
-    protected processKlawResults(items: any[], filter: string, maxResults: number): any;
+    protected processKlawResults(items: any[], filter: string, maxResults?: number): any;
 }

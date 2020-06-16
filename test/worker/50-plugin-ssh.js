@@ -48,6 +48,9 @@ function checkUploadResult(res, sourceFile, path){
 				size: number
 			}]
 		}*/
+
+		console.log(res.body)
+
 		assert.strictEqual(res.statusCode, 200);
 		assert.strictEqual(typeof res.body, 'object', 'body is not object');
 		assert.strictEqual(_.isArray(res.body.files), true, 'body.files is not array');
@@ -77,9 +80,15 @@ describe('/_plugin/ssh/upload', function() {
 		it('should return 200', function (done) {
 		
 			let path = '/tmp/upload.txt'
-			let opt = getHttpOptions('POST', '/_plugin/ssh/upload?path='+path+'&port='+SSH_HOST_PORT+'&host='+SSH_HOST+'&username='+SSH_HOST_USERNAME+'&password='+SSH_HOST_PASSWORD)
+			let opt = getHttpOptions('POST', '/_plugin/ssh/upload')
 			
 			opt.formData = {
+				path: path,
+				port: SSH_HOST_PORT,
+				host: SSH_HOST,
+				username: SSH_HOST_USERNAME,
+				password: SSH_HOST_PASSWORD,
+
 		        // Like <input type="text" name="name">
 		        name: sourceFileName,
 		        // Like <input type="file" name="file">
@@ -89,14 +98,15 @@ describe('/_plugin/ssh/upload', function() {
 		                filename: sourceFileName,
 		                contentType: 'application/javascript'
 		            }
-		        },
+		        }
+		        /*,
 		        file2: {
 		            value: fs.createReadStream(sourceDir+'/Application.js'),
 		            options: {
 		                filename: 'Application.js',
 		                contentType: 'application/javascript'
 		            }
-		        }
+		        }*/
 		    },
 					
 			request( opt )
@@ -116,9 +126,16 @@ describe('/_plugin/ssh/upload', function() {
 		it('should return 400', function (done) {
 		
 			let path = '/blablabla/upload.txt'
-			let opt = getHttpOptions('POST', '/_plugin/ssh/upload?path='+path+'&port='+SSH_HOST_PORT+'&host='+SSH_HOST+'&username='+SSH_HOST_USERNAME+'&password='+SSH_HOST_PASSWORD)
+			let opt = getHttpOptions('POST', '/_plugin/ssh/upload')
 			
 			opt.formData = {
+
+				path: path,
+				port: SSH_HOST_PORT,
+				host: SSH_HOST,
+				username: SSH_HOST_USERNAME,
+				password: SSH_HOST_PASSWORD,
+
 		        // Like <input type="text" name="name">
 		        name: sourceFileName,
 		        // Like <input type="file" name="file">
@@ -532,6 +549,7 @@ describe('/_plugin/ssh/download', function() {
 			
 			request( opt )
 			.then( (res) => {	
+		
 				assert.strictEqual(res.statusCode, 200, 'status is not 200');
 				assert.strictEqual(res.headers['content-disposition'], 'attachment; filename="upload.txt"', 'Content-Disposition is not attachment');
 				done();				

@@ -530,6 +530,7 @@ export default class SshConnection extends EventEmitter {
 								let sshError = new SftpError(err)
 								sshError.connected = true
 								reject(sshError);
+								sftp.end()
 							})
 
 							fileStream.on('end', () => {
@@ -540,18 +541,20 @@ export default class SshConnection extends EventEmitter {
 									remotePath: remotePath,
 									localPath: localPath
 								});
+								sftp.end()
 							})
 
 							fileStream.pipe( stream )	
 
 						}catch(err){
 							reject(err)
+							sftp.end()
 						}
 
 					} else 
 					{
 						sftp.fastPut(localPath, remotePath, (err2: any) => {
-						
+							sftp.end()
 							if (err2) {
 								let sshError = new SftpError(err2)
 								sshError.connected = true
@@ -602,7 +605,9 @@ export default class SshConnection extends EventEmitter {
 								start: opt.start,
 								end: opt.end
 							})								
-
+							stream.on('end', () => {
+								sftp.end()
+							})
 							resolve(stream)
 
 						}catch(err){
@@ -613,11 +618,12 @@ export default class SshConnection extends EventEmitter {
 					{
 
 						sftp.fastGet(remotePath, localPath, (err2: any) => {
-							
+							sftp.end()
 							if (err2) {
 								let sftpError: SftpError = new SftpError(err2)
 								sftpError.connected = true
 								reject(sftpError);
+								
 							} else {
 
 								resolve({
@@ -655,7 +661,7 @@ export default class SshConnection extends EventEmitter {
 				} else {
 
 					sftp.readdir( path, (err2: any, r: any) => {
-						
+						sftp.end()
 						if (err2) {
 							let sftpError = new SftpError(err2)
 							sftpError.connected = true

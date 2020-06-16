@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Tplugin = void 0;
 const fs = require("fs-extra");
 const TbasePlugin_1 = require("../TbasePlugin");
 const WorkerApplication_1 = require("../../WorkerApplication");

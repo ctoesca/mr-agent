@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.TbaseProcessor = void 0;
 const Application_1 = require("../../Application");
 const EventEmitter = require("events");
 const request = require("request");

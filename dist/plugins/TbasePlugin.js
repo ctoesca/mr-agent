@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.TbasePlugin = void 0;
 const EventEmitter = require("events");
 const WorkerApplication_1 = require("../WorkerApplication");
 const shell = require("shelljs");

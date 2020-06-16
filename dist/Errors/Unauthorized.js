@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Unauthorized = void 0;
 const HttpError_1 = require("./HttpError");
 class Unauthorized extends HttpError_1.HttpError {
     constructor(message = null, code = 401) {

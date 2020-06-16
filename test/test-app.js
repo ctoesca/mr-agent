@@ -24,15 +24,21 @@ process.on('uncaughtException', function(error) {
     console.log('uncaughtException', error)
 });
 
-getHttpOptions = function(method, url) {
-	
-	return {
+getHttpOptions = function(method, url, opt) {
+	var r = {
 		url: base+url,
 		method: method,
 		json: true,
 		resolveWithFullResponse: true,
 		simple: false
 	}
+
+	if (opt){
+		for (var k in opt){
+			r[k] = opt[k]
+		}
+	}
+	return r
 }
 assertHttpError = function(done, res, status) {
 	//console.log(res.body)

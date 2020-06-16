@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.HttpAccessParser = void 0;
 const TbaseParser_1 = require("./TbaseParser");
 const moment = require("moment");
 class HttpAccessParser extends TbaseParser_1.TbaseParser {

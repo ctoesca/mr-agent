@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.ChildProcess = void 0;
 const Promise = require("bluebird");
 const child_process = require("child_process");
 require("./StringTools");

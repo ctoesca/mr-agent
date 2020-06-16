@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.ThttpPlugin = void 0;
 const TbasePlugin_1 = require("./TbasePlugin");
 const express = require("express");
 class ThttpPlugin extends TbasePlugin_1.TbasePlugin {

@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Tplugin = void 0;
 const ThttpPlugin_1 = require("../ThttpPlugin");
 const WorkerApplication_1 = require("../../WorkerApplication");
 const Files_1 = require("../../utils/Files");
@@ -19,6 +20,9 @@ const http = require("http");
 const https = require("https");
 const os = require("os");
 const genericPool = require("generic-pool");
+const utils = require("../../utils");
+const gzip = require('zlib');
+const SftpError_1 = require("./SftpError");
 class Tplugin extends ThttpPlugin_1.ThttpPlugin {
     constructor(application, config) {
         super(application, config);
@@ -119,6 +123,7 @@ class Tplugin extends ThttpPlugin_1.ThttpPlugin {
         }));
         this.app.get('/stats', this._stats.bind(this));
         this.app.get('/shell', this._shell.bind(this));
+        this.app.post('/fileinfo', this.fileinfoRequest.bind(this));
         this.app.post('/exec', this.exec.bind(this));
         this.app.post('/execMulti', this.execMulti.bind(this));
         this.app.get('/download', this.download.bind(this));
@@ -296,7 +301,106 @@ class Tplugin extends ThttpPlugin_1.ThttpPlugin {
         });
     }
     upload(req, res, next) {
-        let params = HttpTools_1.HttpTools.getQueryParams(req, {
+        let params = {};
+        let isPartialUpload;
+        var onBeforeSaveFile = (fields, opt, filename) => {
+            try {
+                for (let k in fields) {
+                    params[k] = fields[k].val;
+                }
+                params = utils.parseParams(params, {
+                    path: {
+                        type: 'string'
+                    },
+                    host: {
+                        type: 'string'
+                    },
+                    port: {
+                        default: this.defaultPort,
+                        type: 'integer'
+                    },
+                    username: {
+                        type: 'string'
+                    },
+                    password: {
+                        default: null,
+                        type: 'string'
+                    },
+                    overwrite: {
+                        default: true,
+                        type: 'boolean'
+                    },
+                    key: {
+                        default: null,
+                        type: 'string'
+                    },
+                    passphrase: {
+                        default: null,
+                        type: 'string'
+                    },
+                    start: {
+                        default: null,
+                        type: 'integer'
+                    }
+                });
+                isPartialUpload = (params.start !== null);
+                if (isPartialUpload)
+                    params.overwrite = true;
+                this.logger.info('Upload filename=' + filename + ' . ' + params.path + '@' + params.host + ' , overwrite = ' + params.overwrite + ', start=' + params.start);
+                return Promise.resolve(opt);
+            }
+            catch (err) {
+                return Promise.reject(err);
+            }
+        };
+        let uploadedFile = null;
+        let opt = {};
+        return HttpTools_1.HttpTools.saveUploadedFile(req, res, next, {
+            onBeforeSaveFile: onBeforeSaveFile
+        })
+            .then((result) => {
+            if (isPartialUpload)
+                opt.start = params.start;
+            uploadedFile = result.files[0];
+            this.logger.info('Upload success [' + uploadedFile.name + ']');
+            if (!params.overwrite && !isPartialUpload) {
+                return this.remoteFileExists(params.host, params.username, params.password, params.key, params.passphrase, params.path, params.port);
+            }
+            else {
+                return Promise.resolve(null);
+            }
+        })
+            .then((fileExists = null) => {
+            if (fileExists === true) {
+                throw new Errors.BadRequest('File already exists: ' + params.path + ' (use \'overwrite\' option)', 400);
+            }
+            return this.scpSend(params.host, params.username, params.password, params.key, params.passphrase, uploadedFile.path, params.path, params.port, opt);
+        })
+            .then((result) => {
+            this.logger.info('scpSend OK : ' + params.path + '@' + params.host);
+            if (isPartialUpload)
+                res.set('x-start-position', params.start);
+            let r = {
+                host: params.host,
+                files: [{
+                        name: uploadedFile.name,
+                        path: params.path,
+                        size: Files_1.Files.getFileSize(uploadedFile.path)
+                    }]
+            };
+            res.status(200).json(r);
+        })
+            .finally(() => {
+            if (uploadedFile) {
+                this.removeTempFileSync(uploadedFile.path);
+            }
+        })
+            .catch((err) => {
+            next(err);
+        });
+    }
+    fileinfo(opt) {
+        let params = utils.parseParams(opt, {
             path: {
                 type: 'string'
             },
@@ -314,10 +418,6 @@ class Tplugin extends ThttpPlugin_1.ThttpPlugin {
                 default: null,
                 type: 'string'
             },
-            overwrite: {
-                default: true,
-                type: 'boolean'
-            },
             key: {
                 default: null,
                 type: 'string'
@@ -327,51 +427,82 @@ class Tplugin extends ThttpPlugin_1.ThttpPlugin {
                 type: 'string'
             }
         });
-        let uploadedFile = null;
-        HttpTools_1.HttpTools.saveUploadedFile(req, res, next)
-            .then((result) => {
-            if (result.files.length === 0) {
-                throw new Errors.HttpError('No file uploaded', 400);
-            }
-            else {
-                uploadedFile = result.files[0];
-                this.logger.info('Upload File [' + uploadedFile.name + ']');
-                if (!params.overwrite) {
-                    return this.remoteFileExists(params.host, params.username, params.password, params.key, params.passphrase, params.path, params.port);
-                }
-                else {
-                    return Promise.resolve(null);
-                }
-            }
-        })
-            .then((fileExists = null) => {
-            if (!fileExists) {
-                return this.scpSend(params.host, params.username, params.password, params.key, params.passphrase, uploadedFile.path, params.path, params.port);
-            }
-            else {
-                throw new Errors.HttpError('File already exists: ' + params.path + ' (use \'overwrite\' option)', 400);
-            }
+        let cmd = 'ls -ltFLd --time-style="+%Y-%m-%d %H:%M:%S" "' + params.path + '"';
+        return this._exec({
+            host: params.host,
+            username: params.username,
+            password: params.password,
+            key: params.key,
+            passphrase: params.passphrase,
+            script: cmd,
+            port: params.port,
+            logError: true,
+            pty: false,
+            useCachedConnection: true
         })
             .then((result) => {
-            this.logger.info('scpSend OK to ' + params.host + params.path);
-            let r = {
-                host: params.host,
-                files: [{
-                        name: uploadedFile.name,
-                        path: params.path,
-                        size: Files_1.Files.getFileSize(uploadedFile.path)
-                    }]
-            };
-            res.status(200).json(r);
-        })
-            .finally(() => {
-            if (uploadedFile.path) {
-                this.removeTempFileSync(uploadedFile.path);
+            let r;
+            if (result.exitCode === 0) {
+                result.stdout = result.stdout.trim();
+                if (result.stdout === '') {
+                    let sshError = new SshError_1.default("fileinfo: la commande ls n'a pas renvoyé de résultat");
+                    sshError.connected = true;
+                    throw sshError;
+                }
+                r = this.getFileObjectFromLsLineResult(result.stdout);
             }
-        })
-            .catch((err) => {
-            next(err);
+            else {
+                let errorMessage = result.stder;
+                if (result.stderr.toLowerCase().contains("permission")) {
+                    errorMessage = "Permission error : " + errorMessage;
+                }
+                let sshError = new SshError_1.default(errorMessage);
+                sshError.connected = true;
+                throw sshError;
+            }
+            return r;
         });
+    }
+    getFileObjectFromLsLineResult(line, regexp = null) {
+        let file = {};
+        line = line.replace(/\s+/, ' ');
+        let fields = line.split(' ');
+        file.date = fields[5] + " " + fields[6];
+        file.name = line.rightOf(file.date + " ");
+        if (regexp) {
+            if (typeof regexp === 'string')
+                regexp = new RegExp(regexp);
+        }
+        if (!regexp || file.name.match(regexp)) {
+            file.rights = fields[0];
+            file.type = file.rights[0];
+            file.isFile = false;
+            file.isLink = false;
+            file.isDir = false;
+            if (file.type == "d") {
+                file.isDir = true;
+            }
+            else if (file.type == "l") {
+                file.isLink = true;
+            }
+            else {
+                file.isFile = true;
+            }
+            file.owner = fields[2];
+            file.group = fields[3];
+            file.size = fields[4];
+            if (file.name.endsWith('/')) {
+                file.name = file.name.substring(0, file.name.length - 1);
+            }
+            if (file.name.endsWith("*")) {
+                file.name = file.name.substring(0, file.name.length - 1);
+                file.executable = true;
+            }
+            else {
+                file.executable = false;
+            }
+        }
+        return file;
     }
     remoteFileExists(host, username, password, key, passphrase, remotePath, port) {
         let filename = p.basename(remotePath);
@@ -380,7 +511,7 @@ class Tplugin extends ThttpPlugin_1.ThttpPlugin {
 		if [ $? -ne 0 ]; then
 		exit 99
 		fi
-		ls ${filename}
+		ls "${filename}"
 		`;
         return this._exec({
             host: host,
@@ -434,32 +565,100 @@ class Tplugin extends ThttpPlugin_1.ThttpPlugin {
             passphrase: {
                 default: null,
                 type: 'string'
+            },
+            start: {
+                default: null,
+                type: 'integer'
+            },
+            end: {
+                default: null,
+                type: 'integer'
             }
         });
-        this.logger.info('ssh download remotePath=' + params.path + ' on ' + params.host + ':' + params.port + ',compress=' + params.compress);
+        this.logger.info('ssh download remotePath=' + params.path + ' on ' + params.host + ':' + params.port + ', compress=' + params.compress + ", start=" + params.start + ", end=" + params.end);
         let filename = Files_1.Files.getFileName(params.path);
-        let localdir = this.tmpDir + '/' + Math.random();
-        let localPath = localdir + '/' + filename;
-        fs.ensureDirSync(localdir);
-        this.scpGet(params.host, params.username, params.password, params.key, params.passphrase, localPath, params.path, params.port)
-            .then(() => {
-            if (params.compress) {
-                let zipFileName = filename + '.zip';
-                HttpTools_1.HttpTools.sendZipFile(res, next, localPath, zipFileName)
-                    .finally(() => {
-                    this.removeTempDir(localdir);
-                });
-            }
-            else {
-                res.attachment(filename).sendFile(filename, {
-                    root: localdir
-                }, (err) => {
-                    this.removeTempDir(localdir);
-                    if (err) {
-                        throw new Errors.HttpError(err.toString());
+        let isPartialDownload = (params.start !== null) && (params.end !== null);
+        if (isPartialDownload) {
+            let opt = {
+                start: params.start,
+                end: params.end,
+            };
+            let connection;
+            this.getConnection({
+                host: params.host,
+                username: params.username,
+                password: params.password,
+                key: params.key,
+                passphrase: params.passphrase,
+                port: params.port
+            }, { useCache: true })
+                .then((result) => {
+                connection = result;
+                return connection.scpGet(null, params.path, opt);
+            })
+                .then((readStream) => {
+                let headerSent = false;
+                res.set('x-start-position', params.start);
+                res.set('x-end-position', params.end);
+                readStream.on('data', (data) => {
+                    if (!headerSent) {
+                        if (params.compress)
+                            res.attachment(filename + '.gz');
+                        else
+                            res.attachment(filename);
+                        headerSent = true;
                     }
                 });
-            }
+                readStream.on('error', (err) => {
+                    let sftpError = new SftpError_1.default(err);
+                    sftpError.connected = true;
+                    next(sftpError);
+                });
+                if (params.compress) {
+                    let compressor = gzip.createGzip();
+                    readStream.pipe(compressor).pipe(res);
+                }
+                else {
+                    readStream.pipe(res);
+                }
+            })
+                .finally(() => {
+                this.releaseSshConnection(connection);
+            });
+        }
+        else {
+            let localdir = this.tmpDir + '/' + Math.random();
+            let localPath = localdir + '/' + filename;
+            fs.ensureDirSync(localdir);
+            this.scpGet(params.host, params.username, params.password, params.key, params.passphrase, localPath, params.path, params.port)
+                .then((result) => {
+                if (params.compress) {
+                    let zipFileName = filename + '.zip';
+                    HttpTools_1.HttpTools.sendZipFile(res, next, localPath, zipFileName)
+                        .finally(() => {
+                        this.removeTempDir(localdir);
+                    });
+                }
+                else {
+                    res.attachment(filename).sendFile(filename, {
+                        root: localdir
+                    }, (err) => {
+                        this.removeTempDir(localdir);
+                        if (err) {
+                            next(new Errors.HttpError(err.toString()));
+                        }
+                    });
+                }
+            })
+                .catch(err => {
+                next(err);
+            });
+        }
+    }
+    fileinfoRequest(req, res, next) {
+        this.fileinfo(req.body)
+            .then((result) => {
+            res.status(200).json(result);
         })
             .catch(err => {
             next(err);
@@ -714,30 +913,31 @@ class Tplugin extends ThttpPlugin_1.ThttpPlugin {
             connection = result;
             let conn = connection.conn;
             conn.shell((err, stream) => {
-                if (err)
-                    throw err;
-                stream.on('close', function () {
-                    console.log('Stream :: close');
-                    if (connection)
+                if (err) {
+                    next(err);
+                }
+                else {
+                    stream.on('close', function () {
                         this.releaseSshConnection(connection);
-                });
-                stream.on('data', function (data) {
-                    r += data;
-                    console.log("DATA" + data);
-                });
-                let count = 0;
-                let r = '';
-                let timer = setInterval(() => {
-                    stream.write('ls -l;echo exitcode=$?\n');
-                    count++;
-                    if (count >= 10) {
-                        clearInterval(timer);
-                        setTimeout(() => {
-                            res.send(r);
-                            conn.end();
-                        }, 1000);
-                    }
-                }, 20);
+                    });
+                    stream.on('data', function (data) {
+                        r += data;
+                        console.log("DATA" + data);
+                    });
+                    let count = 0;
+                    let r = '';
+                    let timer = setInterval(() => {
+                        stream.write('ls -l;echo exitcode=$?\n');
+                        count++;
+                        if (count >= 10) {
+                            clearInterval(timer);
+                            setTimeout(() => {
+                                res.send(r);
+                                conn.end();
+                            }, 1000);
+                        }
+                    }, 20);
+                }
             });
         })
             .catch(err => {
@@ -763,6 +963,7 @@ class Tplugin extends ThttpPlugin_1.ThttpPlugin {
         });
         let connection;
         let start = new Date().getTime();
+        this.logger.info("EXEC script on " + opt.host + ", username:" + opt.username);
         return this.getConnection({
             host: opt.host,
             port: opt.port,
@@ -841,7 +1042,7 @@ class Tplugin extends ThttpPlugin_1.ThttpPlugin {
             key: params.key,
             passphrase: params.passphrase,
             port: params.port
-        }, { useCache: false })
+        }, { useCache: true })
             .then((result) => {
             connection = result;
             return connection.sftpReaddir(params.path);
@@ -865,16 +1066,16 @@ class Tplugin extends ThttpPlugin_1.ThttpPlugin {
             key: key,
             passphrase: passphrase,
             port: port
-        }, { useCache: false })
+        }, { useCache: true })
             .then((result) => {
             connection = result;
-            return connection.scpSend(localPath, remotePath);
+            return connection.scpSend(localPath, remotePath, opt);
         })
             .finally(() => {
             this.releaseSshConnection(connection);
         });
     }
-    scpGet(host, username, password, key, passphrase, localPath, remotePath, port) {
+    scpGet(host, username, password, key, passphrase, localPath, remotePath, port, opt = {}) {
         let connection;
         return this.getConnection({
             host: host,
@@ -883,10 +1084,10 @@ class Tplugin extends ThttpPlugin_1.ThttpPlugin {
             key: key,
             passphrase: passphrase,
             port: port
-        }, { useCache: false })
+        }, { useCache: true })
             .then((result) => {
             connection = result;
-            return connection.scpGet(localPath, remotePath);
+            return connection.scpGet(localPath, remotePath, opt);
         })
             .finally(() => {
             this.releaseSshConnection(connection);
@@ -923,8 +1124,7 @@ class Tplugin extends ThttpPlugin_1.ThttpPlugin {
                     }
                 })
                     .catch((err) => {
-                    if (connection)
-                        this.releaseSshConnection(connection);
+                    this.releaseSshConnection(connection);
                     if (!(err instanceof SshError_1.default)) {
                         let message = 'Cannot acquire ssh connection on pool ' + poolId + ': ' + err.toString() + ' (host: ' + os.hostname() + ', worker: ' + process.pid + ')';
                         throw new Error(message);

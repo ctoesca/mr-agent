@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Tplugin = void 0;
 const ThttpPlugin_js_1 = require("../ThttpPlugin.js");
 const Timer_1 = require("../../utils/Timer");
 const elasticsearch = require("elasticsearch");

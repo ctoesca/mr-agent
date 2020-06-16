@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.TrpcClient = void 0;
 const EventEmitter = require("events");
 const Application_1 = require("../Application");
 const WebSocket = require("ws");

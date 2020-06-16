@@ -810,7 +810,6 @@ export class Tplugin extends ThttpPlugin {
 			let opt: any = {
 				start: params.start,
 				end: params.end,
-				releaseSshConnection: false
 			}
 
 			let connection: SshConnection
@@ -858,7 +857,7 @@ export class Tplugin extends ThttpPlugin {
 					readStream.pipe( res )
 				}
 			})
-			.finally( () => {		
+			.finally( () => {	
 				this.releaseSshConnection( connection )
 			})
 		
@@ -1230,9 +1229,7 @@ export class Tplugin extends ThttpPlugin {
 			    	next(err);
 			    } else {
 
-				    stream.on('close', function() {
-				      console.log('Stream :: close');
-				      if (connection)
+				    stream.on('close', function() {				     
 						this.releaseSshConnection( connection )
 				    })
 				    stream.on('data', function(data: any) {
@@ -1284,6 +1281,8 @@ export class Tplugin extends ThttpPlugin {
 		
 		let connection: SshConnection
 		let start: number = new Date().getTime()
+		
+		this.logger.info("EXEC script on "+opt.host+", username:"+opt.username)
 
 		return this.getConnection({
 			host: opt.host,
@@ -1405,10 +1404,8 @@ export class Tplugin extends ThttpPlugin {
 			return connection.scpSend(localPath, remotePath, opt)	
 		})
 		.finally( () => {		
-			if (opt.releaseSshConnection !== false)
-				this.releaseSshConnection( connection )
+			this.releaseSshConnection( connection )
 		})
-
 		
 	}
 
@@ -1429,23 +1426,9 @@ export class Tplugin extends ThttpPlugin {
 			return connection.scpGet(localPath, remotePath, opt)	
 		})
 		.finally( () => {		
-			if (opt.releaseSshConnection !== false)
-				this.releaseSshConnection( connection )
+			this.releaseSshConnection( connection )
 		})
 	}
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 	public getConnection(params: any, options: any = null): Promise<SshConnection> {
 		try {
@@ -1486,8 +1469,8 @@ export class Tplugin extends ThttpPlugin {
 					}
 				})
 				.catch( (err: any) => {
-					if (connection)
-						this.releaseSshConnection(connection)
+					
+					this.releaseSshConnection(connection)
 					
 					if (!(err instanceof SshError)) {					
 						let message = 'Cannot acquire ssh connection on pool ' + poolId + ': ' + err.toString() + ' (host: '+os.hostname()+', worker: ' +process.pid + ')'

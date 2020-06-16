@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Tools = void 0;
 const Application_1 = require("../../Application");
 const fs = require("fs-extra");
 const child_process = require("child_process");
@@ -8,6 +9,7 @@ const minimatch = require("minimatch");
 const Files_1 = require("../../utils/Files");
 const utils = require("../../utils");
 const p = require("path");
+const Errors = require("../../Errors");
 class Tools {
     constructor(opt) {
         this.tmpDir = null;
@@ -35,12 +37,12 @@ class Tools {
             return r;
         });
     }
-    findFiles(dir, filter, recursive, maxResults) {
+    findFiles(dir, filter, recursive, maxResults = null) {
         dir = p.normalize(dir);
         return fs.pathExists(dir)
             .then(exists => {
             if (!exists) {
-                throw new Error(dir + ' does not exist');
+                throw new Errors.BadRequest(dir + ' does not exist');
             }
             if (!recursive) {
                 return this.listFiles(dir)
@@ -132,7 +134,7 @@ class Tools {
             });
         });
     }
-    processKlawResults(items, filter, maxResults) {
+    processKlawResults(items, filter, maxResults = null) {
         let r = {
             files: [],
             total: 0
@@ -141,7 +143,7 @@ class Tools {
             items = items.filter(minimatch.filter(filter, { matchBase: true }));
         }
         r.total = items.length;
-        if (items.length > maxResults) {
+        if ((maxResults !== null) && (items.length > maxResults)) {
             items.splice(maxResults, items.length);
         }
         for (let i = 0; i < items.length; i++) {

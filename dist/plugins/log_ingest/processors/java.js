@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Tprocessor = void 0;
 const TbaseProcessor_1 = require("../TbaseProcessor");
 const moment = require("moment");
 class Tprocessor extends TbaseProcessor_1.TbaseProcessor {
