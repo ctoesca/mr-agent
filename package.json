@@ -29,7 +29,7 @@
     "@types/qs": "^6.9.3",
     "adm-zip": "^0.4.12",
     "archiver": "^3.0.0",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "basic-auth": "^2.0.1",
     "bluebird": "^3.5.3",
     "body-parser": "^1.18.3",
