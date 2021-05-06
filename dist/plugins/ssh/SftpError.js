@@ -11,7 +11,9 @@ class SftpError extends SshError_1.default {
         this.level = Ssh2.SFTP_STATUS_CODE[err.code];
     }
     getDetail() {
-        return super.getDetail();
+        let r = super.getDetail();
+        r.sftpStatus = this.sftpStatus;
+        return r;
     }
     getHttpStatus() {
         if ((this.sftpStatus === 2) || (this.sftpStatus === 3)) {

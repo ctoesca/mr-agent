@@ -22,25 +22,7 @@ class Tmetric extends TbaseMetric_1.default {
         });
     }
     format(format, params, result) {
-        let hh = Math.round(result.uptime / 3600);
-        let jj = Math.round(hh / 24);
-        let uptime = '';
-        if (jj >= 1) {
-            uptime += jj + ' jour';
-        }
-        if (jj >= 2) {
-            uptime += 's';
-        }
-        if (uptime !== '') {
-            uptime += ' ';
-        }
-        if (hh <= 1) {
-            uptime += hh + ' heure';
-        }
-        else {
-            uptime += hh + ' heures';
-        }
-        return '0|' + result.hostname + ': ' + result.osType + '/' + result.release + ', démarré il y a ' + uptime;
+        return result;
     }
 }
 exports.Tmetric = Tmetric;

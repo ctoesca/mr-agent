@@ -30,7 +30,9 @@ export default class SftpError extends SshError {
 	}
 
 	public getDetail() {
-		return super.getDetail()
+		let r: any = super.getDetail()
+		r.sftpStatus = this.sftpStatus
+		return r
 	}
 
 	public getHttpStatus() {

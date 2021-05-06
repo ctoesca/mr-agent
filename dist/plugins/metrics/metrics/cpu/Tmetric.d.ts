@@ -5,17 +5,14 @@ import Promise = require('bluebird');
 export declare class Tmetric extends TbaseMetric implements IbaseMetric {
     constructor(expressApp: express.Application, config: any);
     get(): Promise<any>;
-    cpuFromLastMeasure(): Promise<{
-        ellapsed: number;
-        percentageCPU: number;
-    }>;
-    calc(startMeasure: any, endMeasure: any): {
-        ellapsed: number;
-        percentageCPU: number;
-    };
     cpu(interval?: number): Promise<{
         ellapsed: number;
-        percentageCPU: number;
+        cores: number;
+        total: {
+            norm: {
+                pct: number;
+            };
+        };
     }>;
     format(format: string, params: any, result: any): any;
     cpuAverage(): {

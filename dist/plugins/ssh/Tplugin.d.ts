@@ -2,15 +2,15 @@ import { ThttpPlugin } from '../ThttpPlugin';
 import { WorkerApplication as Application } from '../../WorkerApplication';
 import express = require('express');
 import * as Promise from 'bluebird';
-import SshConnection from './SshConnection';
+import { SshConnection } from './SshConnection';
 import ws = require('ws');
 import { SshSession } from './SshSession';
 import Timer from '../../utils/Timer';
 import genericPool = require('generic-pool');
 export declare class Tplugin extends ThttpPlugin {
-    protected sshKeysDir: string;
+    sshKeysDir: string;
+    connectTimeout: number;
     protected defaultPort: number;
-    protected connectTimeout: number;
     protected websocketDataServer: ws.Server;
     protected sshSessions: Map<string, SshSession>;
     protected pooledConnections: Map<string, SshConnection>;
@@ -31,6 +31,9 @@ export declare class Tplugin extends ThttpPlugin {
     }>;
     getStats(): Promise<any>;
     install(): void;
+    addPrivateKey(req: express.Request, res: express.Response, next: express.NextFunction): void;
+    removeAllPrivateKeys(req: express.Request, res: express.Response, next: express.NextFunction): void;
+    removePrivateKey(req: express.Request, res: express.Response, next: express.NextFunction): void;
     httpForward(req: express.Request, res: express.Response, next: express.NextFunction): void;
     createTcpServer(): void;
     onDataConnection(conn: ws, req: any): void;
@@ -61,6 +64,7 @@ export declare class Tplugin extends ThttpPlugin {
     scpSend(host: string, username: string, password: string, key: string, passphrase: string, localPath: string, remotePath: string, port: number, opt?: any): Promise<unknown>;
     scpGet(host: string, username: string, password: string, key: string, passphrase: string, localPath: string, remotePath: string, port: number, opt?: any): Promise<unknown>;
     getConnection(params: any, options?: any): Promise<SshConnection>;
+    createSshConnection(params: any, poolId?: any, options?: any): SshConnection;
     getConnectionPool(poolId: string, params: any): genericPool.Pool<SshConnection>;
     releaseSshConnection(connection: SshConnection): void;
 }

@@ -6,8 +6,11 @@ import bunyan = require('bunyan');
 import '../../utils/StringTools';
 import HttpAgent from './HttpAgent';
 import HttpsAgent from './HttpsAgent';
-export default class SshConnection extends EventEmitter {
+export declare class SshConnection extends EventEmitter {
     protected static cachedKeys: Map<string, string>;
+    protected static allSshKeys: any[];
+    protected static allSshKeysUpdateTime: number;
+    protected static allSshKeysTimeout: number;
     static stats: any;
     conn: Ssh2.Client;
     protected sshKeysDir: string;
@@ -22,6 +25,7 @@ export default class SshConnection extends EventEmitter {
     isInCache: boolean;
     poolId: string;
     constructor(connectionParams: any, options: any);
+    static clearCache(): void;
     static initStats(): void;
     toString(): string;
     calcId(params: any): string;
@@ -32,11 +36,12 @@ export default class SshConnection extends EventEmitter {
     protected onClosed(): void;
     close(): void;
     isConnected(): boolean;
-    connect(): Promise<SshConnection>;
-    findKeyConnection(sshOptions: any): Promise<Ssh2.Client>;
-    protected getSshKeyCache(host: string, port: number): string;
-    protected _connect(sshOptions: any): Promise<Ssh2.Client>;
-    protected getKeyConnection(sshOptions: any, keyPath: string): Promise<Ssh2.Client>;
+    connect(conn?: Ssh2.Client): Promise<SshConnection>;
+    getAllKeys(): any;
+    findKeyConnection(sshOptions: any, conn: Ssh2.Client): Promise<Ssh2.Client>;
+    protected getSshKeyCache(sshOptions: any): string;
+    protected _connect(sshOptions: any, conn?: Ssh2.Client): Promise<Ssh2.Client>;
+    protected getKeyConnection(sshOptions: any, key: string, conn: Ssh2.Client): Promise<Ssh2.Client>;
     exec(opt: any): Promise<unknown>;
     scpSend(localPath: string, remotePath: string, opt?: any): Promise<unknown>;
     scpGet(localPath: string, remotePath: string, opt?: any): Promise<unknown>;

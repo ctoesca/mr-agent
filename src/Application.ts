@@ -6,6 +6,8 @@ import EventEmitter = require('events');
 import bunyan = require('bunyan');
 import shell = require('shelljs')
 import p = require('path')
+const logrotate = require('logrotator');
+import cluster = require('cluster')
 
 export interface ApplicationConstructor {
 	new (configPath: string, opt: any): Application;
@@ -17,7 +19,7 @@ export class Application extends EventEmitter {
 	- fs.deleteFiles peut supprimer des repertoires 
 	- moveFile peut deplacer un repertoires
 	*/
-	public static version = '2.7.0'
+	public static version = '2.7.11'
 
 	public static applicationDirPath: string = __dirname;
 
@@ -30,6 +32,7 @@ export class Application extends EventEmitter {
 	protected _loggers: Map<string, bunyan> = new Map<string, bunyan>()
 	protected logger: bunyan = null
 	protected configPath: string = __dirname + '/../conf/config.js'
+	protected rotator: any
 
 	constructor(configPath: string, opt: any = {}) {
 
@@ -47,6 +50,21 @@ export class Application extends EventEmitter {
 		this.configPath = p.normalize(this.configPath)
 		this.config = require(this.configPath).getConfig()
 		this.config = utils.array_replace_recursive(this.config, opt)
+		
+		if (cluster.isMaster)
+		{			
+			this.rotator = logrotate.rotator;
+	       
+	        this.rotator.on('error', (err: any) => {
+	        	console.log("Process "+process.pid+': logrotator error : '+err.toString());
+	        });
+
+	        // 'rotate' event is invoked whenever a registered file gets rotated
+	        this.rotator.on('rotate', (file: string) => {
+	        	console.log("Process "+process.pid+': file ' + file + ' was rotated!');
+	        });
+		}
+
 
 		if (this.config.getLoggerFunction) {
 			this.getLogger = opt.getLoggerFunction
@@ -78,7 +96,7 @@ export class Application extends EventEmitter {
 			if ( e.code !== 'EEXIST' ) { throw e; }
 		}
 
-		this.config.logs = this.getLogsConfig()
+		
 	}
 
 	public static create(clazz: ApplicationConstructor , configPath: string, opt: any = {}): Application {
@@ -145,14 +163,22 @@ export class Application extends EventEmitter {
 				'level': 'info',
 				'streams': [
 					{
-						'stream': process.stdout
-					},
-					{
+						"stream": process.stdout
+					}
+					,{
+						"type": "logrotator",
+						"path": __dirname+"/../logs/log.json",
+						"schedule": '1m', 
+						"size": '50m', 
+						"compress": false, 
+						"count": 30 
+					}
+					/*{
 						'type': 'rotating-file',
 						'period': '1d',
 						'count': 7,
 						'path': __dirname + '/../logs/log.json'
-					}
+					}*/
 				]
 			}
 		}
@@ -210,11 +236,34 @@ export class Application extends EventEmitter {
 						} catch (e) {
 							if ( e.code !== 'EEXIST' ) { throw e; }
 						}
+
+						
+						if (stream.type === 'logrotator')
+						{							
+                            let params = {                     
+                                "schedule": stream.schedule, 
+                                "size": stream.size, 
+                                "compress": stream.compress, 
+                                "count": stream.count
+                            }
+                            
+                            if (cluster.isMaster){
+								this.rotator.register(stream.path,  params);
+                            }
+
+                            this.logsConfig.logger.streams[i] = {
+                                "type": "file",
+                                "path": stream.path
+                            }
+                           
+						}
+
+
 					}
 				}
 			}
 		}
-
+		
 		return this.logsConfig;
 	}
 

@@ -275,11 +275,14 @@ class Tplugin extends ThttpPlugin_1.ThttpPlugin {
             }
         });
         this.logger.info('filesystem/execScript type=' + params.type);
+        this.logger.info('filesystem/execScript script=' + params.script);
         if (params.type === 'shell') {
-            this.tools.execScript(params.script, params.args).then(function (result) {
+            this.tools.execScript(params.script, params.args)
+                .then((result) => {
                 res.status(200).json(result);
-            }, function (error) {
-                res.status(500).json(error);
+            })
+                .catch((err) => {
+                next(err);
             });
         }
         else if (params.type === 'javascript') {
@@ -292,8 +295,22 @@ class Tplugin extends ThttpPlugin_1.ThttpPlugin {
             vm.runInNewContext(params.script, sandbox);
             res.status(200).json({ exitCode: sandbox.exitCode, stdout: sandbox.result, stderr: '' });
         }
+        else if (params.type === 'powershell') {
+            if (!utils.isWin()) {
+                next(new Errors.BadRequest("execPowershell can only be executed on Windows OS"));
+            }
+            else {
+                this.tools.execPowershell(params.script, params.args)
+                    .then((result) => {
+                    res.status(200).json(result);
+                })
+                    .catch((err) => {
+                    next(err);
+                });
+            }
+        }
         else {
-            throw new Errors.BadRequest("Valeur incorrect pour la propriété 'type'. Valeurs possible: 'shell'|'javascript'", 412);
+            next(new Errors.BadRequest("Valeur incorrect pour la propriété 'type'. Valeurs possible: 'shell'|'javascript'", 412));
         }
     }
     download(req, res, next) {

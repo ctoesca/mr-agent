@@ -31,7 +31,7 @@ class HttpServer extends EventEmitter {
         this.config = config;
         this.logger = Application_1.Application.getLogger(this.constructor.name);
         if (arguments.length > 0) {
-            if ((typeof this.config.auth !== 'undefined') && (typeof this.config.auth.username !== 'undefined') && (typeof this.config.auth.password !== 'undefined')) {
+            if (this.config.auth && (typeof this.config.auth.username !== 'undefined') && (typeof this.config.auth.password !== 'undefined')) {
                 this.auth = this.config.auth;
             }
             if (typeof this.config.port !== 'undefined') {
@@ -79,7 +79,6 @@ class HttpServer extends EventEmitter {
             }
         }
         this.app.use(this.authRequest.bind(this));
-        this.createServer();
     }
     addExpressApplication(mounthPath, app) {
         this.app.use(mounthPath, app);
@@ -119,14 +118,12 @@ class HttpServer extends EventEmitter {
                         error: true,
                         errorMessage: err.toString(),
                         code: status,
-                        errorNum: 1,
                         errorClass: err.constructor.name,
                         stack: err.stack
                     };
                     if (typeof err["getDetail"] !== 'undefined') {
                         response.detail = err["getDetail"]();
                     }
-                    res.set('x-error', err.toString());
                     res.status(status);
                     res.send(response);
                 }
@@ -190,25 +187,25 @@ class HttpServer extends EventEmitter {
         return this.listen();
     }
     createServer() {
-        if (!this.httpsOptions.enabled) {
-            this.server = http.createServer(this.app);
-            this.server.keepAliveTimeout = 0;
-            return Promise.resolve(this.server);
-        }
-        else {
-            this.logger.info('https Options=', this.httpsOptions);
-            if (this.httpsOptions.pathOpenSSL) {
-                pem.config({
-                    pathOpenSSL: this.httpsOptions.pathOpenSSL
-                });
-            }
-            if (this.httpsOptions.credentials) {
-                this.server = https.createServer(this.httpsOptions.credentials, this.app);
+        return new Promise((resolve, reject) => {
+            if (!this.httpsOptions.enabled) {
+                this.server = http.createServer(this.app);
                 this.server.keepAliveTimeout = 0;
-                return Promise.resolve(this.server);
+                resolve(this.server);
             }
             else {
-                return new Promise((resolve, reject) => {
+                this.logger.info('https Options=', this.httpsOptions);
+                if (this.httpsOptions.pathOpenSSL) {
+                    pem.config({
+                        pathOpenSSL: this.httpsOptions.pathOpenSSL
+                    });
+                }
+                if (this.httpsOptions.credentials) {
+                    this.server = https.createServer(this.httpsOptions.credentials, this.app);
+                    this.server.keepAliveTimeout = 0;
+                    resolve(this.server);
+                }
+                else {
                     pem.createCertificate(this.httpsOptions, (err, keys) => {
                         if (err) {
                             this.logger.error(err, 'createCertificate');
@@ -223,9 +220,9 @@ class HttpServer extends EventEmitter {
                             resolve(this.server);
                         }
                     });
-                });
+                }
             }
-        }
+        });
     }
     listen() {
         return new Promise((resolve, reject) => {
@@ -242,7 +239,7 @@ class HttpServer extends EventEmitter {
             this.server.listen(this.port, this.bindAddress, () => {
                 this.setErrorsHandlers();
                 this.logger.info('API Server started listening on ' + this.bindAddress + ':' + this.port);
-                resolve();
+                resolve(null);
             });
         });
     }

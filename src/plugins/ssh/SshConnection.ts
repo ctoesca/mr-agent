@@ -12,8 +12,14 @@ import HttpAgent from './HttpAgent'
 import HttpsAgent from './HttpsAgent'
 import * as utils from '../../utils'
 
-export default class SshConnection extends EventEmitter {
+declare var app: any
+
+export class SshConnection extends EventEmitter {
 	protected static cachedKeys: Map<string, string> = new Map<string, string>()
+	protected static allSshKeys: any[] = null
+	protected static allSshKeysUpdateTime : number = null
+	protected static allSshKeysTimeout : number = 1800*1000
+
 	
 	public static stats: any 
 
@@ -29,14 +35,19 @@ export default class SshConnection extends EventEmitter {
 	public httpAgent: HttpAgent = null;
 	public validSshOptions: any = null
 	public isInCache: boolean = false
-	
+
 	public poolId: string
 	
 	constructor(connectionParams: any, options: any) {
 
 		super();
 
-		this.logger = options.logger
+
+		if (options.logger)
+			this.logger = options.logger
+		else
+			this.logger = app.getLogger('SshConnection')
+
 		this.sshKeysDir = options.sshKeysDir
 		this.connectTimeout = options.connectTimeout
 		
@@ -55,7 +66,12 @@ export default class SshConnection extends EventEmitter {
 		this.logger.info(this.toString()+" : ssh connection created")
 		
 	}
-
+	public static clearCache(){
+		SshConnection.allSshKeys = null
+		SshConnection.allSshKeysUpdateTime = null
+		SshConnection.cachedKeys.clear()
+		
+	}
 	public static initStats(){
 		SshConnection.stats = {
 			createdCount: 0,
@@ -156,55 +172,69 @@ export default class SshConnection extends EventEmitter {
 		return (this.conn !== null)
 	}
 	
-	public connect(): Promise<SshConnection> {
-
-		if (this.conn !== null) {
-			return Promise.reject( new Error("Echec appel connect('"+this.connectionParams.username+"@"+this.connectionParams.host+"'): Déjà connecté"))
-		}
-
-		let tryPassword: boolean = ((typeof this.connectionParams.password !== 'undefined') && (this.connectionParams.password !== '') && (this.connectionParams.password !== null))
-		let tryKey: boolean = ((typeof this.connectionParams.key !== 'undefined') && (this.connectionParams.key !== '') && (this.connectionParams.key !== null)) && !tryPassword
-		let tryAgentKey: boolean = !tryPassword && !tryKey
+	public connect(conn: Ssh2.Client = null): Promise<SshConnection> {
 
 		let promise : Promise<Ssh2.Client>
 
-		
-
-		let sshOptions : any = {
-			host: this.connectionParams.host,
-			port: this.connectionParams.port,
-			username: this.connectionParams.username,
-		}
-
-		if (tryPassword) {
-			sshOptions.password = this.connectionParams.password
-			promise = this._connect(sshOptions)
-		} else if (tryKey) {
-
-			sshOptions.privateKey = this.connectionParams.key
-			sshOptions.passphrase = this.connectionParams.passphrase
-
-			promise = this._connect(sshOptions)
-		} else if (tryAgentKey) {
-
-			let cacheKey = this.getSshKeyCache( sshOptions.host,  sshOptions.port)
-			
-			sshOptions.passphrase = this.connectionParams.passphrase
-
-			if (SshConnection.cachedKeys.has(cacheKey)) {
-
-				sshOptions.privateKey = SshConnection.cachedKeys.get(cacheKey)
-
-				promise = this._connect(sshOptions)
-				.catch( (err: any) => {
-					this.logger.warn(this.toString()+ ': Use key cache error', err.toString().trim() )
-					return this.findKeyConnection( sshOptions )
-				})
-
-			} else {
-				promise = this.findKeyConnection( sshOptions )
+		try{
+			if (this.conn !== null) {
+				return Promise.reject( new Error("Echec appel connect('"+this.connectionParams.username+"@"+this.connectionParams.host+"'): Déjà connecté"))
 			}
 
+			let tryPassword: boolean = ((typeof this.connectionParams.password !== 'undefined') && (this.connectionParams.password !== '') && (this.connectionParams.password !== null))
+			let tryKey: boolean = ((typeof this.connectionParams.key !== 'undefined') && (this.connectionParams.key !== '') && (this.connectionParams.key !== null)) && !tryPassword
+			let tryAgentKey: boolean = !tryPassword && !tryKey
+
+
+			let sshOptions : any = {
+				host: this.connectionParams.host,
+				port: this.connectionParams.port,
+				username: this.connectionParams.username,
+				password: null,
+				privateKey: null,
+				passphrase: null
+			}
+
+			for(let k in this.connectionParams)
+			{
+				if (sshOptions[k] === undefined)
+					sshOptions[k] = this.connectionParams[k]
+			}
+
+			if (tryPassword) {
+				sshOptions.password = this.connectionParams.password
+				promise = this._connect(sshOptions, conn)
+			} else if (tryKey) {
+
+				sshOptions.privateKey = this.connectionParams.key
+				sshOptions.passphrase = this.connectionParams.passphrase
+
+				promise = this._connect(sshOptions, conn)
+			} else if (tryAgentKey) {
+
+				let cacheKey = this.getSshKeyCache( sshOptions )
+				
+				sshOptions.passphrase = this.connectionParams.passphrase
+
+				if (SshConnection.cachedKeys.has(cacheKey)) {
+
+					sshOptions.privateKey = SshConnection.cachedKeys.get(cacheKey)
+
+					promise = this._connect(sshOptions, conn)
+					.catch( (err: any) => {
+						this.logger.warn(this.toString()+ ': Use key cache error', err.toString().trim() )
+						return this.findKeyConnection( sshOptions, conn )
+					})
+
+				} else {
+					promise = this.findKeyConnection( sshOptions, conn )
+				}
+
+			}
+		}catch(err){
+			this.logger.error(err)
+			let sshError = new SshError(err.toString(), 'connect-error')
+			return Promise.reject(sshError)
 		}
 
 		return promise.then( (conn: Ssh2.Client) => {
@@ -224,89 +254,138 @@ export default class SshConnection extends EventEmitter {
 
 	}
 
-
-
-	public findKeyConnection( sshOptions : any ): Promise<Ssh2.Client> {
-
-		/* search for valid key, in config.sshKeysDir directory */
+	public getAllKeys():any
+	{
 		return new Promise((resolve, reject) => {
 
-			if (fs.existsSync(this.sshKeysDir)) {
+			let now = new Date().getTime()
 
-				let promises = [];
+			if ( (SshConnection.allSshKeys === null)|| ( (now - SshConnection.allSshKeysUpdateTime ) > SshConnection.allSshKeysTimeout) )
+			{
+				if (fs.existsSync(this.sshKeysDir)) 
+				{
+					try{
 
-				let files = fs.readdirSync(this.sshKeysDir);
+						SshConnection.allSshKeys = []
+						let files = fs.readdirSync(this.sshKeysDir);
 
-				for (let f of files) {
-					let keyPath = this.sshKeysDir + '/' + f;
-					if (fs.statSync(keyPath).isFile()) {
+						for (let f of files) {
+							let keyPath = this.sshKeysDir + '/' + f;
+							if (fs.statSync(keyPath).isFile()) {
+								this.logger.info("Ssh key '"+keyPath+"' loaded in cache")
+								let key =  fs.readFileSync(keyPath)
+								SshConnection.allSshKeys.push(key)
+							}
+						}
+						SshConnection.allSshKeysUpdateTime = now
+						
+						this.logger.info(SshConnection.allSshKeys.length +" ssh keys loaded in cache.")
+						resolve(SshConnection.allSshKeys)
 
-						promises.push( this.getKeyConnection( sshOptions, keyPath ) )
+					}catch(err){
+						reject(new Error("Cannot read ssh keys: "+err.toString()))
 					}
+
+				} else {
+				
+					reject(new Error("SSH keys directory does not exists: '" + this.sshKeysDir + "'"));
 				}
+			} else {
+				resolve(SshConnection.allSshKeys)
+			}
+		})
 
-				if (promises.length > 0) {
+	}
 
-					Promise.any(promises)
-					.then( ( result: any ) => {
-						/*
-						result = {
-							key: key,
-							sshOptions: sshOptions,
-							conn: conn
-						} */
-						resolve(result);
+	public findKeyConnection( sshOptions : any, conn: Ssh2.Client ): Promise<Ssh2.Client> {
+
+		this.logger.info(this.toString()+" : findKeyConnection ...")
+
+		return this.getAllKeys()
+		.then((keys: any[]) => {
+
+			/* search for valid key, in config.sshKeysDir directory */
+			return new Promise((resolve, reject) => {
+
+				if (keys.length > 0)
+				{
+					let keyFound = false
+					let errors : any[] = []
+					Promise.each(keys, (key, index, arrayLength) => {
+						
+						if (!keyFound)
+						{						
+							return this.getKeyConnection( sshOptions, key, conn )
+							.then((result) => {
+								keyFound = true
+								errors = []
+								resolve(result);
+							})
+							.catch( (err: any) => 
+							{
+								//this.logger.warn(this.toString()+" : key error: "+err.toString())
+								errors.push(err)
+							})
+						} else {
+							return Promise.resolve()
+						}
+
 					})
-					.catch( (error: any) => {
-						// AggregatedError (bluebird)
+					.finally(() => 
+					{
+						if (!keyFound)
+						{					
+							let err = null
 
-						let level = error.level
+							if (errors.length > 1) 
+							{
 
-						if (error instanceof Promise.AggregateError) {
-
-							error = error[0]
-							level = error.level
-
-							if (error.length > 1) {
-								for (let i = 0; i < error.length; i++) {
-									if ((error[i].level === 'client-socket') || (error[i].level === 'client-timeout')) {
-										error = error[i];
-										level = error.level
+								for (let error of errors) {
+									if ((error.level === 'client-socket') || (error.level === 'client-timeout')) {
+										err = new SshError(error.toString(), error.level)
 										break;
 									}
 								}
+							} else 
+							{
+								err = new SshError(errors[0].toString(), errors[0].level)
 							}
-						}
+							
+							if (err === null)
+								err = new SshError('No valid key found', 'client-authentication')
 
-						let err: SshError = new SshError(error.toString(), level)
-						reject( err );
+							reject( err );
+
+						}
 					})
 
 				} else {
 
-					let err = new SshError('No valid key found', 'client-authentication')
+					let err = new SshError('No key in sshKeys directory', 'client-authentication')
 					reject( err )
 				}
-
-			} else {
-				let err = new SshError("SSH keys directory does not exists: '" + this.sshKeysDir + "'", 'client-authentication')
-				reject(err);
-			}
-
+			})
 		})
+		.catch((err: any) => {
+			err = new SshError(err.toString(), 'client-authentication')
+			throw err 
+		})
+
 	}
-	protected getSshKeyCache(host: string, port: number) {
-		return host + ':' + port
+
+	protected getSshKeyCache(sshOptions: any) {
+		return sshOptions.username+'@'+sshOptions.host + ':' + sshOptions.port
 	}
-	protected _connect(sshOptions: any): Promise<Ssh2.Client> {
+	protected _connect(sshOptions: any, conn: Ssh2.Client = null): Promise<Ssh2.Client> {
 
 		let start = new Date().getTime()
 
-		let conn = this.getNewSshClient();
+		if (conn === null)
+			conn = this.getNewSshClient();
 
 		sshOptions.keepaliveCountMax = 10
 		sshOptions.readyTimeout = this.connectTimeout
-
+        
 		return new Promise((resolve, reject) => {
 			// Sur certaines machines AIX, connect() ne déclenche jamais les evt error ou ready. => attente infinie.
 			let timeout = setTimeout( () => {
@@ -387,16 +466,14 @@ export default class SshConnection extends EventEmitter {
 		})
 	}
 
-	protected getKeyConnection( sshOptions: any, keyPath: string ) {
-
-		let key =  require('fs').readFileSync(keyPath)
+	protected getKeyConnection( sshOptions: any, key: string, conn: Ssh2.Client ) {
 
 		sshOptions.privateKey = key
 
-		return this._connect(sshOptions)
+		return this._connect(sshOptions, conn)
 		.then( conn => {
 
-			let cacheKey = this.getSshKeyCache(sshOptions.host, sshOptions.port)
+			let cacheKey = this.getSshKeyCache(sshOptions)
 			SshConnection.cachedKeys.set(cacheKey, key)
 			return conn
 				

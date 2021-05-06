@@ -44,9 +44,9 @@ export class HttpServer extends EventEmitter {
 
 		if (arguments.length > 0) {
 
-			if ((typeof this.config.auth !== 'undefined') && (typeof this.config.auth.username !== 'undefined') && (typeof this.config.auth.password !== 'undefined')) {
-				this.auth = this.config.auth;
-			}
+			if ( this.config.auth  && (typeof this.config.auth.username !== 'undefined') && (typeof this.config.auth.password !== 'undefined')) {
+                this.auth = this.config.auth;
+            }
 
 			if (typeof this.config.port !== 'undefined') {
 				this.port = this.config.port;
@@ -120,8 +120,6 @@ export class HttpServer extends EventEmitter {
 				next()
 			}
 		})*/
-
-        this.createServer()
         /*.then((server) => {
 			
         	server.on('checkContinue', (req: express.Request, res: express.Response) => {
@@ -178,14 +176,13 @@ export class HttpServer extends EventEmitter {
 						error: true,
 						errorMessage: err.toString(),
 						code: status,
-						errorNum: 1,
 						errorClass: err.constructor.name,
 						stack: err.stack
 					}
 					if (typeof err["getDetail"] !== 'undefined') {
 						response.detail = err["getDetail"]()
 					}
-					res.set('x-error', err.toString())
+					//res.set('x-error', err.toString()) // certains caractères ne sont pas acceptés ds les headers
 					res.status(status)	
 					res.send(response)
 
@@ -250,62 +247,61 @@ export class HttpServer extends EventEmitter {
 		return r
 	}
 
-	public start() {
-		this.server.setTimeout( this.requestTimeout * 1000 );
-		return this.listen();	
-	}
+	start() {        
+        this.server.setTimeout(this.requestTimeout * 1000);
+        return this.listen();        
+    }
 
-	protected createServer(){
+	public createServer(){
+		return new Promise( (resolve: Function, reject: Function) => {
 
-		if (!this.httpsOptions.enabled) {
-			this.server = http.createServer(this.app)
-			this.server.keepAliveTimeout = 0
-			return Promise.resolve(this.server)		
-		} else {
-
-			this.logger.info('https Options=', this.httpsOptions)
-
-			if (this.httpsOptions.pathOpenSSL) {
-				pem.config({
-					pathOpenSSL: this.httpsOptions.pathOpenSSL
-				});
-			}
-
-			if (this.httpsOptions.credentials) {
-
-				this.server = https.createServer(this.httpsOptions.credentials, this.app);
+			if (!this.httpsOptions.enabled) {
+				this.server = http.createServer(this.app)
 				this.server.keepAliveTimeout = 0
-				return Promise.resolve(this.server)		
+				resolve(this.server)		
 			} else {
 
-				return new Promise( (resolve: Function, reject: Function) => {
+				this.logger.info('https Options=', this.httpsOptions)
 
-					pem.createCertificate(this.httpsOptions, (err: any, keys: any) => {
-
-						if (err) {
-							this.logger.error(err, 'createCertificate')
-							process.exit(1)
-						} else {
-
-							let credentials = {key: keys.serviceKey, cert: keys.certificate};
-
-							require('fs').writeFileSync(this.config.tmpDir + '/key.txt',  keys.serviceKey)
-							require('fs').writeFileSync(this.config.tmpDir + '/cert.pem',  keys.certificate)
-							this.logger.info("Le certificat HTTPS a été généré")
-							//this.logger.debug(credentials.key)
-							//this.logger.debug(credentials.cert)
-
-							this.server = https.createServer(credentials, this.app);		
-							resolve(this.server)
-						}
-
+				if (this.httpsOptions.pathOpenSSL) {
+					pem.config({
+						pathOpenSSL: this.httpsOptions.pathOpenSSL
 					});
-				})
+				}
 
+				if (this.httpsOptions.credentials) {
+
+					this.server = https.createServer(this.httpsOptions.credentials, this.app);
+					this.server.keepAliveTimeout = 0
+					resolve(this.server)		
+				} else {
+
+						pem.createCertificate(this.httpsOptions, (err: any, keys: any) => {
+
+							if (err) {
+								this.logger.error(err, 'createCertificate')
+								process.exit(1)
+							} else {
+
+								let credentials = {key: keys.serviceKey, cert: keys.certificate};
+
+								require('fs').writeFileSync(this.config.tmpDir + '/key.txt',  keys.serviceKey)
+								require('fs').writeFileSync(this.config.tmpDir + '/cert.pem',  keys.certificate)
+								this.logger.info("Le certificat HTTPS a été généré")
+								//this.logger.debug(credentials.key)
+								//this.logger.debug(credentials.cert)
+
+								this.server = https.createServer(credentials, this.app);		
+								resolve(this.server)
+							}
+
+						});
+				}
 			}
-		}
+		})
 
 	}
+	
 	protected listen() {
 
 		return new Promise( (resolve, reject) => {
@@ -323,7 +319,7 @@ export class HttpServer extends EventEmitter {
 			this.server.listen(this.port, this.bindAddress, () => {
 				this.setErrorsHandlers()
 				this.logger.info('API Server started listening on ' + this.bindAddress + ':' + this.port);
-				resolve()
+				resolve(null)
 			});
 		})
 	}

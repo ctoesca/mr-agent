@@ -379,6 +379,7 @@ export class Tplugin extends ThttpPlugin {
 		})
 
 	}
+	
 
 	public execScript(req: express.Request, res: express.Response, next: express.NextFunction) {
 
@@ -397,17 +398,19 @@ export class Tplugin extends ThttpPlugin {
 		})
 
 		this.logger.info('filesystem/execScript type=' + params.type);
+		this.logger.info('filesystem/execScript script=' + params.script);
 
 		if (params.type === 'shell') {
 
-			this.tools.execScript(params.script, params.args).then(
-				function(result: any) {
-					res.status(200).json(result);
-				},
-				function(error: any) {
-					res.status(500).json(error);
-				}
-				);
+			this.tools.execScript(params.script, params.args)
+			.then( (result: any) => {
+				res.status(200).json(result);
+			})
+			.catch((err: any) => {
+				next(err);
+			})
+		
+
 		} else if (params.type === 'javascript') {
 			/*
 			Commande de test:
@@ -424,8 +427,21 @@ export class Tplugin extends ThttpPlugin {
 			res.status(200).json({exitCode: sandbox.exitCode, stdout: sandbox.result, stderr: ''});
 
 
-		} else {
-			throw new Errors.BadRequest("Valeur incorrect pour la propriété 'type'. Valeurs possible: 'shell'|'javascript'", 412);
+		} else if (params.type === 'powershell') {
+			if (!utils.isWin()) {
+				next( new Errors.BadRequest("execPowershell can only be executed on Windows OS"))
+			} else {
+				(this.tools as TwinTools).execPowershell(params.script, params.args)
+				.then( (result: any) => {
+					res.status(200).json(result);
+				})
+				.catch((err: any) => {
+					next(err)
+				})				
+			}
+		}
+		else {
+			next( new Errors.BadRequest("Valeur incorrect pour la propriété 'type'. Valeurs possible: 'shell'|'javascript'", 412) );
 		}
 	}
 

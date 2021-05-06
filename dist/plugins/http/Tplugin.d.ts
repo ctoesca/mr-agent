@@ -18,6 +18,7 @@ export declare class Tplugin extends ThttpPlugin {
     _stats(req: express.Request, res: express.Response, next: express.NextFunction): void;
     getStats(): Promise<any>;
     getSslCertificate(req: express.Request, res: express.Response, next: express.NextFunction): void;
+    protected isHttp(hostname: string, port: number): Promise<boolean>;
     requests(req: express.Request, res: express.Response, next: express.NextFunction): void;
     request(req: express.Request, res: express.Response, next: express.NextFunction): void;
     _request(body: any): Promise<unknown>;

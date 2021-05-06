@@ -68,7 +68,37 @@ class Tplugin extends ThttpPlugin_js_1.ThttpPlugin {
             res.json(certificate);
         })
             .catch((err) => {
+            return this.isHttp(req.body.hostname, req.body.port)
+                .then((result) => {
+                if (result === true) {
+                    throw req.body.hostname + ":" + req.body.port + " a répondu correctement en HTTP mais pas en HTTPS (erreur: " + err.toString() + ").";
+                }
+                else {
+                    throw err;
+                }
+            });
+        })
+            .catch((err) => {
             next(err);
+        });
+    }
+    isHttp(hostname, port) {
+        let httpOptions = {
+            url: 'http://' + hostname + ':' + port,
+            method: 'GET',
+            followRedirect: true,
+            followAllRedirects: true,
+            timeout: 15000,
+            json: false
+        };
+        return this._request(httpOptions)
+            .then((result) => {
+            if (result.err || result.body.err) {
+                return null;
+            }
+            else {
+                return true;
+            }
         });
     }
     requests(req, res, next) {

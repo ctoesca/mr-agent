@@ -14,6 +14,7 @@ export declare class Application extends EventEmitter {
     protected _loggers: Map<string, bunyan>;
     protected logger: bunyan;
     protected configPath: string;
+    protected rotator: any;
     constructor(configPath: string, opt?: any);
     static create(clazz: ApplicationConstructor, configPath: string, opt?: any): Application;
     static getInstance(): Application;
@@ -37,14 +38,18 @@ export declare class Application extends EventEmitter {
             streams: ({
                 stream: NodeJS.WriteStream;
                 type?: undefined;
-                period?: undefined;
-                count?: undefined;
                 path?: undefined;
+                schedule?: undefined;
+                size?: undefined;
+                compress?: undefined;
+                count?: undefined;
             } | {
                 type: string;
-                period: string;
-                count: number;
                 path: string;
+                schedule: string;
+                size: string;
+                compress: boolean;
+                count: number;
                 stream?: undefined;
             })[];
         };

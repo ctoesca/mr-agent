@@ -27,34 +27,8 @@ export class Tmetric extends TbaseMetric implements IbaseMetric {
 	}
 
 	public format( format: string, params: any, result: any ): any {
-		/*uptime: 15564,
-		osType: "Windows_NT",
-		release: "6.1.7601",
-		platform: "win32",
-		hostname: "PC"*/
-
-		let hh: number = Math.round( result.uptime / 3600 )
-		let jj: number = Math.round(hh / 24)
-		let uptime = ''
-
-		if (jj >= 1) {
-			uptime += jj + ' jour'
-		}
-		if (jj >= 2) {
-			uptime += 's'
-		}
-
-		if (uptime !== '') {
-			uptime += ' '
-		}
-
-		if (hh <= 1) {
-			uptime += hh + ' heure'
-		} else {
-			uptime += hh + ' heures'
-		}
-
-		return '0|' + result.hostname + ': ' + result.osType + '/' + result.release + ', démarré il y a ' + uptime
+		
+		return result
 	}
 }
 

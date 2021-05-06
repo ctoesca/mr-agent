@@ -51,6 +51,18 @@ class Tprocessor extends TbaseProcessor_1.TbaseProcessor {
             return Promise.resolve(this.ipHash.get(ip));
         }
     }
+    isValidIp(ip) {
+        let r = true;
+        let parts = ip.split('.');
+        for (let part of parts) {
+            let ipPart = parseInt(part);
+            if (ipPart > 255) {
+                r = false;
+                break;
+            }
+        }
+        return r;
+    }
     getMessage(data) {
         let message;
         return super.getMessage(data)
@@ -69,8 +81,8 @@ class Tprocessor extends TbaseProcessor_1.TbaseProcessor {
                 let ipHash = {};
                 for (let i = 0; i < iplist.length; i++) {
                     let ip = iplist[i];
-                    if (!ipHash[ip]) {
-                        promises.push(this.dnsReverse(iplist[i]));
+                    if (!ipHash[ip] && this.isValidIp(ip)) {
+                        promises.push(this.dnsReverse(ip));
                     }
                     ipHash[ip] = ip;
                 }

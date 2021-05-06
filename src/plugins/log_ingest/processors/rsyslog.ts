@@ -109,6 +109,21 @@ export class Tprocessor extends TbaseProcessor {
 			return Promise.resolve(this.ipHash.get(ip));
 		}
 	}
+
+	public isValidIp(ip: string){
+		let r = true
+		let parts = ip.split('.')
+		for (let part of parts){
+			let ipPart = parseInt(part)	
+			if (ipPart > 255)
+			{
+				r = false
+				break
+			}
+		}
+		return r
+	}
+
 	public getMessage( data: any ): Promise<any> {
 
 		let message: any
@@ -150,11 +165,16 @@ export class Tprocessor extends TbaseProcessor {
 				let ipHash = {}
 				for (let i = 0; i < iplist.length; i++) {
 					let ip = iplist[i]
-					if (!ipHash[ip]) {
-						promises.push( this.dnsReverse(iplist[i]))
+
+					if ( !ipHash[ip] && this.isValidIp(ip))
+					{			
+						promises.push( this.dnsReverse(ip))
 					}
+
 					ipHash[ip] = ip
+
 				}
+				
 				return Promise.all(promises);
 			} else {
 				return []

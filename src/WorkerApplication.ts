@@ -16,6 +16,8 @@ import {TbasePlugin} from './plugins/TbasePlugin'
 import {ChildProcess} from './utils/ChildProcess'
 import * as utils from './utils'
 import * as Bluebird from 'bluebird'
+import net = require('net');
+import urlParser = require('url')
 
 export class WorkerApplication extends Application {
 
@@ -42,14 +44,19 @@ export class WorkerApplication extends Application {
 		this.httpServer.addExpressApplication('/api', this.mainApi);
 
 		this.initRoutes();
-		this.loadPlugins();
 
-		this.logger.debug('Application created');
+		return this.httpServer.createServer()
+        .then(() => {
 
-		return this.httpServer.start()
-		.then( () => {
-			return this
-		})
+			this.loadPlugins();
+
+			return this.httpServer.start()
+			.then( () => {
+				this.logger.debug('Application started');
+				return this
+			})
+        })
+
 	}
 
 	public registerExpressPlugin(mounthPath: string, app: express.Application) {
@@ -142,20 +149,39 @@ export class WorkerApplication extends Application {
 
 		});
 
+		this.mainApi.get('/processIsRunning', (req: express.Request, res: express.Response, next: express.NextFunction) => {
+			try{
+
+				let params = HttpTools.getQueryParams(req, {
+					pid: {
+						type: 'integer'
+					}				
+				})
+				
+				let r: boolean = true
+
+				try {
+	            	process.kill(params.pid, 0);
+	        	}
+	    	    catch (e) {
+		            r = (e.code === 'EPERM');
+	        	}
+	        	res.json({
+	        		result: r
+	        	})
+
+			}catch(err: any){
+				next(err)
+			}
+		});
+
+
+		this.mainApi.get('/check', (req: express.Request, res: express.Response) => {
+			this.check(req, res) 
+		});
+
 		this.mainApi.get('/checkAgent', (req: express.Request, res: express.Response) => {
-
-			let result: any = {
-				status: 0,
-				version: Application.version,
-				startDate: this.startDate,
-				userInfo: os.userInfo(),
-				hostname: os.hostname(),
-				platform: os.platform(),
-				release: os.release()
-			};
-
-			res.status(200).send( result );
-
+			this.check(req, res) 
 		});
 
 		this.mainApi.get('/checkPort', (req: express.Request, res: express.Response, next: express.NextFunction) => {
@@ -173,9 +199,10 @@ export class WorkerApplication extends Application {
 				// Status is 'open' if currently in use or 'closed' if available
 				let result: any  = {
 					result: null,
-					error: null
+					error: null,
+					status: status
 				}
-
+				
 				if (error) {
 					result.error = error
 				} else {
@@ -186,6 +213,71 @@ export class WorkerApplication extends Application {
 			});
 
 		});
+
+		
+		this.mainApi.get('/checkTcp', (req: express.Request, res: express.Response, next: express.NextFunction) => {
+
+			let params = HttpTools.getQueryParams(req, {
+				port: {
+					type: 'integer'
+				},
+				host: {
+					type: 'string'
+				},
+				timeout: {
+					type: 'integer', 
+					default:10000
+				}
+			})
+
+			this.logger.info('checkTcp '+params.host+':'+params.port)
+
+			let start = new Date()
+			let u = urlParser.parse(req.url, true);
+			
+			for (let k in u.query){
+				if (params[k] === undefined)
+					params[k] = u.query[k]
+			}
+
+			let r: any  = {
+				result: false,
+				error: null,
+				responseTime: null
+			}
+
+			let timer = setTimeout(() => {
+				//this.logger.info('checktcp timeout after '+r.responseTime+' ms')
+				let err = new Error('Timeout')
+				err.toString = () =>{
+					return 'Timeout'
+				}
+            	socket.destroy(err);
+        	}, params.timeout);
+
+			let socket: net.Socket = net.connect(params)
+			
+			socket.on('error', (err: any) =>{
+				clearTimeout(timer);
+				r.result = false
+				r.responseTime = new Date().getTime() - start.getTime()
+				r.error = err.toString() + ' after '+r.responseTime+' ms'				
+
+				//this.logger.info('checktcp error '+err.toString()+' after '+r.responseTime+' ms')
+				res.status(200).send(r);
+			})
+			socket.on('connect', () =>{
+				clearTimeout(timer);
+				r.result = true
+				r.responseTime = new Date().getTime() - start.getTime()
+
+				//this.logger.info('checktcp OK after '+r.responseTime+' ms')
+				res.status(200).send(r);
+				socket.destroy()
+			})
+
+		});
+
 
 		this.mainApi.post('/admin/update', (req: express.Request, res: express.Response, next: express.NextFunction) => {
 
@@ -238,6 +330,7 @@ export class WorkerApplication extends Application {
 
 		});
 
+		
 		this.mainApi.post('/getConfig', (req: express.Request, res: express.Response, next: express.NextFunction) => {
 
 			let r = {
@@ -287,6 +380,26 @@ export class WorkerApplication extends Application {
 			res.status(200).json(r);
 
 		});
+	}
+
+	check(req: express.Request, res: express.Response)
+	{
+		let result: any = {
+			status: 0,
+			installDir: p.normalize(__dirname+'/..'),
+			version: Application.version,
+			startDate: this.startDate,
+			userInfo: os.userInfo(),
+			hostname: os.hostname(),
+			nodeVersion: process.version,
+			os:{
+				platform: os.platform(),
+				release: os.release()
+			},
+			cpus: os.cpus()
+		};
+
+		res.status(200).send( result );
 	}
 
 }

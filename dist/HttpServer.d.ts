@@ -21,6 +21,6 @@ export declare class HttpServer extends EventEmitter {
     authRequest(req: express.Request, res: express.Response, next: express.NextFunction): void;
     getUrl(): string;
     start(): Promise<unknown>;
-    protected createServer(): Promise<any>;
+    createServer(): Promise<unknown>;
     protected listen(): Promise<unknown>;
 }

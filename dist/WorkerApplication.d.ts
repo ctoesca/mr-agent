@@ -17,4 +17,5 @@ export declare class WorkerApplication extends Application {
     stop(): Bluebird<any>;
     restart(): void;
     initRoutes(): void;
+    check(req: express.Request, res: express.Response): void;
 }

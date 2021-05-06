@@ -6,6 +6,7 @@ export declare class Tprocessor extends TbaseProcessor {
     constructor(name: string, opt: any);
     createMessage(data: any): any;
     dnsReverse(ip: string): Promise<any>;
+    isValidIp(ip: string): boolean;
     getMessage(data: any): Promise<any>;
     getIndexName(message: any): any;
 }
