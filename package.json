@@ -51,7 +51,7 @@
     "logrotator": "^1.1.0",
     "mime": "^2.4.3",
     "minimatch": "^3.0.4",
-    "minimist": "^1.2.0",
+    "minimist": "^1.2.6",
     "mocha": "^5.2.0",
     "mochawesome": "^3.1.1",
     "moment": "^2.23.0",
