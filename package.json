@@ -60,7 +60,7 @@
     "node-stream-zip": "^1.9.1",
     "pem": "^1.13.2",
     "portscanner": "^2.2.0",
-    "qs": "^6.9.4",
+    "qs": "^6.9.7",
     "redis-parser": "^3.0.0",
     "request": "^2.88.0",
     "request-promise": "^4.2.2",
